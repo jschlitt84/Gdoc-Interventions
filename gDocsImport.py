@@ -4,6 +4,10 @@ import gdata.spreadsheet.service
 import sys 
 import os
 
+import requests
+
+isPrivate = True
+
 def spreadConnect(userName, __password, fileName):
     client = gdata.spreadsheet.service.SpreadsheetsService()
     client.email = userName
@@ -53,12 +57,27 @@ def getFile(userName, __password, fileName):
     gd_client.SetClientLoginToken(spreadsheets_client.GetClientLoginToken())
     gd_client.Export(entry, tempFile)
     gd_client.SetClientLoginToken(docs_auth_token)
+    
+def getPublicFile(userName, fileName):
+    fileName = fileName.replace('#gid=0','&output=csv')
+    if not '&output=csv' in fileName:
+        fileName += '&output=csv'
+    print "\nLoading public file", fileName
+    
+    response = requests.get(fileName)
+    assert response.status_code == 200, 'Wrong status code'
+    data = response.content.split('\n')
+    return data
 
-def loadNClean():
-    tempFile = open("googtemp.csv")
-    script = tempFile.readlines()
-    tempFile.close()
-    os.remove("googtemp.csv")
+def loadNClean(isPrivate,publicData):
+    if isPrivate:
+        tempFile = open("googtemp.csv")
+        script = tempFile.readlines()
+        tempFile.close()
+        os.remove("googtemp.csv")
+    else:
+        script = publicData
+        
     length = len(script)
     if length < 4:
         print "Error, no interventions found"
@@ -74,6 +93,10 @@ def loadNClean():
     pos = 0
     print "Google temp file loaded, parsing to internal format"
     while pos < length:
+        if "#" in script[pos] or len(script[pos].replace(",",''))<3:
+            del script[pos]
+            pos -= 1
+            length -= 1
         if "enum" in script[pos]:
             
             script[pos] = script[pos].replace(',',' ')
@@ -81,7 +104,9 @@ def loadNClean():
             script[pos] = script[pos].replace('enum 0','enum')
             pos += 1
             script[pos] = script[pos].replace('","',' ; ')
-            script[pos] = script[pos].replace('"','') 
+            script[pos] = script[pos].replace('"','')
+            script[pos] = script[pos].replace(':',' ')
+            script[pos] = script[pos].replace('-',' ') 
 
         script[pos] = script[pos].replace(',',' ')
         script[pos] = script[pos].replace('  ',' ')
@@ -102,10 +127,20 @@ def loadNClean():
     return outPut
     
 
-def getScript(userName, __password, fileName):   
-    getFile(userName, __password, fileName)
+def getScript(userName, __password, fileName):
+    if __password == "null" and "https://docs.google.com" in fileName:
+        
+        publicData = getPublicFile(userName, fileName)
+        isPrivate = False
+        
+    else:
+        getFile(userName, __password, fileName)
+        isPrivate = True
+        publicData = []
+        
     __password = None
-    return loadNClean()            
+    
+    return loadNClean(isPrivate, publicData)            
     
     
 if __name__ == '__main__':

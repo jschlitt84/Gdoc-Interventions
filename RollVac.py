@@ -118,7 +118,7 @@ def main():
     elif len(sys.argv) > 3:
         if sys.argv[1] == "gdoc" or sys.argv[1] == "google":
             if len(sys.argv) == 4:
-                googData = gDocsImport.getScript(sys.argv[2], '', sys.argv[3])
+                googData = gDocsImport.getScript(sys.argv[2], 'null', sys.argv[3])
             else:
                 googData = gDocsImport.getScript(sys.argv[2], sys.argv[3], sys.argv[4])
                 sys.argv[3] = None
@@ -129,8 +129,15 @@ def main():
         else:
             print "Ignoring", len(sys.argv) - 3, "excess arguments\n"
     elif len(sys.argv) == 3:
-        outName = sys.argv[2]
-        arg = sys.argv[1]
+        if sys.argv[1] == "gdoc" or sys.argv[1] == "google":
+            googData = gDocsImport.getScript('null', 'null', sys.argv[2])
+            outName = googData['name']
+            print "Will write to intervention file '%s'\n" % outName
+            script =  googData['script']    
+            arg = "gDoc"  
+        else:
+            outName = sys.argv[2]
+            arg = sys.argv[1]
         
     if arg != "user" and arg != "gDoc" and (not os.path.isfile(arg)):
         print "Error, cannot open file or directory\n"
@@ -459,7 +466,17 @@ action number and subpopulation directory appended"""
     outFile.write("\n# Close Work: " + str(workTotal))
     outFile.write("\n# Close Schools: " + str(schoolTotal))
     outFile.close()
-
+    print """Pre Compliance Intervention Totals- calculated per output,
+does not account for over-application to a given set of IDs. 
+Please apply only one of each type per sub pop, using enumerated 
+interventions for complex interventions."""
+    print "\nVaccination: " + str(vacTotal)
+    print "Antiviral: " + str(avTotal)
+    print "Social Distancing: " + str(socialTotal)
+    print "Close Work: " + str(workTotal)
+    print "Close Schools:" + str(schoolTotal)
+    
+    
 main()
 print "Intervention scripting succesfully completed, exiting now.\n"
 quit
