@@ -25,12 +25,35 @@ def checkEnum(enumerator):
         print "Error: enumerator missing/ extra terms"
         return False
     while pos < lim:
-        if pos%3 == 0 or pos%3 ==1:
+        if pos%3 ==1:
+            if not chopper.isInt(cmds[pos]):
+                if '%' in cmds[pos]:
+                    cmds[pos] = cmds[pos].replace('%','')
+                    try:
+                        temp = float(cmds[pos])/ 100
+                        if temp > 1 or temp <= 0:
+                            print "Error: non integer enumerator outside of 0-100% range"
+                            return False
+                    except:
+                        print "Error: improperly formatted percentage enumerator"
+                        return False
+                else:
+                    try:
+                        temp = float(cmds[pos])
+                        if temp > 1 or temp <= 0:
+                            print "Error: non integer enumerator outside of 0-100% range"
+                            return False
+                    except:
+                        print "Error: improper string value, cannot convert"
+                        return False
+            else:
+                if cmds[pos]<0:
+                    print "Error: enumerator must be a positive integer or percentage"
+                    return False
+        
+        if pos%3 == 0:
             if not chopper.isInt(cmds[pos]) or cmds[pos] < 0:
                 print "Error: enumeration entry at pos", len, "is not a positive integer"
-                return False
-            if pos%3 == 1 and cmds[pos] < 1:
-                print "Error: enumeration size must be greater than or equal to 1"
                 return False
         if pos%3 == 2:
             if cmds[pos] != ";":
@@ -45,8 +68,14 @@ def parseEnum(enumerator):
     pos = 0
     lim = len(cmds) 
     while pos < lim:
-        if pos%3 == 0 or pos%3 ==1:
+        if pos%3 == 0:
             enums.append(int(cmds[pos]))
+        if pos%3 == 1:
+            if '%' in cmds[pos] :
+                cmds[pos] = cmds[pos].replace('%','')
+                enums.append(float(cmds[pos])/100)
+            else:
+                enums.append(float(cmds[pos]))
         pos += 1
     print "Valid intervention enumeration recieved:", enums
     return enums
@@ -79,7 +108,29 @@ def cleanEnum(enumerator):
         print "to new:", workEnum, '\n'
     return workEnum
         
-    
+def percentEnum(enumerator,size):
+    pos1 = 1
+    print
+    workEnum =  enumerator[:]
+    limit =  len(workEnum)    
+    while pos1 < limit+1:
+        temp = float(workEnum[pos1])
+        if temp < 1:
+#            size = chopper.popSize(subPop)
+            workEnum[pos1] = int(temp*size+0.5)
+            if workEnum[pos1] == 0:
+                print "Percentage", temp*100, "% of population size", size, "resulted in", workEnum[pos1], "individuals, entry ignored for enumeration" 
+                del workEnum[pos1-1:pos1+1]
+                limit -= 2
+                pos1 -= 2
+            else:
+                print "Percentage", temp*100, "% of population size", size, "converted to", workEnum[pos1], "individuals for enumeration" 
+
+        else:
+            workEnum[pos1] = int(workEnum[pos1])
+        pos1 += 2
+    return workEnum
+            
 
 def main():
  
@@ -118,9 +169,9 @@ def main():
     elif len(sys.argv) > 3:
         if sys.argv[1] == "gdoc" or sys.argv[1] == "google":
             if len(sys.argv) == 4:
-                googData = gDocsImport.getScript(sys.argv[2], 'null', sys.argv[3])
+                googData = gDocsImport.getScript(sys.argv[2], 'null', sys.argv[3],3,0)
             else:
-                googData = gDocsImport.getScript(sys.argv[2], sys.argv[3], sys.argv[4])
+                googData = gDocsImport.getScript(sys.argv[2], sys.argv[3], sys.argv[4],3,0)
                 sys.argv[3] = None
             outName = googData['name']
             print "Will write to intervention file '%s'\n" % outName
@@ -130,7 +181,7 @@ def main():
             print "Ignoring", len(sys.argv) - 3, "excess arguments\n"
     elif len(sys.argv) == 3:
         if sys.argv[1] == "gdoc" or sys.argv[1] == "google":
-            googData = gDocsImport.getScript('null', 'null', sys.argv[2])
+            googData = gDocsImport.getScript('null', 'null', sys.argv[2],3,0)
             outName = googData['name']
             print "Will write to intervention file '%s'\n" % outName
             script =  googData['script']    
@@ -139,8 +190,9 @@ def main():
             outName = sys.argv[2]
             arg = sys.argv[1]
         
-    if arg != "user" and arg != "gDoc" and (not os.path.isfile(arg)):
-        print "Error, cannot open file or directory\n"
+    if arg != "user" and arg != "gDoc" and arg != "gdoc" and (not os.path.isfile(arg)):
+        print arg
+        print "Error, cannot open file or directoryfasfasfas\n"
         quit()     
         
     done = False
@@ -402,7 +454,8 @@ action number and subpopulation directory appended"""
         suffix = str(subnum) + meth
 
         if enum:
-            enumList = cleanEnum(enumList)
+            populationSize = chopper.popSize(population)
+            enumList = cleanEnum(percentEnum(enumList,populationSize))
             holder = chopper.main(population,'e'," ".join(map(str, enumList)),suffix)
             returnSize = holder['count']
             enumList = holder['enum']

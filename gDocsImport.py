@@ -69,7 +69,16 @@ def getPublicFile(userName, fileName):
     data = response.content.split('\n')
     return data
 
-def loadNClean(isPrivate,publicData):
+def loadNClean(isPrivate,publicData, start, end):
+    try:
+        if int(end) >= 1 and end > start:
+            hasEnd= True
+        else:
+            hasEnd = False
+    except:
+        start = 0
+        hasEnd = False
+        
     if isPrivate:
         tempFile = open("googtemp.csv")
         script = tempFile.readlines()
@@ -79,30 +88,38 @@ def loadNClean(isPrivate,publicData):
         script = publicData
         
     length = len(script)
-    if length < 4:
+    if length < start:
         print "Error, no interventions found"
         quit
-    name = script[1]
+    params = script[1].split(',')
+    name = params[0]
     if len(name) == 0:
         print "No name stored, defaulting to 'Intervention'"
         name = "Intervention"
     else:
         name = name.replace(',','')
-    script = script[3:length+1]
-    length -= 3
+    script = script[start:length+1]
+    length -= start
     pos = 0
     print "Google temp file loaded, parsing to internal format"
+    
+    if hasEnd:
+        length = min(length, end)
+    
     while pos < length:
         if "#" in script[pos] or len(script[pos].replace(",",''))<3:
             del script[pos]
             pos -= 1
             length -= 1
         if "enum" in script[pos]:
-            
             script[pos] = script[pos].replace(',',' ')
             script[pos] = script[pos].replace('enum enum','enum')
             script[pos] = script[pos].replace('enum 0','enum')
             pos += 1
+            while "#" in script[pos] or len(script[pos].replace(",",''))<3:
+                del script[pos]
+                pos -= 1
+                length -= 1
             script[pos] = script[pos].replace('","',' ; ')
             script[pos] = script[pos].replace('"','')
             script[pos] = script[pos].replace(':',' ')
@@ -122,12 +139,27 @@ def loadNClean(isPrivate,publicData):
         pos += 1
     print
     
-    name = name.replace('\n','')    
-    outPut = {'name':name,'script':script}
+    name = name.replace('\n','')
+
+    diagnosis = False
+    diagUrl = "null"
+
+    if len(params) >= 3:
+        temp = params[1]
+        if temp == 'y' or temp == 'Y' or temp == 'yes' or temp == 'Yes':
+            diagnosis = True
+        elif temp == 'n' or temp == 'n' or temp == 'no' or temp == 'No':
+            diagnosis = False
+        else:
+            print "Error, please enter 'y' or 'n' for diagnosis, defaulting to 'n'"
+        diagUrl = params[2]
+            
+                
+    outPut = {'name':name,'script':script,'diagnosis':diagnosis,'url':diagUrl}
     return outPut
     
 
-def getScript(userName, __password, fileName):
+def getScript(userName, __password, fileName, start, end):
     if __password == "null" and "https://docs.google.com" in fileName:
         
         publicData = getPublicFile(userName, fileName)
@@ -140,7 +172,7 @@ def getScript(userName, __password, fileName):
         
     __password = None
     
-    return loadNClean(isPrivate, publicData)            
+    return loadNClean(isPrivate, publicData, start, end)            
     
     
 if __name__ == '__main__':

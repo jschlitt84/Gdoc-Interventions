@@ -1,6 +1,26 @@
 import sys
 import os
 
+def popSize(subPop):
+    line = pos1 = 0
+    tempList = []
+    popfile = open(subPop)
+    while True:
+            testline = popfile.readline()
+            if len(testline) == 0:
+                break
+            if not testline.startswith("#"):
+                ID = testline
+                tempList.append(ID)
+                line += 1
+                
+    while pos1 < line-1:             
+        while (tempList[pos1] in tempList[pos1+1:line]):
+            del tempList[pos1]
+            line -= 1
+        pos1 += 1
+    return line
+    
 def getEnumSize(enumList):
     size = pos = 0
     while pos < len(enumList):
@@ -26,7 +46,10 @@ def trimEnum(enumList, target):
         
 
 def isInt(number):
-     return (number.replace(".", "", 1).isdigit())
+    try:
+         return (number.replace(".", "", 1).isdigit())
+    except:
+        return False
 
 
 

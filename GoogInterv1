@@ -4,28 +4,26 @@ Trigger 2 Day 4
 Action 2 Vaccination 10 0.3 0.7 /subpops/SUBPOP.txt11v
 Trigger 1003 Day 0
 Action 1003 Antiviral 20 0.13 0.2 0.55 /subpops/SUBPOP.txt02av
-Trigger 1004 Day 2
+Trigger 1004 Day 5
 Action 1004 Antiviral 20 0.13 0.2 0.55 /subpops/SUBPOP.txt12av
-Trigger 1005 Day 5
+Trigger 1005 Day 32
 Action 1005 Antiviral 20 0.13 0.2 0.55 /subpops/SUBPOP.txt22av
-Trigger 1006 Day 32
-Action 1006 Antiviral 20 0.13 0.2 0.55 /subpops/SUBPOP.txt32av
-Trigger 2007 Day 5
-Action 2007 SocialDistancing 4 0.5 /subpops/SUBPOP.txt03sd
-Trigger 2008 Day 6
-Action 2008 SocialDistancing 4 0.5 /subpops/SUBPOP.txt13sd
-Trigger 2009 Day 7
-Action 2009 SocialDistancing 4 0.5 /subpops/SUBPOP.txt23sd
-Trigger 4010 Day 0
-Action 4010 SchoolClosure 10 0.6 /subpops/SUBPOP.txt04cs
-Trigger 4011 Day 1
-Action 4011 SchoolClosure 10 0.6 /subpops/SUBPOP.txt14cs
-Trigger 4012 Day 5
-Action 4012 SchoolClosure 10 0.6 /subpops/SUBPOP.txt24cs
+Trigger 2006 Day 5
+Action 2006 SocialDistancing 4 0.5 /subpops/SUBPOP.txt03sd
+Trigger 2007 Day 6
+Action 2007 SocialDistancing 4 0.5 /subpops/SUBPOP.txt13sd
+Trigger 2008 Day 7
+Action 2008 SocialDistancing 4 0.5 /subpops/SUBPOP.txt23sd
+Trigger 4009 Day 0
+Action 4009 SchoolClosure 10 0.6 /subpops/SUBPOP.txt04cs
+Trigger 4010 Day 1
+Action 4010 SchoolClosure 10 0.6 /subpops/SUBPOP.txt14cs
+Trigger 4011 Day 5
+Action 4011 SchoolClosure 10 0.6 /subpops/SUBPOP.txt24cs
 
 # Pre Compliance Intervention Totals- calculated per output, does not account for over-application to a given set of IDs. Please apply only one of each type per sub pop, using enumerated interventions for complex interventions.
 # Vaccination: 15
-# Antiviral: 11
+# Antiviral: 9
 # Social Distancing: 15
 # Close Work: 0
 # Close Schools: 12
