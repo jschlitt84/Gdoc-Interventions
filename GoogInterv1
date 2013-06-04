@@ -21,9 +21,12 @@ Action 4010 SchoolClosure 10 0.6 /subpops/SUBPOP.txt14cs
 Trigger 4011 Day 5
 Action 4011 SchoolClosure 10 0.6 /subpops/SUBPOP.txt24cs
 
-# Pre Compliance Intervention Totals- calculated per output, does not account for over-application to a given set of IDs. Please apply only one of each type per sub pop, using enumerated interventions for complex interventions.
+# Pre Compliance Intervention Totals- calculated per output,
+does not account for over-application to a given set of IDs. 
+Please apply only one of each type per sub pop, using enumerated
+interventions for complex interventions.
 # Vaccination: 15
-# Antiviral: 9
+# Antiviral Prophylaxis: 9
 # Social Distancing: 15
 # Close Work: 0
 # Close Schools: 12

@@ -12,13 +12,15 @@ def spreadConnect(userName, __password, fileName):
     client = gdata.spreadsheet.service.SpreadsheetsService()
     client.email = userName
     client.password = __password
+    __password = "*"*len(__password)
     client.ssl = False
     client.source = fileName
     try:
         client.ProgrammaticLogin()
-        print "Connected to Google Spreadsheet via username %s & password %s" % (userName,"*"*len(__password))
+        print "Connected to Google Spreadsheet via username %s & password %s" % (userName,__password)
     except:
-        print "Error, Google Spreadhseet Login Failed, username %s & password %s" % (userName,"*"*len(__password))
+        print "Error, Google Spreadhseet Login Failed, username %s & password %s" % (userName,__password)
+        client.password = None
         quit()
     return client
     
@@ -26,19 +28,22 @@ def googConnect(userName, __password, fileName):
     client = gdata.docs.service.DocsService()
     client.email = userName
     client.password = __password
+    __password = "*"*len(__password)
 #    client.ssl = False
     client.source = fileName
     try:
         client.ProgrammaticLogin()
-        print "Connected to Google Docs via username %s & password %s" % (userName,"*"*len(__password))
+        print "Connected to Google Docs via username %s & password %s" % (userName,__password)
     except:
-        print "Error, Google Docs Login Failed, username %s & password %s" % (userName,"*"*len(__password))
+        print "Error, Google Docs Login Failed, username %s & password %s" % (userName,__password)
+        client.password = None
         quit()
     return client
 
 def getFile(userName, __password, fileName):
     gd_client = googConnect(userName, __password, fileName)
     spreadsheets_client = spreadConnect(userName, __password, fileName)
+    __password = None
     
     q = gdata.spreadsheet.service.DocumentQuery()
     q['title'] = fileName
@@ -69,16 +74,51 @@ def getPublicFile(userName, fileName):
     data = response.content.split('\n')
     return data
 
-def loadNClean(isPrivate,publicData, start, end):
-    try:
-        if int(end) >= 1 and end > start:
-            hasEnd= True
-        else:
-            hasEnd = False
-    except:
-        start = 0
-        hasEnd = False
-        
+def getPos (start, stop, script):
+    length = len(script)
+    pos = 0
+    startPos = 0
+    stopPos = len(script)
+    if isinstance(start, str) and not isinstance(stop, str):
+        foundStart = False
+        foundStop = True
+        stopPos = int(stop)
+        while pos < length:
+            if start in script[pos]:
+                startPos = pos + 1
+                foundStart = True
+                break
+            pos += 1
+    if not isinstance(start, str) and isinstance(stop, str):
+        foundStart = True
+        foundStop = False
+        startPos = int(start)
+        while pos < length:
+            if stop in script[pos]:
+                stopPos = pos
+                foundStop = True
+                break
+            pos += 1
+    if isinstance(start, str) and isinstance(stop, str):
+        foundStart = False
+        foundStop = False
+        while pos < length:
+            if start in script[pos]:
+                startPos = pos + 1
+                foundStart = True
+            if stop in script[pos]:
+                stopPos = pos
+                foundStop = True
+            pos += 1
+    if not foundStart:
+        print "Error, start string", start, "not found, defaulting to pos 0"
+        startPos = 1
+    if not foundStop:
+        print "Error, stop string", stop, "not found, defaulting to pos", length
+        stopPos = length
+    return {'start':startPos,'stop':stopPos}
+    
+def loadNClean(isPrivate,publicData, start, end, cleanType):
     if isPrivate:
         tempFile = open("googtemp.csv")
         script = tempFile.readlines()
@@ -86,47 +126,66 @@ def loadNClean(isPrivate,publicData, start, end):
         os.remove("googtemp.csv")
     else:
         script = publicData
-        
+                    
+    if isinstance(start, str) or isinstance(end, str):
+        holder = getPos(start, end, script)
+        start = int(holder['start'])
+        end = int(holder['stop'])
+        hasEnd = True
+    try:
+        if int(end) >= 1 and int(end) > int(start):
+            hasEnd= True
+        else:
+            hasEnd = False
+    except:
+        start = 0
+        hasEnd = False        
+                            
     length = len(script)
+    
     if length < start:
-        print "Error, no interventions found"
+        print "Error, no values found"
         quit
-    params = script[1].split(',')
-    name = params[0]
-    if len(name) == 0:
-        print "No name stored, defaulting to 'Intervention'"
-        name = "Intervention"
-    else:
-        name = name.replace(',','')
+            
     script = script[start:length+1]
     length -= start
+    end -= start
     pos = 0
-    print "Google temp file loaded, parsing to internal format"
+    print "Google content loaded, parsing to internal format"
+    
+    if cleanType == "single line":
+        hasEnd = True
+        end = 1
     
     if hasEnd:
-        length = min(length, end)
-    
+        if end < length:
+            del script[end:length+1]
+            length = end    
     while pos < length:
-        if "#" in script[pos] or len(script[pos].replace(",",''))<3:
+        if "#" in script[pos] or len(script[pos].replace(",",''))<1:
             del script[pos]
             pos -= 1
             length -= 1
-        if "enum" in script[pos]:
+        if cleanType == "intervention script":
+            if "enum" in script[pos]:
+                script[pos] = script[pos].replace(',',' ')
+                script[pos] = script[pos].replace('enum enum','enum')
+                script[pos] = script[pos].replace('enum 0','enum')
+                pos += 1
+                while "#" in script[pos] or len(script[pos].replace(",",''))<1:
+                    del script[pos]
+                    pos -= 1
+                    length -= 1
+                
+                
+                script[pos] = script[pos].replace('","',' ; ')
+                script[pos] = script[pos].replace('"','')
+                script[pos] = script[pos].replace(':',' ')
+                script[pos] = script[pos].replace('-',' ') 
+                
+    
             script[pos] = script[pos].replace(',',' ')
-            script[pos] = script[pos].replace('enum enum','enum')
-            script[pos] = script[pos].replace('enum 0','enum')
-            pos += 1
-            while "#" in script[pos] or len(script[pos].replace(",",''))<3:
-                del script[pos]
-                pos -= 1
-                length -= 1
-            script[pos] = script[pos].replace('","',' ; ')
-            script[pos] = script[pos].replace('"','')
-            script[pos] = script[pos].replace(':',' ')
-            script[pos] = script[pos].replace('-',' ') 
-
-        script[pos] = script[pos].replace(',',' ')
-        script[pos] = script[pos].replace('  ',' ')
+            script[pos] = script[pos].replace('  ',' ')
         pos += 1
     
     pos = 0
@@ -139,27 +198,38 @@ def loadNClean(isPrivate,publicData, start, end):
         pos += 1
     print
     
-    name = name.replace('\n','')
-
-    diagnosis = False
-    diagUrl = "null"
-
-    if len(params) >= 3:
-        temp = params[1]
-        if temp == 'y' or temp == 'Y' or temp == 'yes' or temp == 'Yes':
-            diagnosis = True
-        elif temp == 'n' or temp == 'n' or temp == 'no' or temp == 'No':
-            diagnosis = False
-        else:
-            print "Error, please enter 'y' or 'n' for diagnosis, defaulting to 'n'"
-        diagUrl = params[2]
-            
-                
-    outPut = {'name':name,'script':script,'diagnosis':diagnosis,'url':diagUrl}
-    return outPut
+    if cleanType == "default":
+        listScript = []
+        pos = 0
+        while pos < len(script):
+            listScript.append(script[pos].split(","))
+            pos += 1
+        return listScript
     
-
-def getScript(userName, __password, fileName, start, end):
+    elif cleanType == "single line":
+        return script[0].split(",")
+            
+    else:
+        return script
+  
+    
+    
+def getLine(userName, __password, fileName, line):
+    if __password == "null" and "https://docs.google.com" in fileName:
+        
+        publicData = getPublicFile(userName, fileName)
+        isPrivate = False
+        
+    else:
+        getFile(userName, __password, fileName)
+        isPrivate = True
+        publicData = []
+           
+    __password = None
+    
+    return loadNClean(isPrivate, publicData, line, 0, "single line")      
+    
+def getScript(userName, __password, fileName, start, end, loadType):
     if __password == "null" and "https://docs.google.com" in fileName:
         
         publicData = getPublicFile(userName, fileName)
@@ -171,8 +241,8 @@ def getScript(userName, __password, fileName, start, end):
         publicData = []
         
     __password = None
-    
-    return loadNClean(isPrivate, publicData, start, end)            
+
+    return loadNClean(isPrivate, publicData, start, end, loadType)            
     
     
 if __name__ == '__main__':

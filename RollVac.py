@@ -1,7 +1,16 @@
 import sys
 import os
 import chopper
-import gDocsImport    
+import gDocsImport
+
+varFolders = False
+paramsStart = "Study Name,Diagnosis Based"
+avStart = "Antiviral Intervention ID,Condition Date"
+startWord = "Subpopulation,Day/'enum',Length of Spread"
+stopWord = "Diagnosis Model Version,Antiviral Model Version,"
+    
+def writeAvScript(avScript, diagParams, outName):
+    print
 
 def getEnum():
     while True:
@@ -71,11 +80,7 @@ def parseEnum(enumerator):
         if pos%3 == 0:
             enums.append(int(cmds[pos]))
         if pos%3 == 1:
-            if '%' in cmds[pos] :
-                cmds[pos] = cmds[pos].replace('%','')
-                enums.append(float(cmds[pos])/100)
-            else:
-                enums.append(float(cmds[pos]))
+            enums.append(percentFix(cmds[pos]))
         pos += 1
     print "Valid intervention enumeration recieved:", enums
     return enums
@@ -107,6 +112,13 @@ def cleanEnum(enumerator):
         print "Enumeration list cleaned up from original:", oldEnum
         print "to new:", workEnum, '\n'
     return workEnum
+    
+def percentFix(value):
+    if '%' in value :
+                value = value.replace('%','')
+                return float(value)/100
+    else:
+        return float(value)
         
 def percentEnum(enumerator,size):
     pos1 = 1
@@ -168,37 +180,72 @@ def main():
         outName = "Intervention"
     elif len(sys.argv) > 3:
         if sys.argv[1] == "gdoc" or sys.argv[1] == "google":
+            loadType = "intervention script"
             if len(sys.argv) == 4:
-                googData = gDocsImport.getScript(sys.argv[2], 'null', sys.argv[3],3,0)
+                script = gDocsImport.getScript(sys.argv[2], 'null', sys.argv[3], startWord, stopWord, loadType)
+                params = gDocsImport.getLine(sys.argv[2], 'null', sys.argv[3], paramsStart)
             else:
-                googData = gDocsImport.getScript(sys.argv[2], sys.argv[3], sys.argv[4],3,0)
-                sys.argv[3] = None
-            outName = googData['name']
-            print "Will write to intervention file '%s'\n" % outName
-            script =  googData['script']    
+                script = gDocsImport.getScript(sys.argv[2], sys.argv[3], sys.argv[4], startWord, stopWord, loadType)
+                params = gDocsImport.getLine(sys.argv[2], sys.argv[3], sys.argv[4],paramsStart)
+                sys.argv[3] = None 
             arg = "gDoc"  
         else:
             print "Ignoring", len(sys.argv) - 3, "excess arguments\n"
     elif len(sys.argv) == 3:
         if sys.argv[1] == "gdoc" or sys.argv[1] == "google":
-            googData = gDocsImport.getScript('null', 'null', sys.argv[2],3,0)
-            outName = googData['name']
-            print "Will write to intervention file '%s'\n" % outName
-            script =  googData['script']    
+            loadType = "intervention script"
+            script = gDocsImport.getScript('null', 'null', sys.argv[2], startWord, stopWord, loadType)
+            params = gDocsImport.getLine('null', 'null', sys.argv[2], paramsStart)
             arg = "gDoc"  
         else:
             outName = sys.argv[2]
             arg = sys.argv[1]
+            
+    if arg == "gDoc":
+        outName = params[0]
+        if len(outName) == 0:
+            print "No name stored, defaulting to 'Intervention'"
+            outName = "Intervention"
+            
+        print "Will write to intervention file '%s'\n" % outName
+
+        diag = params[1]
+        if diag == 'y' or diag == 'Y' or diag == 'yes' or diag == 'Yes':
+            diagnosis = True
+        elif diag == 'n' or diag == 'n' or diag == 'no' or diag == 'No':
+            diagnosis = False
+        else:
+            diagnosis = False
+            print "Error, please enter 'y' or 'n' for diagnosis, defaulting to 'n'"
+        
+        if not diagnosis:
+            sys.argv[3] = "null"
+        else:
+            loadType = "default"
+            if len(sys.argv) > 3:
+                if len(sys.argv) == 4:
+                    avScript = gDocsImport.getScript(sys.argv[2], 'null', sys.argv[3], avStart, 0, loadType)
+                    diagParams = gDocsImport.getLine(sys.argv[2], 'null', sys.argv[3], stopWord)
+                else:
+                    avScript = gDocsImport.getScript(sys.argv[2], sys.argv[3], sys.argv[4], avStart, 0, loadType)
+                    diagParams = gDocsImport.getLine(sys.argv[2], sys.argv[3], sys.argv[4], stopWord)
+                    sys.argv[3] = "null"
+            elif len(sys.argv) == 3:
+                avScript = gDocsImport.getScript('null', 'null', sys.argv[2], avStart, 0, loadType)
+                diagParams = gDocsImport.getLine('null', 'null', sys.argv[2], stopWord) 
+            writeAvScript(avScript, diagParams, outName)
+        
+
+
+
         
     if arg != "user" and arg != "gDoc" and arg != "gdoc" and (not os.path.isfile(arg)):
         print arg
-        print "Error, cannot open file or directoryfasfasfas\n"
+        print "Error, cannot open file or directory\n"
         quit()     
         
     done = False
     
-    #print os.path.isfile(arg)
-    #print arg
     
     #SCRIPT FILE LOADING
     
@@ -509,12 +556,15 @@ action number and subpopulation directory appended"""
             outFile.close()
             print
 
-    # APPENDING INTERVENTION TOTALS        
-                         
+    # APPENDING INTERVENTION TOTALS               
+                                              
     outFile = open(outName, 'a+b')
-    outFile.write("\n# Pre Compliance Intervention Totals- calculated per output, does not account for over-application to a given set of IDs. Please apply only one of each type per sub pop, using enumerated interventions for complex interventions.")
+    outFile.write("""\n# Pre Compliance Intervention Totals- calculated per output,
+does not account for over-application to a given set of IDs. 
+Please apply only one of each type per sub pop, using enumerated
+interventions for complex interventions.""")
     outFile.write("\n# Vaccination: " + str(vacTotal))
-    outFile.write("\n# Antiviral: " + str(avTotal))
+    outFile.write("\n# Antiviral Prophylaxis: " + str(avTotal))
     outFile.write("\n# Social Distancing: " + str(socialTotal))
     outFile.write("\n# Close Work: " + str(workTotal))
     outFile.write("\n# Close Schools: " + str(schoolTotal))
@@ -524,7 +574,7 @@ does not account for over-application to a given set of IDs.
 Please apply only one of each type per sub pop, using enumerated 
 interventions for complex interventions."""
     print "\nVaccination: " + str(vacTotal)
-    print "Antiviral: " + str(avTotal)
+    print "Antiviral Prophylaxis: " + str(avTotal)
     print "Social Distancing: " + str(socialTotal)
     print "Close Work: " + str(workTotal)
     print "Close Schools:" + str(schoolTotal)
