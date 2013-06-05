@@ -98,12 +98,12 @@ def main(arg1, arg2, arg3, arg4):
         C: optional, chopped file suffix\n\n"""
         quit() 
           
-    A = sys.argv[2]
-    if A == 'c' or A == 'C' or A == 'count':
+    A = sys.argv[2].lower()
+    if A == 'c' or A == 'count':
         chopStyle = 'count'
-    elif A == 'b' or A == 'B' or A == 'blocks':
+    elif A == 'b' or A == 'blocks':
         chopStyle = 'block'
-    elif A == 'e' or A == 'E' or A == 'enum':
+    elif A == 'e' or A == 'enum':
         chopStyle = 'enum'
     else:
         print "Error: invalid chop type, enter c for count or b for blocks\n\n"
