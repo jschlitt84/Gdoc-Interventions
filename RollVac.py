@@ -245,7 +245,12 @@ def isYes(response, use):
 
 
 
-def main():
+def main(arg1, arg2, arg3, arg4):
+        
+
+    if __name__ != '__main__':
+        sys.argv = ['RollVac.py',arg1,arg2,arg3,arg4]
+
  
     trigger = 1
     subnum = 0
@@ -289,14 +294,14 @@ def main():
 
 ## LOADS PUBLIC/ PRIVATE DATA FROM GDOC IF PASSED
    
-        if sys.argv[1] == "gdoc" or sys.argv[1] == "google":
+        if sys.argv[1] == "gdoc" or sys.argv[1] == "poly":
             arg = "gDoc"
             if len(sys.argv) == 4:
                 sys.argv.insert(3,'null') 
             else:
                 print "Ignoring", len(sys.argv) - 3, "excess arguments\n"
     elif len(sys.argv) == 3:
-        if sys.argv[1] == "gdoc" or sys.argv[1] == "google":
+        if sys.argv[1] == "gdoc" or sys.argv[1] == "poly":
             arg = "gDoc" 
             sys.argv.insert(2,'null')
             sys.argv.insert(2,'null')
@@ -310,12 +315,21 @@ def main():
                                                
     if arg == "gDoc":
         
+        if sys.argv[1] == "poly":
+            isPoly = True
+            sys.argv[3] = 'null'
+        else:
+            isPoly = False
         loadType = "intervention script"
         print sys.argv
-        script = gDocsImport.getScript(sys.argv[2], sys.argv[3], sys.argv[4], startWord, stopWord, loadType)
-        params = gDocsImport.getLine(sys.argv[2], sys.argv[3], sys.argv[4],paramsStart)
+        script = gDocsImport.getScript(sys.argv[2], sys.argv[3], sys.argv[4], startWord, stopWord, loadType, isPoly)
+        params = gDocsImport.getLine(sys.argv[2], sys.argv[3], sys.argv[4],paramsStart, isPoly)
         
-        outName = params[0]
+        if isPoly:
+            outName = sys.argv[2]
+        else:
+            outName = params[0]
+
         if len(outName) == 0:
             print "No name prefix stored, using default intervention, antiviral, and diagnosis"
             outName = ""
@@ -329,8 +343,8 @@ def main():
             sys.argv[3] = "null"
         else:
             loadType = "default"
-            avScript = gDocsImport.getScript(sys.argv[2], sys.argv[3], sys.argv[4], avStart, 0, loadType)
-            diagParams = gDocsImport.getLine(sys.argv[2], sys.argv[3], sys.argv[4], stopWord)
+            avScript = gDocsImport.getScript(sys.argv[2], sys.argv[3], sys.argv[4], avStart, 0, loadType, isPoly)
+            diagParams = gDocsImport.getLine(sys.argv[2], sys.argv[3], sys.argv[4], stopWord, isPoly)
             sys.argv[3] = "null"               
             avTreatments = writeAvScript(avScript, diagParams, outName, "")
         

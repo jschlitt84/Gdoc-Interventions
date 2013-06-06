@@ -9,6 +9,7 @@ import requests
 isPrivate = True
 
 
+
 ## CONNECTS TO OWNED PRIVATE SPREADSHEET
 
 
@@ -142,8 +143,8 @@ def getPos (start, stop, script):
 ## LOADS DATA FROM PUBLIC LIST OR PRIVATE TEMP FILE, PARSES BY CLEANTYPE & RETURNS LIST OF NUMERIC VALUES OR STRINGS
     
     
-def loadNClean(isPrivate,publicData, start, end, cleanType):
-    if isPrivate:
+def loadNClean(isPrivate,publicData, start, end, cleanType, isPoly):
+    if isPrivate or isPoly:
         tempFile = open("googtemp.csv")
         script = tempFile.readlines()
         tempFile.close()
@@ -255,7 +256,7 @@ def loadNClean(isPrivate,publicData, start, end, cleanType):
 ## RETURNS SINGLE LINE FOLLOWING WORDS/ LINE NUMBER
     
     
-def getLine(userName, __password, fileName, line):
+def getLine(userName, __password, fileName, line, isPoly):
     if __password == "null" and "https://docs.google.com" in fileName:
         
         publicData = getPublicFile(userName, fileName)
@@ -268,13 +269,13 @@ def getLine(userName, __password, fileName, line):
            
     __password = None
     
-    return loadNClean(isPrivate, publicData, line, 0, "single line")      
+    return loadNClean(isPrivate, publicData, line, 0, "single line", isPoly)      
 
 
 ## RETURNS SCRIPT/ VALUES BASED UPON PASSED LOADTYPE        
             
             
-def getScript(userName, __password, fileName, start, end, loadType):
+def getScript(userName, __password, fileName, start, end, loadType, isPoly):
     if __password == "null" and "https://docs.google.com" in fileName:
         
         publicData = getPublicFile(userName, fileName)
@@ -287,7 +288,7 @@ def getScript(userName, __password, fileName, start, end, loadType):
         
     __password = None
 
-    return loadNClean(isPrivate, publicData, start, end, loadType)            
+    return loadNClean(isPrivate, publicData, start, end, loadType, isPoly)            
     
     
 if __name__ == '__main__':
