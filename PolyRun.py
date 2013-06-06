@@ -1,19 +1,9 @@
 import sys
-import os
-import chopper
 import gDocsImport
-import csv
-import RollVac.py
-
-totalVars = 0
-varList = []
-varSets = []
-suffixes = []
-positions = []
-#startWord = "Study Name Prefix (optional),Diagnosis Based"
+import RollVac
 
 
-def getPoly(refline):
+def getPoly(refLine):
     pos = 0
     line = refLine[:]
     length= len(line)
@@ -35,7 +25,7 @@ def getPoly(refline):
         return cmd
         
         
-def filterPoly(refLine)
+def filterPoly(refLine):
     pos = 0
     line = refLine[:]
     length= len(line)
@@ -45,9 +35,17 @@ def filterPoly(refLine)
             length -= 1
         pos += 1
     lineout = ",".join(line) + '\n'
-    return line
+    return lineout
         
 def main():
+    
+    totalVars = 0
+    varList = []
+    varSets = []
+    suffixes = []
+    positions = []
+    #startWord = "Study Name Prefix (optional),Diagnosis Based"
+    
     if len(sys.argv) > 2:
         if len(sys.argv) == 3:
             sys.argv.insert(2,'null') 
@@ -56,8 +54,7 @@ def main():
     elif len(sys.argv) == 2:
             sys.argv.insert(1,'null')
             sys.argv.insert(1,'null')
-            
-    script = gDocsImport.getScript(sys.argv[1], sys.argv[2], sys.argv[3], 0, 0, "default")
+    script = gDocsImport.getScript(sys.argv[1], sys.argv[2], sys.argv[3], 0, -1, "default", False)
     
     pos = 0
     length = len(script)
@@ -70,8 +67,7 @@ def main():
             varSets.append(temp[0]) 
             suffixes.append(temp[1])
             positions.append(pos)
-        pos += 1
-        
+        pos += 1  
     pos1 = 0
     length = len(varSets)
     varMatrix = [[] for x in xrange(totalVars)]
@@ -91,12 +87,11 @@ def main():
     
     runTracker = [0] * totalVars
     done = False
-    
     totalRuns = 1
     pos = 0
     ends = []
     while pos < totalVars:
-        totalRuns *= len(varMatrix[pos]))
+        totalRuns *= len(varMatrix[pos])
         ends.append(len(varMatrix[pos])-1)
         pos += 1  
     
@@ -104,27 +99,31 @@ def main():
     
     
     while not done:
-        
         pos = 0
         directory = ""
         
         while pos < totalVars:
-            directory += suffixMatrix[pos][runtracker[pos]] + '/'
+            directory += suffixMatrix[pos][runTracker[pos]] + '/'
         
         pos = 0
         length = len(script)
-        scriptOut = open('googTemp.csv', 'w')
+        scriptOut = open('polytemp.csv', 'w')
         while pos < length:
-            if getPolyCommands == 'null' or getPolyCommands in varList
-                scriptOut.write(filterPoly(script))
+            print script[pos]
+            print filterPoly(script[pos]), "******"
+            if getPoly(script[pos]) == 'null' or getPoly(script[pos]) in varList:
+                scriptOut.write(filterPoly(script[pos]))
+                print script[pos]
+                print filterPoly(script[pos])
+                
             pos += 1
             
         scriptOut.close()
         
-        chopper.main(poly, directory)
+        RollVac.main('poly', directory, 'null', 'null')
         
         pos = 0
-        while pos < toTalVars
+        while pos < totalVars:
             if runTracker[pos] == ends[pos]:
                 if pos == totalVars - 1:
                     done = True
@@ -138,7 +137,7 @@ def main():
             
         runTracker[0] += 1
             
-            
+main()         
             
 
     

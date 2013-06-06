@@ -144,11 +144,16 @@ def getPos (start, stop, script):
     
     
 def loadNClean(isPrivate,publicData, start, end, cleanType, isPoly):
-    if isPrivate or isPoly:
+    if isPrivate:
         tempFile = open("googtemp.csv")
         script = tempFile.readlines()
         tempFile.close()
         os.remove("googtemp.csv")
+    if isPoly:
+        tempFile = open("polytemp.csv")
+        script = tempFile.readlines()
+        tempFile.close()
+#        os.remove("polytemp.csv")
     else:
         script = publicData
                     
@@ -262,9 +267,12 @@ def getLine(userName, __password, fileName, line, isPoly):
         publicData = getPublicFile(userName, fileName)
         isPrivate = False
         
-    else:
+    elif not isPoly:
         getFile(userName, __password, fileName)
         isPrivate = True
+        publicData = []
+    else:
+        isPrivate = False
         publicData = []
            
     __password = None
@@ -281,9 +289,12 @@ def getScript(userName, __password, fileName, start, end, loadType, isPoly):
         publicData = getPublicFile(userName, fileName)
         isPrivate = False
         
-    else:
+    elif not isPoly:
         getFile(userName, __password, fileName)
         isPrivate = True
+        publicData = []
+    else:
+        isPrivate = False
         publicData = []
         
     __password = None

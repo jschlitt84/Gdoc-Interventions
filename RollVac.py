@@ -248,8 +248,14 @@ def isYes(response, use):
 def main(arg1, arg2, arg3, arg4):
         
 
+    print arg1, arg2, arg3, arg4
+    
     if __name__ != '__main__':
         sys.argv = ['RollVac.py',arg1,arg2,arg3,arg4]
+        print "huzzah!"
+    
+    if arg1 == "poly":
+        del sys.argv[3:5]
 
  
     trigger = 1
@@ -313,6 +319,7 @@ def main(arg1, arg2, arg3, arg4):
 ## LOADS AND WRITES AV/ DIAG SCRIPT FROM GOOGLE DOC, NOT IMPLEMENTED FOR USER/ LOCAL SCRIPT MODE
  
                                                
+    print sys.argv
     if arg == "gDoc":
         
         if sys.argv[1] == "poly":
@@ -703,7 +710,7 @@ interventions for complex interventions."""
     print "Close Schools:" + str(schoolTotal)
     print "AV Treatment Programs: " + str(avTreatments)
     
-    
-main()
-print "Intervention scripting succesfully completed, exiting now.\n"
-quit
+if __name__ == '__main__':    
+    main(0,0,0,0)
+    print "Intervention scripting succesfully completed, exiting now.\n"
+    quit
