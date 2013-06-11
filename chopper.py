@@ -53,10 +53,10 @@ def isInt(number):
 
 
 
-def runChunk (IDS, outfile, index, limit, filenum, size, suffix):  
+def runChunk (IDS, outfile, index, limit, filenum, size, suffix, path):  
     while index < limit:
-        log = open('subpops/chop.log', 'a+b')
-        writefile = open('subpops/' + outfile + str(filenum) + suffix, 'w')
+        log = open(path + 'subpops/chop.log', 'a+b')
+        writefile = open(path + 'subpops/' + outfile + str(filenum) + suffix, 'w')
         log.write("Generating file " + outfile + str(filenum) + suffix)
         log.write("\tID " + str(index+1) + " -" + str(int(IDS[index])))
         writefile.write("".join(IDS[index:index+size]))
@@ -70,12 +70,13 @@ def runChunk (IDS, outfile, index, limit, filenum, size, suffix):
 
 
 
-def main(arg1, arg2, arg3, arg4):
-        
-    if not (os.path.isdir("subpops")):
-        os.makedirs("subpops")
+def main(arg1, arg2, arg3, arg4, arg5):
+    
+    path = arg5    
+    if not (os.path.isdir(path + "subpops")):
+        os.makedirs(path + "subpops")
 
-    log = open('subpops/chop.log', 'a+b')
+    log = open(path +'subpops/chop.log', 'a+b')
 
     if __name__ != '__main__':
         sys.argv = ['chopper.py',arg1,arg2,arg3,arg4]
@@ -117,8 +118,8 @@ def main(arg1, arg2, arg3, arg4):
             log.write("Termination due to non integer 3rd argument\n")
             quit()
         num = int(sys.argv[3])
-        if num <= 1:
-            print "Error: invalid count, enter a number between 2 and the total population number\n\n"
+        if num < 1:
+            print "Error: invalid count, enter a number between 1 and the total population number\n\n"
             log.write("Termination due to invalid count, value too small: " + str(sys.argv[3]) + "\n\n")
             quit()
     else:
@@ -185,7 +186,7 @@ def main(arg1, arg2, arg3, arg4):
         while pos1 < limit:
             b = enumList[pos1+1]
             print "Block", pos1/2, "set to size", enumList[pos1+1]
-            tracker = runChunk(ids, filepath, pos2, pos2+b, chunk, b, suff)
+            tracker = runChunk(ids, filepath, pos2, pos2+b, chunk, b, suff, path)
             pos2 = tracker['pos']
             chunk = tracker['file']
             pos1 += 2
@@ -208,7 +209,7 @@ def main(arg1, arg2, arg3, arg4):
             print "with 1 block of size", c, "\n"
             log.write("with 1 block of size " + str(c) + "\n\n")
         
-        runChunk(ids, filepath, 0, line, 0, num, suff)
+        runChunk(ids, filepath, 0, line, 0, num, suff, path)
         returnCount = b*num + c
 
     
@@ -232,11 +233,11 @@ def main(arg1, arg2, arg3, arg4):
                 
                                     
         chunk = pos1 = 0
-        tracker = runChunk(ids, filepath, pos1, small*b, chunk, b, suff)
+        tracker = runChunk(ids, filepath, pos1, small*b, chunk, b, suff, path)
         if c!= 0:
             pos1 = tracker['pos']
             chunk = tracker['file']
-            runChunk(ids, filepath, pos1, line, chunk, b+1, suff)
+            runChunk(ids, filepath, pos1, line, chunk, b+1, suff, path)
                 
     print "Chopping complete!\n"
     log.write("\nChopping succesfully completed\n\n")
@@ -252,4 +253,4 @@ def main(arg1, arg2, arg3, arg4):
     return {'count':returnCount,'enum':enumList, 'subpop': subpop}
 
 if __name__ == '__main__':
-    main(0,0,0,0)
+    main(0,0,0,0,'')

@@ -1,0 +1,48 @@
+Generating file SUBPOP.txt01v	ID 1 -2	ID 15-15
+*************************
+2013-06-11 16:38:20.888689
+File SUBPOP.txt opened succesfully
+
+18 entries with IDS
+1 through 15 loaded,
+preparing to chop
+Chopping population into 1 blocks of size 15
+
+Chopping succesfully completed
+
+Generating file SUBPOP.txt02av	ID 1 -2	ID 15-15
+*************************
+2013-06-11 16:38:20.889338
+File SUBPOP.txt opened succesfully
+
+18 entries with IDS
+1 through 15 loaded,
+preparing to chop
+Chopping population into 1 blocks of size 15
+
+Chopping succesfully completed
+
+Generating file SUBPOP.txt03cs	ID 1 -2	ID 15-15
+*************************
+2013-06-11 16:38:20.890877
+File SUBPOP.txt opened succesfully
+
+18 entries with IDS
+1 through 15 loaded,
+preparing to chop
+Chopping population into 1 blocks of size 15
+
+Chopping succesfully completed
+
+Generating file SUBPOP.txt04cw	ID 1 -2	ID 4-5
+
+*************************
+2013-06-11 16:38:20.891664
+File SUBPOP.txt opened succesfully
+
+18 entries with IDS
+1 through 15 loaded,
+preparing to chop
+Chopping population into 1 blocks via enumeration
+Chopping succesfully completed
+
