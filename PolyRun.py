@@ -21,7 +21,6 @@ def getPoly(refLine):
             line[pos]= line[pos].replace('  ',' ')
         cmd = line[pos].split(' ')
         del cmd[0]
-#        print cmd
         return cmd
         
         
@@ -77,6 +76,7 @@ def main():
         pos += 1  
     pos1 = 0
 
+    varList.sort()
     length = len(varSets)
     varMatrix = [[] for x in xrange(totalVars)]
     suffixMatrix = [[] for x in xrange(totalVars)]
@@ -116,27 +116,21 @@ def main():
     
     while not done:
         pos = 0
-        directory = ""
+        directory = "polyrun/"
         
-        toRun  =  ''
+        toRun  =  []
         while pos < totalVars:
             directory += suffixMatrix[pos][runTracker[pos]] + '/'
-            toRun += suffixMatrix[pos][runTracker[pos]].replace(' ','') + ' '
-            pos += 1
-        print toRun
-        
+            toRun.append(suffixMatrix[pos][runTracker[pos]])
+            pos += 1        
         
         pos = 0
         length = len(script)
         scriptOut = open('polytemp.csv', 'w')
         print "Loading Script for line:", runTracker
         while pos < length:
-            print '\n' + str(getPoly(script[pos]))
             if getPoly(script[pos])[0] == 'null' or getPoly(script[pos])[1] in toRun:
                 scriptOut.write(filterPoly(script[pos]))
-                print "LINE WRITTEN:"
-                print script[pos]
-                print filterPoly(script[pos])
             pos += 1  
             
         scriptOut.close()
@@ -145,8 +139,6 @@ def main():
         vacsRolled += 1
 
         pos = 0
-        runOut = open("diagLog", 'a+b')
-        print >> runOut, directory
         
         justRolled = False
         while runTracker[pos] == ends[pos] and pos < totalVars - 1:
@@ -156,17 +148,13 @@ def main():
             pos += 1
             
         if pos == totalVars - 1 and runTracker[pos] == ends[pos]:
-            print >> runOut, "MADE IT HERE1"
-            print >> runOut, "Vacs Rolled=", vacsRolled
             print "Interventions Iterated =", vacsRolled
-            runOut.close()
             done = True
             break
          
         if not justRolled:
             runTracker[0] += 1   
             
-        runOut.close()
     print "Intervention iteration succesfully complete!"
 
             

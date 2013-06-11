@@ -327,7 +327,6 @@ def main(arg1, arg2, arg3, arg4):
             isPoly = True
             sys.argv[3] = 'null'
             path = arg2
-            print arg2, "**********"
             if os.path.exists(path):
                 shutil.rmtree(path)
             os.makedirs(path)

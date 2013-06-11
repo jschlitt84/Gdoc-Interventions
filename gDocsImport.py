@@ -153,7 +153,7 @@ def loadNClean(isPrivate,publicData, start, end, cleanType, isPoly):
         tempFile = open("polytemp.csv")
         script = tempFile.readlines()
         tempFile.close()
-#        os.remove("polytemp.csv")
+        os.remove("polytemp.csv")
     else:
         script = publicData
                     

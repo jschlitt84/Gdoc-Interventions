@@ -1,11 +1,9 @@
-Study Name Prefix (optional),Diagnosis Based Antivirals (yes/no)?,,,,,,,,,,,
-GoogInterv1,yes,,,,,,,,,,,
+Study Name Prefix (optional),Diagnosis Based Antivirals (yes/no)?,Copy default config file?,,,1920,,,,,,,
+,yes,(not yet implemented),,,,,,,,,,
 Subpopulation,Day/'enum',Length of Spread,Intervention Type,Duration,Compliance,V/ AV Efficiency In,V/ AV Efficiency Out ,PolyRun.py Operator,,,,
-SUBPOP.txt,3,1,Vaccination,10,0.7,0.7,,,,,
-SUBPOP.txt,5,1,Antiviral,20,0.7,0.2,0.55,,,,
-SUBPOP.txt,10,1,SchoolClosure,10,0.5,,,,,,
-SUBPOP.txt,1,2,SocialDistancing,40,0.7,,,,,,
+SUBPOPallbase&comm,38,5,Vaccination,5,0.9,0.7,,,,,
+SUBPOPactive,15,1,WorkClosure,28,1,,,,,,
 Diagnosis Model Version,Antiviral Model Version,Total AV Supply,Probability of symptomatic to Hospital,Probability of symptomatic diagnosis,Diagnosed Duration,,,,,,,
 2009,2009,3000000,0.7,0.8,5,,,,,,,
 Condition Threshold Subpopulation,Condition Date (optional),Condition Threshold Value (number) OR Fraction (%),Condition Diagnosis Required (yes/no),Condition Membership (optional),Mutually exclusive to other antiviral regimens (yes/no)?,Compliance,Delay,Duration,Unit Number Each Day,Efficacy In,Efficacy Out,PolyRun.py Operator
-/Path.To/File.Subpop2,,1%,no,,yes,0.8,0,10,10,0.2,0.6,
+SUBPOPactive,10,1%,yes,SUBPOPactive,yes,0.9,0,30,2,0.25,0.25
