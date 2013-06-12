@@ -1,6 +1,9 @@
 import sys
 import os
 
+
+# CHECKS THE SIZE OF A POPULATION, IGNORES DUPLICATE IDS
+
 def popSize(subPop):
     line = pos1 = 0
     tempList = []
@@ -21,12 +24,19 @@ def popSize(subPop):
         pos1 += 1
     return line
     
+
+# SUMS THE SIZE OF AN ENUMERATION LIST  
+    
 def getEnumSize(enumList):
     size = pos = 0
     while pos < len(enumList):
         size += enumList[pos+1]
         pos += 2
     return size
+    
+
+# TRIMS ENUMERATION IF OVERLARGE ENUMERATION REQUESTED FOR A GIVEN POPULATION
+# REFLECTED IN INTERVENTION TOTALS
 
 def trimEnum(enumList, target):
     total = pos = 0
@@ -45,6 +55,8 @@ def trimEnum(enumList, target):
     return newEnum
         
 
+# RETURNS TRUE IF STRING CARIES INTEGER VALUE
+
 def isInt(number):
     try:
          return (number.replace(".", "", 1).isdigit())
@@ -52,6 +64,7 @@ def isInt(number):
         return False
 
 
+# GENERATES FILE BASED ON ARGUMENTS GIVEN, RETURNS POSITION IN LIST OF IDS AND FILE/CHUNK NUMBER
 
 def runChunk (IDS, outfile, index, limit, filenum, size, suffix, path):  
     while index < limit:
@@ -140,7 +153,6 @@ def main(arg1, arg2, arg3, arg4, arg5):
 
 
 # LOAD IDS FROM FILE    
-  
                       
     line = 0
     while True:
@@ -213,8 +225,7 @@ def main(arg1, arg2, arg3, arg4, arg5):
         returnCount = b*num + c
 
     
-# CHOP BY BLOCK (ROLLED INTERVENTIONS)        
-            
+# CHOP BY BLOCK (ROLLED INTERVENTIONS)                  
     
     elif chopStyle == 'block':
         a = line

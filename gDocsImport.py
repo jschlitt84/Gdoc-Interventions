@@ -10,8 +10,7 @@ isPrivate = True
 
 
 
-## CONNECTS TO OWNED PRIVATE SPREADSHEET
-
+# CONNECTS TO OWNED PRIVATE SPREADSHEET
 
 def spreadConnect(userName, __password, fileName):
     client = gdata.spreadsheet.service.SpreadsheetsService()
@@ -30,8 +29,7 @@ def spreadConnect(userName, __password, fileName):
     return client
     
 
-## CONNECTS TO OWNED PRIVATE GDOCS ACCOUNT        
-    
+# CONNECTS TO OWNED PRIVATE GDOCS ACCOUNT        
     
 def googConnect(userName, __password, fileName):
     client = gdata.docs.service.DocsService()
@@ -50,8 +48,7 @@ def googConnect(userName, __password, fileName):
     return client
 
 
-## PULLS PRIVATE SPREADSHEET TO TEMPORARY FILE
-
+# PULLS PRIVATE SPREADSHEET TO TEMPORARY FILE
 
 def getFile(userName, __password, fileName):
     gd_client = googConnect(userName, __password, fileName)
@@ -77,9 +74,8 @@ def getFile(userName, __password, fileName):
     gd_client.SetClientLoginToken(docs_auth_token)
 
 
-## RETURNS PUBLIC SPREADSHEET AS LIST OF STRINGS   
-        
-                
+# RETURNS PUBLIC SPREADSHEET AS LIST OF STRINGS   
+                       
 def getPublicFile(userName, fileName):
     fileName = fileName.replace('#gid=0','&output=csv')
     if not '&output=csv' in fileName:
@@ -92,8 +88,7 @@ def getPublicFile(userName, fileName):
     return data
 
 
-## RETURNS LINE NUMBERS WITHIN LIST OF STRINGS CONTAINED BY START AND STOP STRINGS
-
+# RETURNS LINE NUMBERS WITHIN LIST OF STRINGS CONTAINED BY START AND STOP STRINGS
 
 def getPos (start, stop, script):
     length = len(script)
@@ -140,8 +135,7 @@ def getPos (start, stop, script):
     return {'start':startPos,'stop':stopPos}
  
        
-## LOADS DATA FROM PUBLIC LIST OR PRIVATE TEMP FILE, PARSES BY CLEANTYPE & RETURNS LIST OF NUMERIC VALUES OR STRINGS
-    
+# LOADS DATA FROM PUBLIC LIST OR PRIVATE TEMP FILE, PARSES BY CLEANTYPE & RETURNS LIST OF NUMERIC VALUES OR STRINGS  
     
 def loadNClean(isPrivate,publicData, start, end, cleanType, isPoly):
     if isPrivate:
@@ -200,7 +194,8 @@ def loadNClean(isPrivate,publicData, start, end, cleanType, isPoly):
             pos -= 1
             length -= 1
 
-## CONVERTS INTERVENTION/ ENUMERATION SCRIPT TO INTERNAL STRING FORMAT               
+
+# CONVERTS INTERVENTION/ ENUMERATION SCRIPT TO INTERNAL STRING FORMAT               
                 
         if cleanType == "intervention script":
             if "enum" in script[pos]:
@@ -226,9 +221,9 @@ def loadNClean(isPrivate,publicData, start, end, cleanType, isPoly):
     
     pos = 0
     print
-    
-## CLEANS UP WHITESPACE AT END OF ENTRIES
-
+ 
+       
+# CLEANS UP WHITESPACE AT END OF ENTRIES
 
     while pos < len(script):
 #        while " \n" in script[pos] or "  " in script[pos]:
@@ -237,6 +232,7 @@ def loadNClean(isPrivate,publicData, start, end, cleanType, isPoly):
         print script[pos].replace('\n','')
         pos += 1
     print
+    
     
 # RETURNS CSV LIST OF LISTS OF STRING VALUES
 
@@ -248,6 +244,7 @@ def loadNClean(isPrivate,publicData, start, end, cleanType, isPoly):
             pos += 1
         return listScript
         
+        
 # RETURNS CSV LIST OF STRING VALUES
     
     elif cleanType == "single line":
@@ -257,8 +254,7 @@ def loadNClean(isPrivate,publicData, start, end, cleanType, isPoly):
         return script
   
 
-## RETURNS SINGLE LINE FOLLOWING WORDS/ LINE NUMBER
-    
+# RETURNS SINGLE LINE FOLLOWING WORDS/ LINE NUMBER
     
 def getLine(userName, __password, fileName, line, isPoly):
     if __password == "null" and "https://docs.google.com" in fileName:
@@ -279,8 +275,7 @@ def getLine(userName, __password, fileName, line, isPoly):
     return loadNClean(isPrivate, publicData, line, 0, "single line", isPoly)      
 
 
-## RETURNS SCRIPT/ VALUES BASED UPON PASSED LOADTYPE        
-            
+# RETURNS SCRIPT/ VALUES BASED UPON PASSED LOADTYPE                  
             
 def getScript(userName, __password, fileName, start, end, loadType, isPoly):
     if __password == "null" and "https://docs.google.com" in fileName:

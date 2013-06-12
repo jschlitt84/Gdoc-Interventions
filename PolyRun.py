@@ -4,6 +4,9 @@ import shutil
 import gDocsImport
 import RollVac
 
+
+# ERASES DIRECTORIES FROM GIVEN LIST
+
 def flushDirectories(directoryList):
     pos = 0
     limit = len(directoryList)
@@ -18,6 +21,9 @@ def flushDirectories(directoryList):
         else:
             print "not found, skipping"
         pos += 1
+        
+        
+# PULLS POLYRUN OPERATOR FROM CSV ROW VIA LIST OF STRINGS FORMAT. RETURNS NULL IF NOT FOUND  
 
 def getPoly(refLine):
     pos = 0
@@ -38,7 +44,9 @@ def getPoly(refLine):
         cmd = line[pos].split(' ')
         del cmd[0]
         return cmd
-        
+
+
+# RETURNS LIST WITHOUT POLYRUN OPERATORS       
         
 def filterPoly(refLine):
     pos = 0
@@ -51,10 +59,16 @@ def filterPoly(refLine):
         pos += 1
     lineout = ",".join(line) + '\n'
     return lineout
+
+
         
+# MAIN                
+                                
 def main():
     
-    
+
+# USED TO DEFINE LOADING POSITIONS, MUST BE CONSERVED IN SOURCE AND GDOC
+        
     paramsStart = "Study Name Prefix (optional),Diagnosis Based"
     startWord = "Subpopulation,Day/'enum',Length of Spread"
     
@@ -65,7 +79,10 @@ def main():
     varSets = []
     suffixes = []
     positions = []
-    
+
+
+# PARSING COMMAND LINE ARGUMENTS FOR PUBLIC/ PRIVATE FILE ACCESS        
+            
     if len(sys.argv) > 2:
         if len(sys.argv) == 3:
             sys.argv.insert(2,'null') 
@@ -77,12 +94,16 @@ def main():
     script = gDocsImport.getScript(sys.argv[1], sys.argv[2], sys.argv[3], 0, -1, "default", False)
     directoryLines = gDocsImport.getScript(sys.argv[1], sys.argv[2], sys.argv[3], paramsStart, startWord, "default", False)
     
+
+# ERASES DIRECTORY NAMES GIVEN BY GDOC
+    
     pos = 0
     directories = []
     while pos  < len(directoryLines):
         directories.append(directoryLines[pos][0])
         pos += 1
     flushDirectories(directories)
+    
     
 # CREATES LISTS OF ALL EXPERIMENTAL VARIABLES ITERATED OVER
             
@@ -160,16 +181,19 @@ def main():
             pos += 1  
             
         scriptOut.close()
-        
-        #SUPPORT ADDED FOR MULTIPLE DIRECTORIES/ RUN
-         
+
+                
+#SUPPORT ADDED FOR MULTIPLE DIRECTORIES/ RUN         
                 
         folder = "polyrun"
         params = gDocsImport.getLine(sys.argv[1], sys.argv[2], sys.argv[3], paramsStart , True)
         if len(params[0]) > 0:
             folder = params[0]
         directory = folder + "/"
-        
+
+
+#OUT DIRECTORY GENERATED VIA SUFFIX MATRIX
+                                
         pos = 0
         while pos < totalVars:
             directory += suffixMatrix[pos][runTracker[pos]] + '/'
@@ -177,6 +201,9 @@ def main():
 
         RollVac.main('poly', directory, 'null', 'null')
         vacsRolled += 1
+
+
+# POLYRUN MULTIDIMENSIONAL LOOP ITERATOR
 
         pos = 0
         
