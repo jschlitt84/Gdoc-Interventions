@@ -1,7 +1,23 @@
 import sys
+import os
+import shutil
 import gDocsImport
 import RollVac
 
+def flushDirectories(directoryList):
+    pos = 0
+    limit = len(directoryList)
+    while pos < limit:
+        flushDirectory= directoryList[pos].replace(' ','')
+        if len(flushDirectory) == 0:
+            flushDirectory = "polyrun"
+        print "Flushing directory %s: %s" % (pos, flushDirectory)
+        if os.path.exists(flushDirectory):
+            shutil.rmtree(flushDirectory)
+            print "cleared succesfully"
+        else:
+            print "not found, skipping"
+        pos += 1
 
 def getPoly(refLine):
     pos = 0
@@ -38,6 +54,10 @@ def filterPoly(refLine):
         
 def main():
     
+    
+    paramsStart = "Study Name Prefix (optional),Diagnosis Based"
+    startWord = "Subpopulation,Day/'enum',Length of Spread"
+    
     vacsRolled = 0
     
     totalVars = 0
@@ -55,8 +75,15 @@ def main():
             sys.argv.insert(1,'null')
             sys.argv.insert(1,'null')
     script = gDocsImport.getScript(sys.argv[1], sys.argv[2], sys.argv[3], 0, -1, "default", False)
-
-
+    directoryLines = gDocsImport.getScript(sys.argv[1], sys.argv[2], sys.argv[3], paramsStart, startWord, "default", False)
+    
+    pos = 0
+    directories = []
+    while pos  < len(directoryLines):
+        directories.append(directoryLines[pos][0])
+        pos += 1
+    flushDirectories(directories)
+    
 # CREATES LISTS OF ALL EXPERIMENTAL VARIABLES ITERATED OVER
             
     pos = 0
@@ -115,12 +142,11 @@ def main():
 # ITERATED RUN GENERATION, IF SCRIPT LINE CONTAINS CURRENT ITERATION RUN MARKERS OR NONE, SENT TO RollVac TO PARSE    
     
     while not done:
-        pos = 0
-        directory = "polyrun/"
         
+        
+        pos = 0      
         toRun  =  []
         while pos < totalVars:
-            directory += suffixMatrix[pos][runTracker[pos]] + '/'
             toRun.append(suffixMatrix[pos][runTracker[pos]])
             pos += 1        
         
@@ -134,6 +160,20 @@ def main():
             pos += 1  
             
         scriptOut.close()
+        
+        #SUPPORT ADDED FOR MULTIPLE DIRECTORIES/ RUN
+         
+                
+        folder = "polyrun"
+        params = gDocsImport.getLine(sys.argv[1], sys.argv[2], sys.argv[3], paramsStart , True)
+        if len(params[0]) > 0:
+            folder = params[0]
+        directory = folder + "/"
+        
+        pos = 0
+        while pos < totalVars:
+            directory += suffixMatrix[pos][runTracker[pos]] + '/'
+            pos += 1   
 
         RollVac.main('poly', directory, 'null', 'null')
         vacsRolled += 1
@@ -156,6 +196,7 @@ def main():
             runTracker[0] += 1   
             
     print "Intervention iteration succesfully complete!"
+    os.remove("polytemp.csv")
 
             
 main() 

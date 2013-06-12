@@ -1,8 +1,9 @@
 import sys
 import os
+import shutil
 import chopper
 import gDocsImport
-import shutil
+
 
 
 ## Denotes separation on gdocs spreadsheet for web loading
@@ -14,8 +15,31 @@ avStart = "Condition Threshold Subpopulation,Condition Date"
 startWord = "Subpopulation,Day/'enum',Length of Spread"
 stopWord = "Diagnosis Model Version,Antiviral Model Version,"
     
-## Writes antiviral and diagnosis scripts to directory 
-  
+
+## Copies selected config run files to directory
+
+def fileCopy(fileString, directory):
+    if not os.path.exists(directory):
+        print "Error: directory not found"
+        return False
+    fileList = fileString.split(';')
+    print "copying files:", fileList
+    pos = 0
+    limit = len(fileList)
+    while pos < limit:
+        copyFile = fileList[pos].replace(' ','')
+        print "File %s: %s" % (pos, copyFile)
+        if os.path.exists(copyFile):
+            shutil.copy2(copyFile, directory + copyFile)
+            print "copied succesfully"
+        else:
+            print "Error: copyfile not found"
+            quit()
+        pos += 1
+    return True
+
+
+## Writes antiviral and diagnosis scripts to directory   
   
 def writeAvScript(avScript, diagParams, outName, directory):
     print "\nOutputting antiviral and diagnosis scripts %s and %s to directory %s" % (outName+'Antiviral',outName+'Diagnosis', directory)
@@ -272,13 +296,7 @@ def main(arg1, arg2, arg3, arg4):
     workTotal = 0
     schoolTotal = 0
     avTreatments = 0
-    
-#    vacEnum = False
-#    avEnum = False
-#    socialEnum = False
-#    workEnum = False
-#    schoolEnum = False
-
+    filesToCopy = False
 
 ## UNIX PASSED ARGUMENTS DECISION TREE
     
@@ -337,7 +355,14 @@ def main(arg1, arg2, arg3, arg4):
         script = gDocsImport.getScript(sys.argv[2], sys.argv[3], sys.argv[4], startWord, stopWord, loadType, isPoly)
         params = gDocsImport.getLine(sys.argv[2], sys.argv[3], sys.argv[4],paramsStart, isPoly)
         
-        outName = params[0]
+        if isPoly:
+            outName = ""
+            files = params[2]
+            if len(files) > 0:
+                filesToCopy = True     
+            
+        else:
+            outName = params[0]
 
         if len(outName) == 0:
             print "No name prefix stored, using default intervention, antiviral, and diagnosis"
@@ -654,6 +679,12 @@ action number and subpopulation directory appended"""
         elif meth == "cs":
             schoolTotal += returnSize
         
+                
+# POLYRUN COPYING RUN FILES (CONFIG, ETC)
+        
+        if filesToCopy:
+            fileCopy(files, path)
+                  
 
 # WRITING INTERVENTION FILE (AV TREATMENT & DIAG HANDLED SEPERATELY)
         
@@ -664,6 +695,7 @@ action number and subpopulation directory appended"""
                 subPopName = population + str(pos2/2) + suffix
                 triggerOut = "Trigger " + str(trigger+iCode) + " Day " + str(enumList[pos2]) + "\n" 
                 intervOut = "Action " + str(trigger+iCode) + " " + interv + " " + path + "/subpops/" + subPopName + "\n"
+                intervOut =  intervOut.replace('//','/')
                 print triggerOut, intervOut.replace('\n','')
                 outFile.write(triggerOut)
                 outFile.write(intervOut)
@@ -679,6 +711,7 @@ action number and subpopulation directory appended"""
                 subPopName = population + str(pos2) + suffix
                 triggerOut = "Trigger " + str(trigger+iCode) + " Day " + str(day+pos2) + "\n" 
                 intervOut = "Action " + str(trigger+iCode) + " " + interv + " " + path + "/subpops/" + subPopName + "\n"
+                intervOut =  intervOut.replace('//','/')
                 print triggerOut, intervOut.replace('\n','')
                 outFile.write(triggerOut)
                 outFile.write(intervOut)
@@ -711,6 +744,7 @@ interventions for complex interventions."""
     print "Close Work: " + str(workTotal)
     print "Close Schools:" + str(schoolTotal)
     print "AV Treatment Programs: " + str(avTreatments)
+    print
     
 if __name__ == '__main__':    
     main(0,0,0,0)
