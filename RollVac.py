@@ -15,29 +15,6 @@ startWord = "Subpopulation,Day/'enum',Length of Spread"
 stopWord = "Diagnosis Model Version,Antiviral Model Version,"
     
 
-# COPIES SELECTED CONFIG/ PERIPHERAL FILES TO DIRECTORY
-
-def fileCopy(fileString, directory):
-    if not os.path.exists(directory):
-        print "Error: directory not found"
-        return False
-    fileList = fileString.split(';')
-    print "copying files:", fileList
-    pos = 0
-    limit = len(fileList)
-    while pos < limit:
-        copyFile = fileList[pos].replace(' ','')
-        print "File %s: %s" % (pos, copyFile)
-        if os.path.exists(copyFile):
-            shutil.copy2(copyFile, directory + copyFile)
-            print "copied succesfully"
-        else:
-            print "Error: copyfile not found"
-            quit()
-        pos += 1
-    return True
-
-
 # WRITES ANTIVIRAL AND DIAGNOSIS SCRIPTS TO DIRECTORY 
   
 def writeAvScript(avScript, diagParams, outName, directory, explicitDirectory):
@@ -298,7 +275,7 @@ def main(arg1, arg2, arg3, arg4):
     workTotal = 0
     schoolTotal = 0
     avTreatments = 0
-    filesToCopy = False
+#    filesToCopy = False
     
 
 # UNIX PASSED ARGUMENTS DECISION TREE  
@@ -362,9 +339,9 @@ def main(arg1, arg2, arg3, arg4):
         
         if isPoly:
             outName = ""
-            files = params[3]
-            if len(files) > 0:
-                filesToCopy = True
+#            files = params[3]
+#            if len(files) > 0:
+#                filesToCopy = True
             baseFile = params[4]
             if len(baseFile) > 0:
                 if os.path.exists(baseFile):
@@ -703,8 +680,8 @@ action number and subpopulation directory appended"""
                 
 # POLYRUN COPYING RUN FILES (CONFIG, ETC)
         
-        if filesToCopy:
-            fileCopy(files, path)  
+ #       if filesToCopy:
+ #           fileCopy(files, path)  
                                           
 
 # WRITING INTERVENTION FILE (AV TREATMENT & DIAG HANDLED SEPERATELY)
