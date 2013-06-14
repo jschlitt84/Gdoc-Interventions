@@ -375,6 +375,22 @@ def main():
         needsReplace = len(params[5]) > 0
         fileString =  params[3]
         filesToCopy = len(fileString) > 0
+        fileList = fileString.split(';')
+        homeList = []
+        
+        needsToHome = False 
+        
+ #       pos = 0
+ #       length = len(fileList)
+ #       while pos < len(fileList):
+ #           if fileList[pos].startswith('@'):
+ #               homeList.append(fileList[pos].replace('@',''))
+ #               del fileList[pos]
+ #               length -=1
+ #           pos += 1
+            
+ #       fileString = ';'.join(fileList)
+ #       homeString = ';'.join(homeList)
                 
         RollVac.main('poly', directory, 'null', 'null')
         
@@ -386,12 +402,15 @@ def main():
             replaceFile = params[5]
             replaceScript = loadReplaceScript(replaceFile)
             findNReplace(fileString, replaceScript, directory, vacsRolled, homeDir, explicit)
+#            findNReplace(homeString, replaceScript, directory, vacsRolled, homeDir, explicit)
+            
             pos = 0
             fileString = "findAndReplace/"+ fileString.replace(';',';findAndReplace/')
         
         if filesToCopy:
             print fileString, directory       
-            fileCopy(fileString, directory,needsReplace)
+            fileCopy(fileString, directory, needsReplace)
+ #           fileCopy(homeString, explicit, needsReplace)
             
         vacsRolled += 1
 

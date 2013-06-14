@@ -105,7 +105,6 @@ def main(arg1, arg2, arg3, arg4, arg5):
         quit()
     
     filepath = sys.argv[1]
-    print "****===", filepath
         
     if filepath == "help":
         print """\nArguments: chopper.py {filename} A{count or blocks} B{number} C{optional suffix}
