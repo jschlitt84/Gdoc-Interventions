@@ -17,12 +17,12 @@ stopWord = "Diagnosis Model Version,Antiviral Model Version,"
 
 # WRITES ANTIVIRAL AND DIAGNOSIS SCRIPTS TO DIRECTORY 
   
-def writeAvScript(avScript, diagParams, outName, directory, explicitDirectory):
+def writeAvScript(avScript, diagParams, outName, directory, subpopDirectory):
     
-    if len(explicitDirectory) > 1:
-        tempDirectory = explicitDirectory + '/' + directory + outName
-    else:
-        tempDirectory = outName
+#    if len(explicitDirectory) > 1:
+#        tempDirectory = explicitDirectory + '/' + directory + outName
+#    else:
+    tempDirectory = subpopDirectory + '/' + outName
     tempDirectory = tempDirectory.replace('//','/')
 
     
@@ -238,7 +238,8 @@ def isYes(response, use):
         result = False
     else:
         result = False
-        print "Error, please enter 'y' or 'n' for %s, defaulting to 'n'" %(use)  
+        if use != 'null':
+            print "Error, please enter 'y' or 'n' for %s, defaulting to 'n'" %(use)  
     return result  
                         
 
@@ -264,6 +265,7 @@ def main(arg1, arg2, arg3, arg4):
     population = ""
     useExplicit = False
     explicitDirectory = ""
+    subpopDirectory = ""
     useBase = False
     baseFile = "" 
     pos = 0
@@ -275,7 +277,6 @@ def main(arg1, arg2, arg3, arg4):
     workTotal = 0
     schoolTotal = 0
     avTreatments = 0
-#    filesToCopy = False
     
 
 # UNIX PASSED ARGUMENTS DECISION TREE  
@@ -340,10 +341,8 @@ def main(arg1, arg2, arg3, arg4):
         
         if isPoly:
             outName = ""
-#            files = params[3]
-#            if len(files) > 0:
-#                filesToCopy = True
             baseFile = params[4]
+            subpopDirectory = params[6]
             if len(baseFile) > 0:
                 if os.path.exists(baseFile):
                     print "Appending interventions to base file", baseFile
@@ -372,7 +371,7 @@ def main(arg1, arg2, arg3, arg4):
             avScript = gDocsImport.getScript(sys.argv[2], sys.argv[3], sys.argv[4], avStart, 0, loadType, isPoly)
             diagParams = gDocsImport.getLine(sys.argv[2], sys.argv[3], sys.argv[4], stopWord, isPoly)
             sys.argv[3] = "null"               
-            avTreatments = writeAvScript(avScript, diagParams, outName, path, explicitDirectory)
+            avTreatments = writeAvScript(avScript, diagParams, outName, path, subpopDirectory)
         
         
     if arg != "user" and arg != "gDoc" and arg != "gdoc" and (not os.path.isfile(arg)):
@@ -577,7 +576,7 @@ action number and subpopulation directory appended"""
                 
             cmd = script[pos]
             items = cmd.split()
-            population =  items[0]
+            population =  (subpopDirectory + '/' + items[0]).replace('//','/')
             try:
                 with open(population): pass
             except:
@@ -654,7 +653,7 @@ action number and subpopulation directory appended"""
 # ALL MODE CHOPPING EXECUTION
 
         if enum:
-            populationSize = chopper.popSize(population)
+            populationSize = chopper.popSize((subpopDirectory + '/' + population).replace('//','/'))
             enumList = cleanEnum(percentEnum(enumList,populationSize))
             holder = chopper.main(population,'e'," ".join(map(str, enumList)),suffix, path)
             returnSize = holder['count']
@@ -679,12 +678,6 @@ action number and subpopulation directory appended"""
             schoolTotal += returnSize
         
                 
-# POLYRUN COPYING RUN FILES (CONFIG, ETC)
-        
- #       if filesToCopy:
- #           fileCopy(files, path)  
-                                          
-
 # WRITING INTERVENTION FILE (AV TREATMENT & DIAG HANDLED SEPERATELY)
 
         writePath = path + outName + 'Intervention'
@@ -692,12 +685,14 @@ action number and subpopulation directory appended"""
         
         pos2 = 0
         
+        popName = population.split('/')[-1]
+        
         if enum:
             while pos2 < len(enumList):
-                subPopName = population + str(pos2/2) + suffix
+                subPopName = popName + str(pos2/2) + suffix
                 triggerOut = "Trigger " + str(trigger+iCode) + " Day " + str(enumList[pos2]) + "\n" 
                 if useExplicit:
-                    tempPath = explicitDirectory + '/' + path + "/subpops/" + subPopName
+                    tempPath = path + "/subpops/" + subPopName
                 else:
                     tempPath = "subpops/" + subPopName
                 intervOut = "Action " + str(trigger+iCode) + " " + interv + " " + tempPath + "\n"
@@ -710,10 +705,10 @@ action number and subpopulation directory appended"""
             
         else:
             while pos2 < length:
-                subPopName = population + str(pos2) + suffix
+                subPopName = popName + str(pos2) + suffix
                 triggerOut = "Trigger " + str(trigger+iCode) + " Day " + str(day+pos2) + "\n" 
                 if useExplicit:
-                    tempPath = explicitDirectory + '/' + path + "/subpops/" + subPopName
+                    tempPath = path + "/subpops/" + subPopName
                 else:
                     tempPath = "subpops/" + subPopName
                 intervOut = "Action " + str(trigger+iCode) + " " + interv + " " + tempPath + "\n"

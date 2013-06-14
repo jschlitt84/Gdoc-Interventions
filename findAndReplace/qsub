@@ -5,9 +5,9 @@
 #PBS -q pecos_q@pecosq
 #PBS -A pecos
 #PBS -N FTLewis
-#PBS -o /home/NDSSL/study/DTRA_AVstudy/FtLewisStudy/vd28ve70active/avd10e87/wd10wl28wc25/ef_95.qlog
+#PBS -o /Users/jamesschlitt/Desktop/FtLewisStudy/vd28ve70active/avd10e87/wd10wl28wc25/ef_87.qlog
 #PBS -j oe
 NUM_PROCS=`/bin/cat $PBS_NODEFILE | /usr/bin/wc -l | /bin/sed "s/  //g"`
 cd $PBS_O_WORKDIR
 MPIRUN="mpiexec_mpt -n $NUM_PROCS"
-$MPIRUN /vbi/projects/epifast/bin/EpiFast /home/NDSSL/study/DTRA_AVstudy/FtLewisStudy/vd28ve70active/avd10e87/wd10wl28wc25/Configuration > /home/NDSSL/study/DTRA_AVstudy/FtLewisStudy/vd28ve70active/avd10e87/wd10wl28wc25/cout
+$MPIRUN /vbi/projects/epifast/bin/EpiFast /Users/jamesschlitt/Desktop/FtLewisStudy/vd28ve70active/avd10e87/wd10wl28wc25/Configuration > /Users/jamesschlitt/Desktop/FtLewisStudy/vd28ve70active/avd10e87/wd10wl28wc25/cout

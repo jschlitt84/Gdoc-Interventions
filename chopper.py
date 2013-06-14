@@ -68,9 +68,10 @@ def isInt(number):
 
 def runChunk (IDS, outfile, index, limit, filenum, size, suffix, path):  
     while index < limit:
+        fileName = outfile.split('/')[-1]
         log = open(path + 'subpops/chop.log', 'a+b')
-        writefile = open(path + 'subpops/' + outfile + str(filenum) + suffix, 'w')
-        log.write("Generating file " + outfile + str(filenum) + suffix)
+        writefile = open((path + '/subpops/' + fileName).replace('//','/') + str(filenum) + suffix, 'w')
+        log.write("Generating file " + (path + '/subpops/' + fileName).replace('//','/') + str(filenum) + suffix)
         log.write("\tID " + str(index+1) + " -" + str(int(IDS[index])))
         writefile.write("".join(IDS[index:index+size]))
         index += size
@@ -104,6 +105,7 @@ def main(arg1, arg2, arg3, arg4, arg5):
         quit()
     
     filepath = sys.argv[1]
+    print "****===", filepath
         
     if filepath == "help":
         print """\nArguments: chopper.py {filename} A{count or blocks} B{number} C{optional suffix}
