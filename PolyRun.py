@@ -243,7 +243,7 @@ def main():
     elif len(sys.argv) == 2:
             sys.argv.insert(1,'null')
             sys.argv.insert(1,'null')
-    useLocal =  (sys.argv[3] == 'local')
+  #  useLocal =  (sys.argv[3] == 'local')
     
     if useLocal == False:
         script = gDocsImport.getScript(sys.argv[1], sys.argv[2], sys.argv[3], 0, -1, "default", False)
@@ -385,7 +385,7 @@ def main():
         RollVac.main('poly', directory, 'null', 'null')
         
         qsubs = open(homeDir + '/qsublist', 'a+b')
-        qsubs.write(explicit + directory + 'qsub\n')   
+        qsubs.write("qsub" + explicit + directory + 'qsub\n')   
         qsubs.close()    
                
         if needsReplace:

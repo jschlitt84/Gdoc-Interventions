@@ -326,6 +326,7 @@ def main(arg1, arg2, arg3, arg4):
             if os.path.exists(path):
                 shutil.rmtree(path)
             os.makedirs(path)
+            os.makedirs(path + "/output")
         else:
             isPoly = False
         loadType = "intervention script"
