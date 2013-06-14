@@ -10,4 +10,4 @@
 NUM_PROCS=`/bin/cat $PBS_NODEFILE | /usr/bin/wc -l | /bin/sed "s/  //g"`
 cd $PBS_O_WORKDIR
 MPIRUN="mpiexec_mpt -n $NUM_PROCS"
-$MPIRUN users/thefolder/epifast/bin/EpiFastusers/thefolder/FtLewisStudy/vd28ve70active/avd10e87/wd10wl28wc25/NoDiagAVExplicitFiles/Configuration > users/thefolder/FtLewisStudy/vd28ve70active/avd10e87/wd10wl28wc25/NoDiagAVExplicitFiles/cout
+$MPIRUN /vbi/projects/epifast/bin/EpiFast users/thefolder/FtLewisStudy/vd28ve70active/avd10e87/wd10wl28wc25/NoDiagAVExplicitFiles/Configuration > users/thefolder/FtLewisStudy/vd28ve70active/avd10e87/wd10wl28wc25/NoDiagAVExplicitFiles/cout

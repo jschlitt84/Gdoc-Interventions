@@ -4,7 +4,7 @@ Replace = #PBS -N FTLewis
 Find = #PBS -o 
 Replace = #PBS -o $EXP/$DIR/ef_$ITER.qlog
 Find = $MPIRUN
-Replace = $MPIRUN $EXP/epifast/bin/EpiFast  $EXP/$DIR/Configuration > $EXP/$DIR/cout
+Replace = $MPIRUN /vbi/projects/epifast/bin/EpiFast $EXP/$DIR/Configuration > $EXP/$DIR/cout
 
 File = config
 Find = ContactGraphFile = 

@@ -18,13 +18,10 @@ def flushDirectories(directoryList):
             flushDirectory = "polyrun"
         print "Flushing directory %s: %s" % (pos, flushDirectory)
         if os.path.exists(flushDirectory):
-            print "HUZZAH"
             shutil.rmtree(flushDirectory)
             print "cleared succesfully"
         else:
             print "not found, skipping"
-#        qsub = open(flushDirectory, 'w')
-#        qsub.close()
         pos += 1
         
         
@@ -233,6 +230,7 @@ def main():
     varSets = []
     suffixes = []
     positions = []
+    useLocal = False
 
 
 # PARSING COMMAND LINE ARGUMENTS FOR PUBLIC/ PRIVATE FILE ACCESS        
@@ -245,9 +243,29 @@ def main():
     elif len(sys.argv) == 2:
             sys.argv.insert(1,'null')
             sys.argv.insert(1,'null')
-    script = gDocsImport.getScript(sys.argv[1], sys.argv[2], sys.argv[3], 0, -1, "default", False)
-    directoryLines = gDocsImport.getScript(sys.argv[1], sys.argv[2], sys.argv[3], paramsStart, startWord, "default", False)
+    useLocal =  (sys.argv[3] == 'local')
     
+    if useLocal == False:
+        script = gDocsImport.getScript(sys.argv[1], sys.argv[2], sys.argv[3], 0, -1, "default", False)
+        directoryLines = gDocsImport.getScript(sys.argv[1], sys.argv[2], sys.argv[3], paramsStart, startWord, "default", False)
+    else:
+        print "****"
+        tempFile = open("localScript.csv")
+        tempScript = tempFile.readlines()
+        tempFile.close()
+        print tempScript
+#        tempScript = tempScript.split('\n')
+        
+        pos = 0
+        script = []
+        length = len(script)
+        while pos < length:
+            script.append(tempScript.split(','))   
+            pos += 1
+        print "***", script
+        directoryLines = gDocsImport.loadNClean(False,script, paramsStart, startWord, "default", False)
+        print script
+        print directoryLines
 
 # ERASES DIRECTORY NAMES GIVEN BY GDOC
     
