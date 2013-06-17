@@ -378,7 +378,7 @@ def main():
         fileList = fileString.split(';')
         homeList = []
         
-        needsToHome = False 
+ #       needsToHome = False 
         
  #       pos = 0
  #       length = len(fileList)
