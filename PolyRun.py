@@ -242,10 +242,11 @@ def main():
     varList = []
     varSets = []
     suffixes = []
-    positions = []
+#    positions = []
 
 # PARSING COMMAND LINE ARGUMENTS FOR PUBLIC/ PRIVATE FILE ACCESS        
-            
+    
+                    
     if len(sys.argv) > 2:
         if len(sys.argv) == 3:
             sys.argv.insert(2,'null') 
@@ -285,7 +286,7 @@ def main():
                 varList.append(temp[0])
             varSets.append(temp[0]) 
             suffixes.append(temp[1])
-            positions.append(pos)
+#            positions.append(pos)
         pos += 1  
     pos1 = 0
 
@@ -293,7 +294,7 @@ def main():
     length = len(varSets)
     varMatrix = [[] for x in xrange(totalVars)]
     suffixMatrix = [[] for x in xrange(totalVars)]
-    positionMatrix = [[] for x in xrange(totalVars)]
+#    positionMatrix = [[] for x in xrange(totalVars)]
     
     
 # CREATES MATRICES OF SUFFIXES, VARIABLE ID, AND LIST POSITION FOR ITERATION  
@@ -305,7 +306,7 @@ def main():
             if varSets[pos1] == varList[pos2] and (suffixes[pos1] not in suffixMatrix[pos2]):
                 varMatrix[pos2].append(varSets[pos1])
                 suffixMatrix[pos2].append(suffixes[pos1])
-                positionMatrix[pos2].append(positions[pos1])
+#                positionMatrix[pos2].append(positions[pos1])
             pos1 += 1
         pos2 += 1
     
@@ -375,8 +376,8 @@ def main():
         needsReplace = len(params[5]) > 0
         fileString =  params[3]
         filesToCopy = len(fileString) > 0
-        fileList = fileString.split(';')
-        homeList = []
+ #       fileList = fileString.split(';')
+ #       homeList = []
         
  #       needsToHome = False 
         
