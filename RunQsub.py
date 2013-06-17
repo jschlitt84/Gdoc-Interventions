@@ -3,8 +3,8 @@ import time
 import sys
 import select
 
-increment = 5
-submitDelay = 1
+increment = 10
+submitDelay = 3
 inputDelay = 10
 
 print "Loading qsubs..."
@@ -22,7 +22,7 @@ while pos1 < length:
     print script[pos1]
 #    subprocess.call(script[pos1])    
     
-    print "Submitted Qsub", pos1, "out of", length
+    print "Submitted Qsub", pos1, "out of", length-1
     time.sleep(submitDelay)
     
     if pos1 > 0 and pos1%increment == 0:
