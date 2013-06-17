@@ -20,7 +20,7 @@ pos1 = 0
 while pos1 < length:    
 
     print script[pos1]
-#    subprocess.call(script[pos1])    
+    subprocess.call(script[pos1])    
     
     print "Submitted Qsub", pos1, "out of", length-1
     time.sleep(submitDelay)
