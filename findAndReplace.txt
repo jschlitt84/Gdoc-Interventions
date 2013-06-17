@@ -2,26 +2,25 @@ File = qsub
 Find = #PBS -N
 Replace = #PBS -N FTLewis-$ITER
 Find = #PBS -o 
-Replace = #PBS -o $EXP/$DIR/ef_$ITER.qlog
+Replace = #PBS -o $DIR/ef_$ITER.qlog
 Find = $MPIRUN
 Replace = $MPIRUN /vbi/projects/epifast/bin/EpiFast $EXP/$DIR/config > $EXP/$DIR/cout
-
 File = config
 Find = ContactGraphFile = 
 Replace = ContactGraphFile = /vbi/protopop/USPop2009/all-regions/ft_drum/socialnet/EFIG6Bb
 Find = IncubationPeriodFile = 
-Replace = IncubationPeriodFile = $EXP/input/Incubation.Period.Distribution
+Replace = IncubationPeriodFile = input/Incubation.Period.Distribution
 Find = InfectiousPeriodFile = 
-Replace = InfectiousPeriodFile = $EXP/input/Infectious.Period.Distribution
+Replace = InfectiousPeriodFile = input/Infectious.Period.Distribution
 Find = OutputFile
 Replace = OutputFile = $EXP/$DIR/EFO6
 Find = LogFile = 
-Replace = LogFile = $EXP/$DIR/Log
+Replace = LogFile = $DIR/Log
 Find = InterventionFile = 
-Replace = InterventionFile = $EXP/$DIR/Intervention
+Replace = InterventionFile = $DIR/Intervention
 Find = DiagnosisFile = 
-Replace = DiagnosisFile = $EXP/$DIR/Diagnosis
+Replace = DiagnosisFile = $DIR/Diagnosis
 Find =  AntiviralFile = 
-Replace = AntiviralFile = $EXP/$DIR/Antiviral
+Replace = AntiviralFile = $DIR/Antiviral
 
 

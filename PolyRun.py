@@ -4,7 +4,6 @@ import shutil
 import gDocsImport
 import RollVac
 
-#import time
 
 
 # ERASES DIRECTORIES FROM GIVEN LIST
@@ -18,8 +17,27 @@ def flushDirectories(directoryList):
             flushDirectory = "polyrun"
         print "Flushing directory %s: %s" % (pos, flushDirectory)
         if os.path.exists(flushDirectory):
-            shutil.rmtree(flushDirectory)
-            print "cleared succesfully"
+            print "*** Warning, preparing to flush path:", flushDirectory, " - continue? (yes/no/copy) ***"
+            print "-Choosing copy will create a new directory '[directoryName]copy' and flush the original directory"
+            while True:
+                response = str(raw_input(":")).lower()
+                if response == "n" or response == "no" or response == "y" or response == "yes" or response == "copy":
+                    answer = RollVac.isYes(response, "null")
+                    break
+                else:
+                    print "Invalid Response, please enter yes, no, or copy"
+            if answer == True:
+                shutil.rmtree(flushDirectory)
+                print " cleared succesfully"             
+            elif response == 'copy':
+                copyNum = 2
+                if os.path.exists(flushDirectory):
+                    while os.path.exists(flushDirectory + str(copyNum)):
+                        copyNum += 1                 
+                    shutil.copytree(flushDirectory,flushDirectory + str(copyNum))
+                    shutil.rmtree(flushDirectory)
+                    print "Directory", flushDirectory, "backed up to", flushDirectory + str(copyNum), "and cleared succesfully"                
+                    
         else:
             print "not found, skipping"
         pos += 1
@@ -129,12 +147,7 @@ def findNReplace(fileString, replaceScript, directory, iteration, home, explicit
             while pos3 < limit3:
                 if replaceScript[pos3]['file'] == fileList[pos1]:
                     if replaceScript[pos3]['find'] in contents[pos2]:
-                        line = replaceScript[pos3]['replace'] 
-                                    
-#                        print "***",line, "***"
-#                        print pos1, pos2, pos3, "CHECK IT"
-#                        time.sleep(4)
-                        
+                        line = replaceScript[pos3]['replace']                    
                         line = line.replace("$ITER", str(iteration))
                         line = line.replace("$DIR", directory)
                         line = line.replace("$HOME", home)
@@ -230,8 +243,6 @@ def main():
     varSets = []
     suffixes = []
     positions = []
-    useLocal = False
-
 
 # PARSING COMMAND LINE ARGUMENTS FOR PUBLIC/ PRIVATE FILE ACCESS        
             
@@ -243,36 +254,18 @@ def main():
     elif len(sys.argv) == 2:
             sys.argv.insert(1,'null')
             sys.argv.insert(1,'null')
-    useLocal =  (sys.argv[3] == 'local')
-    
-    if useLocal == False:
-        script = gDocsImport.getScript(sys.argv[1], sys.argv[2], sys.argv[3], 0, -1, "default", False)
-        directoryLines = gDocsImport.getScript(sys.argv[1], sys.argv[2], sys.argv[3], paramsStart, startWord, "default", False)
-    else:
-        print "****"
-        tempFile = open("localScript.csv")
-        tempScript = tempFile.readlines()
-        tempFile.close()
-        print tempScript
-#        tempScript = tempScript.split('\n')
-        
-        pos = 0
-        script = []
-        length = len(script)
-        while pos < length:
-            script.append(tempScript.split(','))   
-            pos += 1
-        print "***", script
-        directoryLines = gDocsImport.loadNClean(False,script, paramsStart, startWord, "default", False)
-        print script
-        print directoryLines
 
+    script = gDocsImport.getScript(sys.argv[1], sys.argv[2], sys.argv[3], 0, -1, "default", False)
+    directoryLines = gDocsImport.getScript(sys.argv[1], sys.argv[2], sys.argv[3], paramsStart, startWord, "default", False)
+    
+    
 # ERASES DIRECTORY NAMES GIVEN BY GDOC
     
     pos = 0
     directories = []
     while pos  < len(directoryLines):
-        directories.append(directoryLines[pos][0])
+        
+        directories.append((directoryLines[pos][2] + '/' + directoryLines[pos][0]).replace('//','/'))
         pos += 1
     flushDirectories(directories)
     
@@ -362,8 +355,9 @@ def main():
         folder = "polyrun"
         params = gDocsImport.getLine(sys.argv[1], sys.argv[2], sys.argv[3], paramsStart , True)
         if len(params[0]) > 0:
-            folder = params[0]
-        directory = folder + "/"
+            folder = (params[2] + '/' + params[0]).replace('//','/')
+        directory = (folder + "/").replace('//','/')
+        
 
 
 # OUT DIRECTORY GENERATED VIA SUFFIX MATRIX
@@ -376,7 +370,7 @@ def main():
         params = gDocsImport.loadNClean(False, tempScript, paramsStart, startWord, "single line", False)
         print params
         
-        homeDir = params[0]
+        homeDir = (params[2] + '/' + params[0]).replace('//','/')
         explicit =  params[2]
         needsReplace = len(params[5]) > 0
         fileString =  params[3]
@@ -385,7 +379,7 @@ def main():
         RollVac.main('poly', directory, 'null', 'null')
         
         qsubs = open(homeDir + '/qsublist', 'a+b')
-        qsubs.write(explicit + directory + 'qsub\n')   
+        qsubs.write(("qsub " + directory + 'qsub\n').replace('//','/'))   
         qsubs.close()    
                
         if needsReplace:
