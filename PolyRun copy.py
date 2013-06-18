@@ -8,55 +8,39 @@ import RollVac
 
 # ERASES DIRECTORIES FROM GIVEN LIST
 
-def appendSuffix(directory, suffix):
-    while directory[-1] == "/":
-        del directory[-1]
-    directory = directory + suffix + '/'  
-    while '//' in directory:
-        directory = directory.replace('//','/')
-    return directory
-
 def flushDirectories(directoryList):
     pos = 0
-    suffix = 2
     limit = len(directoryList)
-    usedNum = False
     while pos < limit:
         flushDirectory= directoryList[pos].replace(' ','')
         if len(flushDirectory) == 0:
             flushDirectory = "polyrun"
         print "Flushing directory %s: %s" % (pos, flushDirectory)
         if os.path.exists(flushDirectory):
-            print "*** Warning, preparing to flush path:", flushDirectory, " - continue? (yes/no/num) ***"
-            print "-Choosing num will suffix the output directory with a number"
+            print "*** Warning, preparing to flush path:", flushDirectory, " - continue? (yes/no/copy) ***"
+            print "-Choosing copy will create a new directory '[directoryName]copy' and flush the original directory"
             while True:
                 response = str(raw_input(":")).lower()
-                if response == "n" or response == "no" or response == "y" or response == "yes" or response == "num":
+                if response == "n" or response == "no" or response == "y" or response == "yes" or response == "copy":
                     answer = RollVac.isYes(response, "null")
                     break
                 else:
-                    print "Invalid Response, please enter yes, no, or num"
+                    print "Invalid Response, please enter yes, no, or copy"
             if answer == True:
                 shutil.rmtree(flushDirectory)
                 print " cleared succesfully"             
-            elif response == 'num':
+            elif response == 'copy':
                 copyNum = 2
                 if os.path.exists(flushDirectory):
                     while os.path.exists(flushDirectory + str(copyNum)):
                         copyNum += 1                 
-                    suffix = max(copyNum, suffix)   
-                    usedNum = True  
+                    shutil.copytree(flushDirectory,flushDirectory + str(copyNum))
+                    shutil.rmtree(flushDirectory)
+                    print "Directory", flushDirectory, "backed up to", flushDirectory + str(copyNum), "and cleared succesfully"                
                     
         else:
             print "not found, skipping"
         pos += 1
-        
-    suffix = str(suffix)
-    if usedNum:
-        print "Duplicate directories found, will append suffix '%s' to output directories" % (suffix)
-        return str(suffix)
-    else:
-        return ""
         
         
 # PULLS POLYRUN OPERATOR FROM CSV ROW VIA LIST OF STRINGS FORMAT. RETURNS NULL IF NOT FOUND  
@@ -99,7 +83,7 @@ def filterPoly(refLine):
     
 # COPIES SELECTED CONFIG/ PERIPHERAL FILES TO DIRECTORY
 
-def fileCopy(fileString, directory):
+def fileCopy(fileString, directory, findAndReplace):
     if not os.path.exists(directory):
         print "Error: directory not found"
         return False
@@ -110,6 +94,8 @@ def fileCopy(fileString, directory):
     while pos < limit:
         copyFile = fileList[pos].replace(' ','')
         copyFile2 = copyFile
+        if findAndReplace:
+            copyFile2 = copyFile2.replace('findAndReplace/','')
         print "File %s: %s" % (pos, copyFile)
         if os.path.exists(copyFile):
             shutil.copy2(copyFile, directory + copyFile2)
@@ -126,52 +112,59 @@ def fileCopy(fileString, directory):
 def findNReplace(fileString, replaceScript, directory, iteration, home, explicit):  
     print "Executing find & replace"
     
+    if os.path.exists("findAndReplace"):
+        shutil.rmtree("findAndReplace")
+    os.makedirs("findAndReplace")
+
     fileList = fileString.split(';')
-    print "Loading files:", fileList
+    print "Copying files:", fileList
     pos = 0
     limit = len(fileList)
     while pos < limit:
         copyFile = fileList[pos].replace(' ','')
         print "File %s: %s" % (pos, copyFile)
         if os.path.exists(copyFile):
-            replaceFile = open(copyFile)
-            contents = replaceFile.readlines()
-            replaceFile.close()
-            print "loaded succesfully, replacing target content"
-            
-            limit3 = len(replaceScript)
-            limit2 = len(contents)
-            pos2 = 0
-            
-            while pos2 < limit2:
-                
-                pos3 = 0
-                while pos3 < limit3:
-                    if replaceScript[pos3]['file'] == copyFile:
-                        if replaceScript[pos3]['find'] in contents[pos2]:
-                            line = replaceScript[pos3]['replace']                    
-                            line = line.replace("$ITER", str(iteration))
-                            line = line.replace("$DIR", directory)
-                            line = line.replace("$HOME", home)
-                            line = line.replace("$EXP", explicit)
-                            if "https://" not in line:
-                                line =  line.replace("//","/")
-                            contents[pos2] = line + '\n'
-                            print contents[pos2]
-                    pos3 +=1
-                pos2 += 1
-                
-            replaceFile = open((directory + '/' + copyFile).replace('//','/'), 'w')
-            contents = ''.join(contents)
-            replaceFile.write(contents)
-            replaceFile.close()
-            pos += 1
-
+            shutil.copy2(copyFile, "findAndReplace/" + copyFile)
+            print "copied succesfully"
         else:
             print "Error: copyfile not found"
             quit()
+        pos += 1
+    print "Replacing content"
+    pos1 = 0
+    limit3 = len(replaceScript)
+    while pos1 < limit:
+        copyFile = fileList[pos1].replace(' ','')
+        replaceFile = open("findAndReplace/" + copyFile)
+        contents = replaceFile.readlines()
+        replaceFile.close()
+        limit2 = len(contents)
         
+        pos2 = 0
+        while pos2 < limit2:
+            
+            pos3 = 0
+            while pos3 < limit3:
+                if replaceScript[pos3]['file'] == fileList[pos1]:
+                    if replaceScript[pos3]['find'] in contents[pos2]:
+                        line = replaceScript[pos3]['replace']                    
+                        line = line.replace("$ITER", str(iteration))
+                        line = line.replace("$DIR", directory)
+                        line = line.replace("$HOME", home)
+                        line = line.replace("$EXP", explicit)
+                        if "https://" not in line:
+                            line =  line.replace("//","/")
+                        contents[pos2] = line + '\n'
+                        print contents[pos2]
+                pos3 +=1
+            pos2 += 1
+            
+        replaceFile = open("findAndReplace/" + copyFile, 'w')
 
+        contents = ''.join(contents)
+        replaceFile.write(contents)
+        replaceFile.close()
+        pos1 += 1
     print "Find and replace completed succesfully"
         
         
@@ -249,7 +242,6 @@ def main():
     varList = []
     varSets = []
     suffixes = []
-    directorySuffix = ""
 #    positions = []
 
 # PARSING COMMAND LINE ARGUMENTS FOR PUBLIC/ PRIVATE FILE ACCESS        
@@ -276,7 +268,7 @@ def main():
         
         directories.append((directoryLines[pos][2] + '/' + directoryLines[pos][0]).replace('//','/'))
         pos += 1
-    directorySuffix = flushDirectories(directories)
+    flushDirectories(directories)
     
     
 # CREATES LISTS OF ALL EXPERIMENTAL VARIABLES ITERATED OVER
@@ -336,7 +328,8 @@ def main():
     
 # ITERATED RUN GENERATION, IF SCRIPT LINE CONTAINS CURRENT ITERATION RUN MARKERS OR NONE, SENT TO RollVac TO PARSE    
     
-    while not done:      
+    while not done:
+        
         
         pos = 0      
         toRun  =  []
@@ -363,8 +356,10 @@ def main():
         folder = "polyrun"
         params = gDocsImport.getLine(sys.argv[1], sys.argv[2], sys.argv[3], paramsStart , True)
         if len(params[0]) > 0:
-            folder = params[2] + '/' + params[0]
-        directory = appendSuffix(folder,directorySuffix)      
+            folder = (params[2] + '/' + params[0]).replace('//','/')
+        directory = (folder + "/").replace('//','/')
+        
+
 
 # OUT DIRECTORY GENERATED VIA SUFFIX MATRIX
                                 
@@ -376,9 +371,8 @@ def main():
         params = gDocsImport.loadNClean(False, tempScript, paramsStart, startWord, "single line", False)
         print params
         
-        homeDir = appendSuffix(params[2] + '/' + params[0], directorySuffix)
-        explicit =  appendSuffix(params[2], directorySuffix)
-        
+        homeDir = (params[2] + '/' + params[0]).replace('//','/')
+        explicit =  params[2]
         needsReplace = len(params[5]) > 0
         fileString =  params[3]
         filesToCopy = len(fileString) > 0
@@ -410,11 +404,14 @@ def main():
             replaceScript = loadReplaceScript(replaceFile)
             findNReplace(fileString, replaceScript, directory, vacsRolled, homeDir, explicit)
 #            findNReplace(homeString, replaceScript, directory, vacsRolled, homeDir, explicit)
+            
+            pos = 0
+            fileString = "findAndReplace/"+ fileString.replace(';',';findAndReplace/')
         
-        if filesToCopy and not needsReplace:
+        if filesToCopy:
             print fileString, directory       
-            fileCopy(fileString, directory)
- #           fileCopy(homeString, explicit)
+            fileCopy(fileString, directory, needsReplace)
+ #           fileCopy(homeString, explicit, needsReplace)
             
         vacsRolled += 1
 
