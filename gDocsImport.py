@@ -137,19 +137,26 @@ def getPos (start, stop, script):
        
 # LOADS DATA FROM PUBLIC LIST OR PRIVATE TEMP FILE, PARSES BY CLEANTYPE & RETURNS LIST OF NUMERIC VALUES OR STRINGS  
     
-def loadNClean(isPrivate,publicData, start, end, cleanType, isPoly):
+def loadNClean(isPrivate,publicData, start, end, cleanType):
     if isPrivate:
         tempFile = open("googtemp.csv")
         script = tempFile.readlines()
         tempFile.close()
         os.remove("googtemp.csv")
-    if isPoly:
-        tempFile = open("polytemp.csv")
-        script = tempFile.readlines()
-        tempFile.close()
     else:
         script = publicData
-                    
+#    print publicData
+#    quit()
+    pos = 0
+    length = len(script)
+    
+    while pos < length:
+        if "#" in script[pos] or len(script[pos].replace(",",''))<1:
+            del script[pos]
+            length -= 1
+        else:
+            pos +=1
+                                
     if isinstance(start, str) or isinstance(end, str):
         holder = getPos(start, end, script)
         start = int(holder['start'])
@@ -183,7 +190,8 @@ def loadNClean(isPrivate,publicData, start, end, cleanType, isPoly):
     if hasEnd:
         if end < length:
             del script[end:length+1]
-            length = end    
+            length = end  
+      
     while pos < length:
         script[pos]= script[pos].replace('\n','')
         if "#IGNORE" in script[pos]:
@@ -221,7 +229,6 @@ def loadNClean(isPrivate,publicData, start, end, cleanType, isPoly):
     
     pos = 0
     print
- 
        
 # CLEANS UP WHITESPACE AT END OF ENTRIES
 
@@ -256,7 +263,7 @@ def loadNClean(isPrivate,publicData, start, end, cleanType, isPoly):
 
 # RETURNS SINGLE LINE FOLLOWING WORDS/ LINE NUMBER
     
-def getLine(userName, __password, fileName, line, isPoly):
+def getLine(userName, __password, fileName, line, isPoly, polyScript):
     if __password == "null" and "https://docs.google.com" in fileName:
         
         publicData = getPublicFile(userName, fileName)
@@ -268,16 +275,16 @@ def getLine(userName, __password, fileName, line, isPoly):
         publicData = []
     else:
         isPrivate = False
-        publicData = []
+        publicData = polyScript
            
     __password = None
     
-    return loadNClean(isPrivate, publicData, line, 0, "single line", isPoly)      
+    return loadNClean(isPrivate, publicData, line, 0, "single line")      
 
 
 # RETURNS SCRIPT/ VALUES BASED UPON PASSED LOADTYPE                  
             
-def getScript(userName, __password, fileName, start, end, loadType, isPoly):
+def getScript(userName, __password, fileName, start, end, loadType, isPoly, polyScript):
     if __password == "null" and "https://docs.google.com" in fileName:
         
         publicData = getPublicFile(userName, fileName)
@@ -289,11 +296,11 @@ def getScript(userName, __password, fileName, start, end, loadType, isPoly):
         publicData = []
     else:
         isPrivate = False
-        publicData = []
+        publicData = polyScript
         
     __password = None
 
-    return loadNClean(isPrivate, publicData, start, end, loadType, isPoly)            
+    return loadNClean(isPrivate, publicData, start, end, loadType)            
     
     
 if __name__ == '__main__':

@@ -28,7 +28,7 @@ def flushDirectories(directoryList):
         print "Flushing directory %s: %s" % (pos, flushDirectory)
         if os.path.exists(flushDirectory):
             print "*** Warning, preparing to flush path:", flushDirectory, " - continue? (yes/no/num) ***"
-            print "-Choosing num will suffix the output directory with a number"
+            print "-Choosing num will suffix the output directories with a number"
             while True:
                 response = str(raw_input(":")).lower()
                 if response == "n" or response == "no" or response == "y" or response == "yes" or response == "num":
@@ -264,8 +264,8 @@ def main():
             sys.argv.insert(1,'null')
             sys.argv.insert(1,'null')
 
-    script = gDocsImport.getScript(sys.argv[1], sys.argv[2], sys.argv[3], 0, -1, "default", False)
-    directoryLines = gDocsImport.getScript(sys.argv[1], sys.argv[2], sys.argv[3], paramsStart, startWord, "default", False)
+    script = gDocsImport.getScript(sys.argv[1], sys.argv[2], sys.argv[3], 0, -1, "default", False, [])
+    directoryLines = gDocsImport.getScript(sys.argv[1], sys.argv[2], sys.argv[3], paramsStart, startWord, "default", False,[])
     
     
 # ERASES DIRECTORY NAMES GIVEN BY GDOC
@@ -273,9 +273,9 @@ def main():
     pos = 0
     directories = []
     while pos  < len(directoryLines):
-        
         directories.append((directoryLines[pos][2] + '/' + directoryLines[pos][0]).replace('//','/'))
         pos += 1
+        
     directorySuffix = flushDirectories(directories)
     
     
@@ -346,22 +346,17 @@ def main():
         
         pos = 0
         length = len(script)
-        scriptOut = open('polytemp.csv', 'w')
-        tempScript = []
+        rollScript = []
         print "Loading Script for line:", runTracker
         while pos < length:
             if getPoly(script[pos])[0] == 'null' or getPoly(script[pos])[1] in toRun:
-                scriptOut.write(filterPoly(script[pos]))
-                tempScript.append(filterPoly(script[pos]))
+                rollScript.append(filterPoly(script[pos]))
             pos += 1  
-            
-        scriptOut.close()
-
                 
 # SUPPORT ADDED FOR MULTIPLE DIRECTORIES/ RUN         
                 
         folder = "polyrun"
-        params = gDocsImport.getLine(sys.argv[1], sys.argv[2], sys.argv[3], paramsStart , True)
+        params = gDocsImport.getLine(sys.argv[1], sys.argv[2], sys.argv[3], paramsStart, True, rollScript)
         if len(params[0]) > 0:
             folder = params[2] + '/' + params[0]
         directory = appendSuffix(folder,directorySuffix)      
@@ -373,7 +368,7 @@ def main():
             directory += suffixMatrix[pos][runTracker[pos]] + '/'
             pos += 1
             
-        params = gDocsImport.loadNClean(False, tempScript, paramsStart, startWord, "single line", False)
+        params = gDocsImport.loadNClean(False, rollScript, paramsStart, startWord, "single line")
         print params
         
         homeDir = appendSuffix(params[2] + '/' + params[0], directorySuffix)
@@ -399,7 +394,7 @@ def main():
  #       fileString = ';'.join(fileList)
  #       homeString = ';'.join(homeList)
                 
-        RollVac.main('poly', directory, 'null', 'null')
+        RollVac.main('poly', directory, 'null', 'null', rollScript)
         
         qsubs = open(homeDir + '/qsublist', 'a+b')
         qsubs.write(("qsub " + directory + 'qsub\n').replace('//','/'))   
@@ -439,7 +434,6 @@ def main():
             runTracker[0] += 1   
             
     print "Intervention iteration succesfully complete!"
-    os.remove("polytemp.csv")
 
             
 main() 

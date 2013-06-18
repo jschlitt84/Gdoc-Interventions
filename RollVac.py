@@ -246,14 +246,13 @@ def isYes(response, use):
 
 # MAIN
 
-def main(arg1, arg2, arg3, arg4):
+def main(arg1, arg2, arg3, arg4, polyScript):
         
 
     print arg1, arg2, arg3, arg4
     
     if __name__ != '__main__':
         sys.argv = ['RollVac.py',arg1,arg2,arg3,arg4]
-        print "huzzah!"
     
     if arg1 == "poly":
         del sys.argv[3:5]
@@ -332,8 +331,8 @@ def main(arg1, arg2, arg3, arg4):
             isPoly = False
         loadType = "intervention script"
         print sys.argv
-        script = gDocsImport.getScript(sys.argv[2], sys.argv[3], sys.argv[4], startWord, stopWord, loadType, isPoly)
-        params = gDocsImport.getLine(sys.argv[2], sys.argv[3], sys.argv[4],paramsStart, isPoly)
+        script = gDocsImport.getScript(sys.argv[2], sys.argv[3], sys.argv[4], startWord, stopWord, loadType, isPoly, polyScript)
+        params = gDocsImport.getLine(sys.argv[2], sys.argv[3], sys.argv[4],paramsStart, isPoly, polyScript)
         
         explicitDirectory= params[2]
         if len(explicitDirectory) > 0:
@@ -368,8 +367,8 @@ def main(arg1, arg2, arg3, arg4):
             sys.argv[3] = "null"
         else:
             loadType = "default"
-            avScript = gDocsImport.getScript(sys.argv[2], sys.argv[3], sys.argv[4], avStart, 0, loadType, isPoly)
-            diagParams = gDocsImport.getLine(sys.argv[2], sys.argv[3], sys.argv[4], stopWord, isPoly)
+            avScript = gDocsImport.getScript(sys.argv[2], sys.argv[3], sys.argv[4], avStart, 0, loadType, isPoly, polyScript)
+            diagParams = gDocsImport.getLine(sys.argv[2], sys.argv[3], sys.argv[4], stopWord, isPoly, polyScript)
             sys.argv[3] = "null"               
             avTreatments = writeAvScript(avScript, diagParams, outName, path, subpopDirectory)
         
@@ -750,6 +749,6 @@ interventions for complex interventions."""
     print
     
 if __name__ == '__main__':    
-    main(0,0,0,0)
+    main(0,0,0,0,[])
     print "Intervention scripting succesfully completed, exiting now.\n"
     quit
