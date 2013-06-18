@@ -10,7 +10,7 @@ import RollVac
 
 def appendSuffix(directory, suffix):
     while directory[-1] == "/":
-        del directory[-1]
+        directory = directory[:-1]
     directory = directory + suffix + '/'  
     while '//' in directory:
         directory = directory.replace('//','/')
