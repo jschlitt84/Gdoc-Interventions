@@ -3,10 +3,7 @@ import os
 import shutil
 import gDocsImport
 import RollVac
-
-
-
-# ERASES DIRECTORIES FROM GIVEN LIST
+    
 
 def appendSuffix(directory, suffix):
     while directory[-1] == "/":
@@ -15,6 +12,9 @@ def appendSuffix(directory, suffix):
     while '//' in directory:
         directory = directory.replace('//','/')
     return directory
+    
+
+# ERASES DIRECTORIES FROM GIVEN LIST
 
 def flushDirectories(directoryList):
     pos = 0
@@ -250,6 +250,7 @@ def main():
     varSets = []
     suffixes = []
     directorySuffix = ""
+    filteredIDs = [{"directory":'null','ids':[]}]
 #    positions = []
 
 # PARSING COMMAND LINE ARGUMENTS FOR PUBLIC/ PRIVATE FILE ACCESS        
@@ -393,8 +394,8 @@ def main():
             
  #       fileString = ';'.join(fileList)
  #       homeString = ';'.join(homeList)
-                
-        RollVac.main('poly', directory, 'null', 'null', rollScript)
+               
+        filteredIDs = RollVac.main('poly', directory, 'null', 'null', rollScript, filteredIDs)
         
         qsubs = open(homeDir + '/qsublist', 'a+b')
         qsubs.write(("qsub " + directory + 'qsub\n').replace('//','/'))   

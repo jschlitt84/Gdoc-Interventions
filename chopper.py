@@ -70,8 +70,11 @@ def runChunk (IDS, outfile, index, limit, filenum, size, suffix, path):
     while index < limit:
         fileName = outfile.split('/')[-1]
         log = open(path + 'subpops/chop.log', 'a+b')
-        writefile = open((path + '/subpops/' + fileName).replace('//','/') + str(filenum) + suffix, 'w')
-        log.write("Generating file " + (path + '/subpops/' + fileName).replace('//','/') + str(filenum) + suffix)
+        outName = (path + '/subpops/' + fileName).replace('//','/') + 'd' + str(filenum) + 'i' + suffix
+        if ".txt" in outName:
+            outName = outName.replace('.txt','') + '.txt'
+        writefile = open(outName, 'w')
+        log.write("Generating file " + outName)
         log.write("\tID " + str(index+1) + " -" + str(int(IDS[index])))
         writefile.write("".join(IDS[index:index+size]))
         index += size
@@ -84,7 +87,9 @@ def runChunk (IDS, outfile, index, limit, filenum, size, suffix, path):
 
 
 
-def main(arg1, arg2, arg3, arg4, arg5):
+def main(arg1, arg2, arg3, arg4, arg5, filteredIDs):
+    
+    useFiltered = len(filteredIDs) > 0
     
     path = arg5    
     if not (os.path.isdir(path + "subpops")):
@@ -144,40 +149,48 @@ def main(arg1, arg2, arg3, arg4, arg5):
     if len(sys.argv)==5:    
         suff=sys.argv[4]
         
-            
-    print "\nOpening file name", filepath
-    popfile = open(filepath)
-    ids = []
         
     print filepath,"succesfully opened\n"
     log.write("File " + filepath + " opened succesfully\n\n")
 
 
-# LOAD IDS FROM FILE    
-                      
-    line = 0
-    while True:
-            testline = popfile.readline()
-            if len(testline) == 0:
-                break
-            if not testline.startswith("#"):
-                ID = testline
-                ids.append(ID)
-                line += 1
-          
-    print str(line), "entries with IDS\n", int(ids[0]), "through", int(ids[line-1]), "loaded,\npreparing to chop\n"
-    log.write(str(line) + " entries with IDS\n" + str(int(ids[0])) + " through " + ids[line-1] + " loaded,\npreparing to chop\n")  
-    
-    print "(sub)Population loaded succesfully, checking for duplicate IDs...\n"
-    duplicates = pos1 = 0
-    
-    while pos1 < line-1:             
-        while (ids[pos1] in ids[pos1+1:line]):
-            print "Ignoring duplicate instance of ID", ids[pos1].replace('\n','')
-            del ids[pos1]
-            line -= 1
-            duplicates += 1
-        pos1 += 1
+# LOAD IDS FROM FILE   
+
+    if useFiltered:
+        ids = filteredIDs
+        line = len(filteredIDs)
+        print "Passing ID's from memory"
+        print str(line), "entries with IDS\n", int(ids[0]), "through", int(ids[-1]), "loaded,\npreparing to chop\n"
+        log.write(str(line) + " entries with IDS\n" + str(int(ids[0])) + " through " + ids[-1] + " loaded,\npreparing to chop\n") 
+        
+    else:
+        print "\nOpening file name", filepath
+        popfile = open(filepath)
+        ids = [] 
+                        
+        line = 0
+        while True:
+                testline = popfile.readline()
+                if len(testline) == 0:
+                    break
+                if not testline.startswith("#"):
+                    ID = int(testline)
+                    ids.append(ID)
+                    line += 1
+            
+        print str(line), "entries with IDS\n", int(ids[0]), "through", int(ids[-1]), "loaded,\npreparing to chop\n"
+        log.write(str(line) + " entries with IDS\n" + str(int(ids[0])) + " through " + ids[-1] + " loaded,\npreparing to chop\n")  
+        
+        print "(sub)Population loaded succesfully, checking for duplicate IDs...\n"
+        duplicates = pos1 = 0
+        
+        while pos1 < line-1:             
+            while (ids[pos1] in ids[pos1+1:line]):
+                print "Ignoring duplicate instance of ID", ids[pos1].replace('\n','')
+                del ids[pos1]
+                line -= 1
+                duplicates += 1
+            pos1 += 1
  
     if num >= line:
         print "Error: block size and number must be less than population size, applying correction\n"
@@ -265,4 +278,4 @@ def main(arg1, arg2, arg3, arg4, arg5):
     return {'count':returnCount,'enum':enumList, 'subpop': subpop}
 
 if __name__ == '__main__':
-    main(0,0,0,0,'')
+    main(0,0,0,0,'',[])

@@ -13,7 +13,37 @@ paramsStart = "Study Name Prefix (optional),Diagnosis Based"
 avStart = "Condition Threshold Subpopulation,Condition Date"
 startWord = "Subpopulation,Day/'enum',Length of Spread"
 stopWord = "Diagnosis Model Version,Antiviral Model Version,"
+
+
+# ONE TIME LID LOAD & FILTER FROM FILE
+
+def filterIDs(directory):   
+    print "Initiating one time ID load/ filter to memory"
+    popfile = open(directory)
+    ids = []                 
+    line = 0
+    while True:
+            testline = popfile.readline()
+            if len(testline) == 0:
+                break
+            if not testline.startswith("#"):
+                ids.append(testline)
+                line += 1
+          
+    print str(line), "entries with IDS\n", int(ids[0]), "through", int(ids[line-1]), "loaded,\npreparing to chop\n"
     
+    print "(sub)Population loaded succesfully, checking for duplicate IDs...\n"
+    duplicates = pos1 = 0
+    
+    while pos1 < line-1:             
+        while (ids[pos1] in ids[pos1+1:line]):
+            print "Ignoring duplicate instance of ID", ids[pos1].replace('\n','')
+            del ids[pos1]
+            line -= 1
+            duplicates += 1
+        pos1 += 1
+    print "Load & filter complete"
+    return {"directory":directory,"ids":ids}
 
 # WRITES ANTIVIRAL AND DIAGNOSIS SCRIPTS TO DIRECTORY 
   
@@ -246,7 +276,7 @@ def isYes(response, use):
 
 # MAIN
 
-def main(arg1, arg2, arg3, arg4, polyScript):
+def main(arg1, arg2, arg3, arg4, polyScript, filteredIDs):
         
 
     print arg1, arg2, arg3, arg4
@@ -276,6 +306,7 @@ def main(arg1, arg2, arg3, arg4, polyScript):
     workTotal = 0
     schoolTotal = 0
     avTreatments = 0
+    toFilterIDs = len(filteredIDs) > 0
     
 
 # UNIX PASSED ARGUMENTS DECISION TREE  
@@ -651,15 +682,32 @@ action number and subpopulation directory appended"""
 
 # ALL MODE CHOPPING EXECUTION
 
+        print population
+        
+        pos2 = 0
+        limit = len(filteredIDs)
+        found = False
+        while pos2 < limit:
+            if population in filteredIDs[pos2]['directory']:
+                found = True
+                runIDs = filteredIDs[pos2]['ids']
+                break
+            pos2 += 1
+        
+        if not found:
+            filteredIDs.append(filterIDs(population))
+            runIDs = filteredIDs[-1]['ids']
+        
+        
         if enum:
-            populationSize = chopper.popSize((subpopDirectory + '/' + population).replace('//','/'))
+            populationSize = chopper.popSize(population)
             enumList = cleanEnum(percentEnum(enumList,populationSize))
-            holder = chopper.main(population,'e'," ".join(map(str, enumList)),suffix, path)
+            holder = chopper.main(population,'e'," ".join(map(str, enumList)),suffix, path,runIDs)
             returnSize = holder['count']
             enumList = holder['enum']
             length = chopper.getEnumSize(enumList)
         else:
-            holder = chopper.main(population,'b',str(length),suffix, path)
+            holder = chopper.main(population,'b',str(length),suffix, path, runIDs)
             returnSize = holder['count']
 
 
@@ -688,7 +736,9 @@ action number and subpopulation directory appended"""
         
         if enum:
             while pos2 < len(enumList):
-                subPopName = popName + str(pos2/2) + suffix
+                subPopName = popName + 'd' + str(pos2/2) + 'i' + suffix
+                if ".txt" in subPopName:
+                    subPopName = subPopName.replace('.txt','') + '.txt'
                 triggerOut = "Trigger " + str(trigger+iCode) + " Day " + str(enumList[pos2]) + "\n" 
                 if useExplicit:
                     tempPath = path + "/subpops/" + subPopName
@@ -704,7 +754,9 @@ action number and subpopulation directory appended"""
             
         else:
             while pos2 < length:
-                subPopName = popName + str(pos2) + suffix
+                subPopName = popName + 'd' + str(pos2) + 'i' + suffix
+                if ".txt" in subPopName:
+                    subPopName = subPopName.replace('.txt','') + '.txt'
                 triggerOut = "Trigger " + str(trigger+iCode) + " Day " + str(day+pos2) + "\n" 
                 if useExplicit:
                     tempPath = path + "/subpops/" + subPopName
@@ -747,8 +799,10 @@ interventions for complex interventions."""
     print "Close Schools:" + str(schoolTotal)
     print "AV Treatment Programs: " + str(avTreatments)
     print
+    if toFilterIDs:
+        return filteredIDs
     
 if __name__ == '__main__':    
-    main(0,0,0,0,[])
+    main(0,0,0,0,[],[])
     print "Intervention scripting succesfully completed, exiting now.\n"
     quit
