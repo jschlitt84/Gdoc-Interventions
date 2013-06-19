@@ -1,13 +1,13 @@
 #!/bin/bash
 #PBS -lwalltime=01:30:00
 #PBS -lnodes=1:ppn=8
-#PBS -W group_list=isis (ndssl?)
+#PBS -W group_list=pecos
 #PBS -q pecos_q@pecosq
 #PBS -A pecos
 #PBS -N FTLewis
 #PBS -o /Users/jamesschlitt/Desktop/FtLewisStudy/vd7ve50active/avd10e87/wd10wl7wc25/ef_14.qlog
 #PBS -j oe
-NUM_PROCS=`/bin/cat $PBS_NODEFILE | /usr/bin/wc -l | /bin/sed "s/  //g"`
+NUM_PROCS=`/bin/cat $PBS_NODEFILE | /usr/bin/wc -l | /bin/sed "s/  //g"`
 cd $PBS_O_WORKDIR
 MPIRUN="mpiexec_mpt -n $NUM_PROCS"
 $MPIRUN /vbi/projects/epifast/bin/EpiFast /Users/jamesschlitt/Desktop/FtLewisStudy/vd7ve50active/avd10e87/wd10wl7wc25/Configuration > /Users/jamesschlitt/Desktop/FtLewisStudy/vd7ve50active/avd10e87/wd10wl7wc25/cout

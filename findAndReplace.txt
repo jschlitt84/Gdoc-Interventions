@@ -1,4 +1,6 @@
 File = qsub
+Find = #PBS -W
+Replace = #PBS -W group_list=pecos
 Find = #PBS -N
 Replace = #PBS -N FTLewis-$ITER
 Find = #PBS -o
