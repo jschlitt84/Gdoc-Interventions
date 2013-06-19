@@ -16,9 +16,8 @@ Find = InfectiousPeriodFile =
 Replace = InfectiousPeriodFile = input/Infectious.Period.Distribution
 Find = OutputFile
 Replace = OutputFile = $DIR/EFO6
-Find = LogFile = 
 Find = LogFile =
-Replace = LogFile = $DIR/Log
+Replace = LogFile = $DIR/
 Find = InterventionFile =
 Replace = InterventionFile = $DIR/Intervention
 Find = DiagnosisFile =
