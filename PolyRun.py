@@ -3,6 +3,7 @@ import os
 import shutil
 import gDocsImport
 import RollVac
+import subprocess
     
 
 def appendSuffix(directory, suffix):
@@ -21,7 +22,7 @@ def flushDirectories(directoryList):
     suffix = 2
     limit = len(directoryList)
     usedNum = False
-    while pos < limit:
+    while pos < limit:    
         flushDirectory= directoryList[pos].replace(' ','')
         if len(flushDirectory) == 0:
             flushDirectory = "polyrun"
@@ -273,10 +274,14 @@ def main():
     
     pos = 0
     directories = []
+    toSetPermissions = []
     while pos  < len(directoryLines):
-        directories.append((directoryLines[pos][2] + '/' + directoryLines[pos][0]).replace('//','/'))
+        dirToFlush =(directoryLines[pos][2] + '/' + directoryLines[pos][0]).replace('//','/')
+        if not dirToFlush in directories: 
+            directories.append(dirToFlush)
+            toSetPermissions.append(RollVac.isYes(directoryLines[pos][7],'set 775 permissions'))
         pos += 1
-        
+    
     directorySuffix = flushDirectories(directories)
     
     
@@ -295,7 +300,6 @@ def main():
                 varList.append(temp[0])
             varSets.append(temp[0]) 
             suffixes.append(temp[1])
-#            positions.append(pos)
         pos += 1  
     pos1 = 0
 
@@ -435,6 +439,17 @@ def main():
             runTracker[0] += 1   
             
     print "Intervention iteration succesfully complete!"
+    
+    pos = 0
+    limit = len(toSetPermissions)
+    while pos < limit:
+        if toSetPermissions[pos]:
+            print "Appending bash set permissions to 775 command to qsub list in directory:", directories[pos]
+            qsubs = open(directories[pos] + '/qsublist', 'a+b')
+            qsubs.write("chmod -R 775 " + directories[pos])   
+            qsubs.close()  
+            pos += 1 
+ 
 
             
 main() 
