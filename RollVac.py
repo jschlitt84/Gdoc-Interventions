@@ -739,12 +739,12 @@ action number and subpopulation directory appended"""
                 subPopName = popName + 'd' + str(pos2/2) + 'i' + suffix
                 if ".txt" in subPopName:
                     subPopName = subPopName.replace('.txt','') + '.txt'
-                triggerOut = "Trigger " + str(trigger+iCode) + " Day " + str(enumList[pos2]) + "\n" 
+                triggerOut = "* Trigger " + str(trigger+iCode) + " Date " + str(enumList[pos2]) + "\n" 
                 if useExplicit:
                     tempPath = path + "/subpops/" + subPopName
                 else:
                     tempPath = "subpops/" + subPopName
-                intervOut = "Action " + str(trigger+iCode) + " " + interv + " " + tempPath + "\n"
+                intervOut = "* Action " + str(trigger+iCode) + " " + interv + " " + tempPath + "\n"
                 intervOut =  intervOut.replace('//','/')
                 print triggerOut, intervOut.replace('\n','')
                 outFile.write(triggerOut)
@@ -757,12 +757,12 @@ action number and subpopulation directory appended"""
                 subPopName = popName + 'd' + str(pos2) + 'i' + suffix
                 if ".txt" in subPopName:
                     subPopName = subPopName.replace('.txt','') + '.txt'
-                triggerOut = "Trigger " + str(trigger+iCode) + " Day " + str(day+pos2) + "\n" 
+                triggerOut = "* Trigger " + str(trigger+iCode) + " Date " + str(day+pos2) + "\n" 
                 if useExplicit:
                     tempPath = path + "/subpops/" + subPopName
                 else:
                     tempPath = "subpops/" + subPopName
-                intervOut = "Action " + str(trigger+iCode) + " " + interv + " " + tempPath + "\n"
+                intervOut = "* Action " + str(trigger+iCode) + " " + interv + " " + tempPath + "\n"
                 intervOut =  intervOut.replace('//','/')
                 print triggerOut, intervOut.replace('\n','')
                 outFile.write(triggerOut)
