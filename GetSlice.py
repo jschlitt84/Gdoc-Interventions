@@ -48,7 +48,15 @@ def writeToFile(directory, runList, refMatrix, valMatrix, xTitles, yTitles, titl
 
 def checkLines(file):
     wholeThing = open(file)
-    content = wholeThing.read()
+    content = wholeThing.readlines()
+    params = content.split(' ')    
+    popSize = content[2]
+    iterations = content[4]
+    numInfected =  popSize/iterations
+    trimmed = content[popSize:].split(' ')
+    print trimmed
+    quit
+    max(trimmed)
     return content.count('\n') + 1
     
 def prepDir(directory):
