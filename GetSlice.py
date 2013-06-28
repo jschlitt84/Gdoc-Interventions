@@ -49,7 +49,7 @@ def writeToFile(directory, runList, refMatrix, valMatrix, xTitles, yTitles, titl
 def checkLines(file):
     wholeThing = open(file)
     content = wholeThing.readlines()
-    params = content.split(' ')    
+    params = content[0].split(' ')    
     popSize = content[2]
     iterations = content[4]
     numInfected =  popSize/iterations
