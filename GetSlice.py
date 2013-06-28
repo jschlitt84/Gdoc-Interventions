@@ -53,9 +53,13 @@ def checkLines(file):
     popSize = content[2]
     iterations = content[4]
     numInfected =  popSize/iterations
-    trimmed = content[popSize:].split(' ')
+    trimmed = content[popSize:]
+    pos = 0
+    while pos < len(trimmed):
+        trimmed[pos] = trimmed[pos].split(' ')
+        pos += 1
     print trimmed
-    quit
+    quit()
     max(trimmed)
     return content.count('\n') + 1
     
