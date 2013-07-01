@@ -50,18 +50,114 @@ def checkLines(file):
     wholeThing = open(file)
     content = wholeThing.readlines()
     params = content[0].split(' ')    
-    popSize = content[2]
-    iterations = content[4]
+    popSize = params[1]
+    iterations = params[3]
     numInfected =  popSize/iterations
     trimmed = content[popSize:]
     pos = 0
-    while pos < len(trimmed):
-        trimmed[pos] = trimmed[pos].split(' ')
+    length =  len(trimmed)
+    days = 0
+    while pos < length:
+        trimmed[pos] = map(int,trimmed[pos].split(' '))
+        days =  max(days, trimmed[pos][2])
         pos += 1
-    print trimmed
-    quit()
-    max(trimmed)
-    return content.count('\n') + 1
+    limit =  len(trimmed)
+    
+    pos = 0
+    iterXDay = [[0]*iterations]*days
+    while pos < limit:
+        iterXDay[trimmed[pos][2]][trimmed[pos][1]] += 1
+        pos += 1
+    
+    pos = 0
+    attackRates = []
+    ignore = [False]*iterations
+    ignored = 0
+    maxDay = []
+    maxNumber = []
+    while pos < iterations:
+        attackRates.append(sum(iterXDay[pos]))
+        maxima = max(iterXDay[pos])
+        maxNumber.append(max(iterXDay[pos]))
+        maxDay.append(iterXDay[pos].index(maxima))
+        pos += 1
+    meanAttack = sum(attackRates)/iterations
+    print "Attack Rates:", attackRates
+    print "Mean:", meanAttack
+    print "Peak Days:", maxDay
+    print "Peak Infected:". maxNumber
+    
+    pos = 0
+    while pos < iterations:
+        if attackRates[pos] < meanAttack/10:
+            ignore[pos] =  True
+            ignored += 1
+            print "Iteration",pos,"did not reach epidemic status"
+        pos += 1
+    print "Ignored:", ignored
+    
+    
+    pos1 = 0
+    meanInfected = []
+    while pos1 < days:
+        pos2 = 0
+        total = 0
+        while pos2 < iterations:
+            if not ignore[pos2]:
+                total += iterXDay[pos2][pos1]
+            pos2 += 1
+        meanInfected += total/(iterations-ignored)
+        pos1+=1
+    print "Mean infections"
+    
+    leftBounds = []*iterations
+    rightBounds = []*iterations
+    lengths = []*iterations
+    secondaryMaxima = [""]*iterations
+    curveWidth = .95
+    searchWidth = .20
+    peakToLocal = 10
+    localSNR = 2
+    pos1 = 0
+    while pos1 < iterations:
+        pos2 = temp = 0
+        outside = (1-curveWidth)*attackRates[pos1]*0.5
+        while pos2 < days:
+            temp += iterXDay[pos1][pos2]
+            if temp > outside:
+                leftBounds.append(pos2)
+                break
+            pos2 += 1
+        pos2 = days-1
+        temp = 0
+        while pos2 > 0:
+            temp += iterXDay[pos1][pos2]
+            if temp < outside:
+                rightBounds.append(pos2)
+                break
+            pos2 -= 1
+        lengths.append(rightBounds[pos1]-leftBounds[pos1])
+        sliceWidth = int(lengths[pos1]*searchWidth)
+        pos2 = leftBounds[pos1]
+        while pos2 + sliceWidth < rightBounds[pos1]:
+            tempSlice = iterXDay[pos1][pos2:min(pos2+sliceWidth+1,days)]
+            localPeak = max(tempSlice)
+            localMaxima = tempSlice.index(max(localPeak))
+            
+            if localMaxima > sliceWidth/2:
+                pos2 += localMaxima - sliceWidth/2
+            elif localPeak*peakToLocal >= maxNumber[pos2]:
+                leftSlice = tempSlice[0:localMaxima]
+                rightSlice = tempSlice[localMaxima:len(tempSlice)+1]
+                leftMin = min(leftSlice)
+                rightMin = min(rightSlice)
+                if localPeak>(leftMin+rightMin)*0.5*localSNR:
+                    secondaryMaxima[pos1] += str(localMaxima) + ' '
+                    print "Secondary Maxima found in iteration %s on day %s" % (str(pos1),str())   
+            else:
+                pos2 += 1
+        pos1 += 1
+    return content.count('\n') - popSize + 1
     
 def prepDir(directory):
     return (directory+'/').replace('//','/')
