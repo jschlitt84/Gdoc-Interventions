@@ -1,7 +1,7 @@
 import gDocsImport
 import sys, os
 
-def writeToFile(directory, runList, refMatrix, valMatrix, xTitles, yTitles, title):
+def writeToFiles(directory, runList, refMatrix, valMatrix, xTitles, yTitles, title):
     if not os.path.exists(directory):
         os.mkdir(directory)
     writeOut = open(directory+title,'w')
@@ -44,7 +44,40 @@ def writeToFile(directory, runList, refMatrix, valMatrix, xTitles, yTitles, titl
         writeOut.write(runList[pos] + ', '*(xLen) + '\n')
         pos += 1
     writeOut.close()
-    
+
+def writeAll(directory,title,data):
+    if not os.path.exists(directory):
+        os.mkdir(directory)
+    summaryOut = open(directory+title+'Summary.txt','w')
+    chartsOut = open(directory+title+'Charts.csv','w')
+    summaryOut.write("Directory:/t" + str(data['directory']))
+    summaryOut.write("\nPopsize:/t" + str(data['popsize']))
+    summaryOut.write("\nIterations:/t" + str(data['iterations']))
+    summaryOut.write("\nAttack Rates:/t" + str(data['directory']))
+    summaryOut.write("\nPeak Day:/t" + str(data['peakDay']))
+    summaryOut.write("\nPeak Number:/t" + str(data['peakNumber']))
+    summaryOut.write("\nIgnored:/t" + str(data['ignored']))
+    summaryOut.write("\nPercent Reaching Epidemic:/t" + str(data['epiPercent']))
+    summaryOut.write("\nEpidemic Mean Attack Rate:/t" + str(data['epiMean']))
+    summaryOut.write("\nSecondary Maxima:/t" + str(data['secondaryMaxima']))
+    summaryOut.close()
+    chartsOut.write('ATTACK RATE V DAY' + ','*(data['iterations']+1) + '\n')
+    chartsOut.write('DAY, ')
+    pos = 0
+    while pos < data['iterations']:
+        chartsOut.write(',' + str(pos) + ' ')
+        pos += 1
+    chartsOut.write(', MEAN\n')
+    pos1 = 0
+    while pos1 < data['days']:
+        pos2 = 0
+        chartsOut.write(str(pos1) + ', ')
+        while pos2 < data['iterations']:
+            chartsOut.write(str(data['iterationsByDay'][pos2][pos1]) + ', ')
+            pos2 += 1
+        chartsOut.write(str(data['MeanCurve'][pos1]) + '\n')
+        pos1 += 1
+    chartsOut.close()
 
 def checkLines(fileName):
     wholeThing = open(fileName)
@@ -109,6 +142,16 @@ def checkLines(fileName):
     print "Percent Reaching Epidemic:", epiPercent*100
     print "Mean epdidemic attack rate:", epiMean
     
+    pos1 = 0
+    meanCurve = []
+    while pos1 < days:
+        pos2 = temp = 0
+        while pos2 < iterations:
+            if not ignore[pos]:
+                temp += iterXDay[pos2][pos1]
+            pos2 += 1
+        meanCurve.append(temp/(iterations-ignored))
+    
     leftBounds = []
     rightBounds = []
     lengths = []
@@ -165,7 +208,7 @@ def checkLines(fileName):
                 pos2 += 1
         pos1 += 1
         
-    return {'directory':fileName,'popsize':popSize,'iterations':iterations,'attackRates':attackRates,"Ignored":ignored,'epiMean':epiMean,'epiPercent':epiPercent,'peakDay':maxDay,'peakNumber':maxNumber,'secondaryMaxima':secondaryMaxima,"iterationsByDay":iterXDay}
+    return {'directory':fileName,'days':days,'meanCurve':meanCurve,'popsize':popSize,'iterations':iterations,'attackRates':attackRates,"Ignored":ignored,'epiMean':epiMean,'epiPercent':epiPercent,'peakDay':maxDay,'peakNumber':maxNumber,'secondaryMaxima':secondaryMaxima,"iterationsByDay":iterXDay}
     
 def prepDir(directory):
     return (directory+'/').replace('//','/')
@@ -229,19 +272,26 @@ def main():
         pos = 0
         
         splitList =[]
-        if "chmod -R 775" in qsubList[-1]:
-            del qsubList[-1]
+        if "chmod -R 775" in qsubList:
+            del qsubList[qsubList.index("chmod -R 775")]
         limit = len(qsubList)
         while pos < limit:
-            qsubList[pos] = qsubList[pos].replace('qsub ','').replace('qsub','').replace(directoryIn,'').replace('/\n','')
+            if runAll:
+                qsubList[pos] = qsubList[pos].replace('qsub ','').replace('qsub','').replace('/\n','')
+            else:
+                qsubList[pos] = qsubList[pos].replace('qsub ','').replace('qsub','').replace(directoryIn,'').replace('/\n','')
             if qsubList[pos].split('/') not in splitList:
 		splitList.append(qsubList[pos].split('/'))
+		pos += 1
 	    else:
 		print "Duplicate entry on line %s ignored" % (pos)
+		del qsubList[pos]
+		limit -= 1
 
-            pos += 1
         width = qsubList[0].count('/') + 1 
-        if runAll:
+        
+        if not runAll:
+        
             limit = len(splitList)
             targetStrings = ['']*width
             tracker = [0] * width
@@ -359,11 +409,27 @@ def main():
             print xTitles
             print yTitles
         
-            writeToFile(directoryOut, runList, refMatrix, valMatrix, xTitles, yTitles, studyName)
+            writeToFiles(directoryOut, runList, refMatrix, valMatrix, xTitles, yTitles, studyName)
+        
+        if runAll:
+            pos = 0
+            limit = len(qsubList)
+            attackOut = open(directoryOut + '/' + studyName + 'AttackList.txt','w')
+            attackOut.close()
+            attackOut = open(directoryOut + '/' + studyName + 'AttackList.txt','a+b')
+            attackOut.write("# Attack Rate List\n")
+            while pos < min(limit,10):
+                data = checkLines(qsubList(pos))
+                writeAll(directoryOut, studyName+qsubList(pos).replace('/','_'), data)
+                attackOut.write(qsubList(pos) + ' ' + str(data['epiMean']))
+                pos += 1
+                
         
         column += 1
         
     print "Finished analyses, quitting now"
+        
+        
     
 
     
