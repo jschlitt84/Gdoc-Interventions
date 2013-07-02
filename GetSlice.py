@@ -247,24 +247,25 @@ def main():
         target = params[4]
         runAll = params[14].lower()[0] == 'y'
     
-        xID = int(params[7])
-        xFind = params[8].split(' ')
-        xFLen = len(xFind)
-        toFindX = xFLen > 0
-        xIgnore = params[9].split(' ')
-        xILen = len(xIgnore)
-        toIgnoreX = xIgnore != ['']
+        if not runAll:
+		xID = int(params[7])
+  		xFind = params[8].split(' ')
+        	xFLen = len(xFind)
+        	toFindX = xFLen > 0
+        	xIgnore = params[9].split(' ')
+        	xILen = len(xIgnore)
+        	toIgnoreX = xIgnore != ['']
         
-        yID =  int(params[10])
-        yFind = params[11].split(' ')
-        yFLen =  len(yFind)
-        toFindY = yFLen > 0
-        yIgnore = params[12].split(' ')
-        yILen = len(yIgnore)
-        toIgnoreY = yIgnore != ['']
+        	yID =  int(params[10])
+        	yFind = params[11].split(' ')
+        	yFLen =  len(yFind)
+        	toFindY = yFLen > 0
+        	yIgnore = params[12].split(' ')
+        	yILen = len(yIgnore)
+        	toIgnoreY = yIgnore != ['']
         
-        const =  params[13].split(' ')
-        cLen = len(const)
+        	const =  params[13].split(' ')
+        	cLen = len(const)
         
         
         fileIn = open(directoryIn + qsubDir)
