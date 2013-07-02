@@ -75,7 +75,7 @@ def writeAll(directory,title,data):
         while pos2 < data['iterations']:
             chartsOut.write(str(data['iterationsByDay'][pos2][pos1]) + ', ')
             pos2 += 1
-        chartsOut.write(str(data['MeanCurve'][pos1]) + '\n')
+        chartsOut.write(str(data['meanCurve'][pos1]) + '\n')
         pos1 += 1
     chartsOut.close()
 
@@ -144,12 +144,13 @@ def checkLines(fileName):
     
     pos1 = 0
     meanCurve = []
-    while pos1 < days:
+    while pos1 <= days:
         pos2 = temp = 0
         while pos2 < iterations:
-            if not ignore[pos]:
+            if not ignore[pos2]:
                 temp += iterXDay[pos2][pos1]
             pos2 += 1
+  	pos1 += 1    
         meanCurve.append(temp/(iterations-ignored))
     
     leftBounds = []
@@ -208,7 +209,8 @@ def checkLines(fileName):
                 pos2 += 1
         pos1 += 1
         
-    return {'directory':fileName,'days':days,'meanCurve':meanCurve,'popsize':popSize,'iterations':iterations,'attackRates':attackRates,"Ignored":ignored,'epiMean':epiMean,'epiPercent':epiPercent,'peakDay':maxDay,'peakNumber':maxNumber,'secondaryMaxima':secondaryMaxima,"iterationsByDay":iterXDay}
+
+    return {'directory':fileName,'days':days,'meanCurve':meanCurve,'popsize':popSize,'iterations':iterations,'attackRates':attackRates,"ignored":ignored,'epiMean':epiMean,'epiPercent':epiPercent,'peakDay':maxDay,'peakNumber':maxNumber,'secondaryMaxima':secondaryMaxima,"iterationsByDay":iterXDay}
     
 def prepDir(directory):
     return (directory+'/').replace('//','/')
@@ -418,10 +420,10 @@ def main():
             attackOut.close()
             attackOut = open(directoryOut + '/' + studyName + 'AttackList.txt','a+b')
             attackOut.write("# Attack Rate List\n")
-            while pos < min(limit,10):
-                data = checkLines(qsubList(pos))
-                writeAll(directoryOut, studyName+qsubList(pos).replace('/','_'), data)
-                attackOut.write(qsubList(pos) + ' ' + str(data['epiMean']))
+            while pos < limit:
+                data = checkLines(qsubList[pos]+'/'+target)
+                writeAll(directoryOut, studyName+qsubList[pos].replace('/','_'), data)
+                attackOut.write(qsubList[pos] + ' ' + str(data['epiMean']))
                 pos += 1
                 
         
