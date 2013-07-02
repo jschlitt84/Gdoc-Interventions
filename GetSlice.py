@@ -148,7 +148,7 @@ def checkLines(fileName):
                 pos2 += 1
         pos1 += 1
         
-    return {'directory':fileName,'popsize':popsize,'iterations':iterations,'attackRates':attackRates,"Ignored":ignored,'epiMean':epiMean,'epiPercent':epiPercent,'peakDay':peakDay,'peakNumber':peakNumber,'secondaryMaxima':secondaryMaxima,"iterationsByDay":iterXDay}
+    return {'directory':fileName,'popsize':popSize,'iterations':iterations,'attackRates':attackRates,"Ignored":ignored,'epiMean':epiMean,'epiPercent':epiPercent,'peakDay':maxDay,'peakNumber':maxNumber,'secondaryMaxima':secondaryMaxima,"iterationsByDay":iterXDay}
     
 def prepDir(directory):
     return (directory+'/').replace('//','/')
