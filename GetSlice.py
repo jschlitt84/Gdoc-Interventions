@@ -183,6 +183,7 @@ def main():
         studyName = params[2]
         qsubDir = params[3]
         target = params[4]
+        runAll = params[14].lower()[0] == 'y'
     
         xID = int(params[7])
         xFind = params[8].split(' ')
@@ -220,123 +221,125 @@ def main():
             pos += 1
         width = qsubList[0].count('/') + 1
         
-        targetStrings = ['']*width
-        tracker = [0] * width
-        pos1 = 0
-        while pos1 < limit:
-            pos2 = 0
-            while pos2 < width:
-                word = splitList[pos1][pos2]
-                keep = True
-                isAxis = True
-                if pos2 == xID:
-                    found = False
-                    pos3 = 0
-                    while pos3 < xFLen:
-                        if xFind[pos3] in word:
-                            found = True
-                            break
-                        pos3 += 1
-                    pos3 = 0
-                    while pos3 < xILen and toIgnoreX:
-                        if xIgnore[pos3] in word:
+        if runAll:
+        
+            targetStrings = ['']*width
+            tracker = [0] * width
+            pos1 = 0
+            while pos1 < limit:
+                pos2 = 0
+                while pos2 < width:
+                    word = splitList[pos1][pos2]
+                    keep = True
+                    isAxis = True
+                    if pos2 == xID:
+                        found = False
+                        pos3 = 0
+                        while pos3 < xFLen:
+                            if xFind[pos3] in word:
+                                found = True
+                                break
+                            pos3 += 1
+                        pos3 = 0
+                        while pos3 < xILen and toIgnoreX:
+                            if xIgnore[pos3] in word:
+                                keep = False
+                                break
+                            pos3 += 1
+                        if toFindX and not found:
                             keep = False
-                            break
-                        pos3 += 1
-                    if toFindX and not found:
-                        keep = False
-                elif pos2 == yID:
-                    found = False
-                    pos3 = 0
-                    while pos3 <yFLen:
-                        if yFind[pos3] in word:
-                            found = True
-                            break
-                        pos3 += 1
-                    pos3 = 0
-                    while pos3 < yILen and toIgnoreY:
-                        if yIgnore[pos3] in word:
+                    elif pos2 == yID:
+                        found = False
+                        pos3 = 0
+                        while pos3 <yFLen:
+                            if yFind[pos3] in word:
+                                found = True
+                                break
+                            pos3 += 1
+                        pos3 = 0
+                        while pos3 < yILen and toIgnoreY:
+                            if yIgnore[pos3] in word:
+                                keep = False
+                                break
+                            pos3 += 1
+                        if toFindY and not found:
                             keep = False
-                            break
-                        pos3 += 1
-                    if toFindY and not found:
-                        keep = False
-                else:
-                    isAxis = False
-                    if word in const and word not in targetStrings[pos2]:
+                    else:
+                        isAxis = False
+                        if word in const and word not in targetStrings[pos2]:
+                            tracker[pos2] += 1
+                            targetStrings[pos2] += word + ' ' 
+                    if isAxis and keep and word not in targetStrings[pos2]:
+                        targetStrings[pos2] += word + ' '
                         tracker[pos2] += 1
-                        targetStrings[pos2] += word + ' ' 
-                if isAxis and keep and word not in targetStrings[pos2]:
-                    targetStrings[pos2] += word + ' '
-                    tracker[pos2] += 1
-                pos2 += 1
-            pos1 += 1
-        
-        targetList = [[]]*width
-        pos = 0
-        while pos < width:
-            count = targetStrings[pos].count(' ')
-            if pos == xID:
-                if count == 0:
-                    print "Error: no variables found for X axis"
-                    quit()
-                elif count == 1:
-                    print "Warning: only one variable found for X axis"
-            elif pos == yID:
-                if count == 0:
-                    print "Error: no variables found for Y axis"
-                    quit()
-                elif count == 1:
-                    print "Warning: only one variable found for Y axis"
-            else:
-                if count > 1:
-                    print "Error, multiple variables found for const #%s, operators = %s" % (str(pos), const)
-            targetList[pos] = targetStrings[pos].split(' ') [:-1]
-            pos += 1
+                    pos2 += 1
+                pos1 += 1
             
-        runList = []
-        xCols =  len(targetList[xID])
-        yRows =  len(targetList[yID])
-        refMatrix = [[0 for pos1 in range(yRows)] for pos2 in range(xCols)]
-        valMatrix = [[0 for pos1 in range(yRows)] for pos2 in range(xCols)]
-        dirMatrix = [[0 for pos1 in range(yRows)] for pos2 in range(xCols)]
-        testMatrix = [[0 for pos1 in range(yRows)] for pos2 in range(xCols)]
-        
-        
-        pos1 = 0
-        limit = len(splitList)
-        while pos1 < limit:
-            pos2 = 0
-            keepLine = True
-            while pos2 <  width:
-                if splitList[pos1][pos2] not in targetStrings[pos2]:
-                    keepLine = False
-                    break
-                pos2 += 1
-            if keepLine:
-                xPos =  targetList[xID].index(splitList[pos1][xID])
-                yPos = targetList[yID].index(splitList[pos1][yID])
-                print xPos, yPos
-                refMatrix[xPos][yPos] = pos1
-                testMatrix[xPos][yPos] = xPos
-                dirMatrix[xPos][yPos] = directoryIn + qsubList[pos1] + '/' + target
-                temp = checkLines(dirMatrix[xPos][yPos])
-                valMatrix[xPos][yPos] = temp['epiMean']          
-                print pos1
-                print qsubList[pos1]
-                runList.append(qsubList[pos1])
+            targetList = [[]]*width
+            pos = 0
+            while pos < width:
+                count = targetStrings[pos].count(' ')
+                if pos == xID:
+                    if count == 0:
+                        print "Error: no variables found for X axis"
+                        quit()
+                    elif count == 1:
+                        print "Warning: only one variable found for X axis"
+                elif pos == yID:
+                    if count == 0:
+                        print "Error: no variables found for Y axis"
+                        quit()
+                    elif count == 1:
+                        print "Warning: only one variable found for Y axis"
+                else:
+                    if count > 1:
+                        print "Error, multiple variables found for const #%s, operators = %s" % (str(pos), const)
+                targetList[pos] = targetStrings[pos].split(' ') [:-1]
+                pos += 1
                 
-            pos1 += 1
-        print runList
-        print refMatrix
-        print valMatrix
+            runList = []
+            xCols =  len(targetList[xID])
+            yRows =  len(targetList[yID])
+            refMatrix = [[0 for pos1 in range(yRows)] for pos2 in range(xCols)]
+            valMatrix = [[0 for pos1 in range(yRows)] for pos2 in range(xCols)]
+            dirMatrix = [[0 for pos1 in range(yRows)] for pos2 in range(xCols)]
+            testMatrix = [[0 for pos1 in range(yRows)] for pos2 in range(xCols)]
+            
+            
+            pos1 = 0
+            limit = len(splitList)
+            while pos1 < limit:
+                pos2 = 0
+                keepLine = True
+                while pos2 <  width:
+                    if splitList[pos1][pos2] not in targetStrings[pos2]:
+                        keepLine = False
+                        break
+                    pos2 += 1
+                if keepLine:
+                    xPos =  targetList[xID].index(splitList[pos1][xID])
+                    yPos = targetList[yID].index(splitList[pos1][yID])
+                    print xPos, yPos
+                    refMatrix[xPos][yPos] = pos1
+                    testMatrix[xPos][yPos] = xPos
+                    dirMatrix[xPos][yPos] = directoryIn + qsubList[pos1] + '/' + target
+                    temp = checkLines(dirMatrix[xPos][yPos])
+                    valMatrix[xPos][yPos] = temp['epiMean']          
+                    print pos1
+                    print qsubList[pos1]
+                    runList.append(qsubList[pos1])
+                    
+                pos1 += 1
+            print runList
+            print refMatrix
+            print valMatrix
+            
+            xTitles = targetList[xID]
+            yTitles = targetList[yID]
+            print xTitles
+            print yTitles
         
-        xTitles = targetList[xID]
-        yTitles = targetList[yID]
-        print xTitles
-        print yTitles
-    
-        writeToFile(directoryOut, runList, refMatrix, valMatrix, xTitles, yTitles, studyName)
+            writeToFile(directoryOut, runList, refMatrix, valMatrix, xTitles, yTitles, studyName)
         
         column += 1
         
