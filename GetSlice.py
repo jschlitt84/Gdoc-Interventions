@@ -50,24 +50,31 @@ def checkLines(fileName):
     wholeThing = open(fileName)
     content = wholeThing.readlines()
     params = content[0].split(' ')    
-    popSize = params[1]
-    iterations = params[3]
-    trimmed = content[popSize:]
+    popSize = int(params[1])
+    iterations = int(params[3])
+    trimmed = content[popSize+2:]
     pos = 0
     length =  len(trimmed)
     days = 0
     while pos < length:
-        trimmed[pos] = map(int,trimmed[pos].split(' '))
-        days =  max(days, trimmed[pos][2])
-        pos += 1
+	if '#' in trimmed[pos]:
+		print "Ignoring comment:", trimmed[pos]
+		del trimmed[pos]
+		length -= 1
+	else:
+        	trimmed[pos] = map(int,trimmed[pos].split(' '))
+        	days =  max(days, trimmed[pos][2])
+        	pos += 1
     limit =  len(trimmed)
     
     pos = 0
-    iterXDay = [[0]*iterations]*days
+    iterXDay = [[0 for pos1 in range(days+1)] for pos2 in range(iterations)]
     while pos < limit:
-        iterXDay[trimmed[pos][2]][trimmed[pos][1]] += 1
+	#print trimmed[pos]
+	iterXDay[trimmed[pos][1]][trimmed[pos][2]] += 1
         pos += 1
     
+    print iterXDay
     pos = 0
     attackRates = []
     ignore = [False]*iterations
@@ -84,7 +91,7 @@ def checkLines(fileName):
     print "Attack Rates:", attackRates
     print "Mean:", meanAttack
     print "Peak Days:", maxDay
-    print "Peak Infected:". maxNumber
+    print "Peak Infected:", maxNumber
     
     pos = 0
     epiAttack = 0
@@ -99,10 +106,12 @@ def checkLines(fileName):
     print "Ignored:", ignored
     epiMean = epiAttack/(iterations-ignored)
     epiPercent = (iterations-ignored)/iterations
-        
-    leftBounds = []*iterations
-    rightBounds = []*iterations
-    lengths = []*iterations
+    print "Percent Reaching Epidemic:", epiPercent*100
+    print "Mean epdidemic attack rate:", epiMean
+    
+    leftBounds = []
+    rightBounds = []
+    lengths = []
     secondaryMaxima = [""]*iterations
     curveWidth = .95
     searchWidth = .20
@@ -116,13 +125,15 @@ def checkLines(fileName):
             temp += iterXDay[pos1][pos2]
             if temp > outside:
                 leftBounds.append(pos2)
-                break
+                print "left bound:",pos2
+		break
             pos2 += 1
         pos2 = days-1
         temp = 0
         while pos2 > 0:
             temp += iterXDay[pos1][pos2]
-            if temp < outside:
+            if temp > outside:
+		print "right bound:",pos2
                 rightBounds.append(pos2)
                 break
             pos2 -= 1
@@ -132,19 +143,25 @@ def checkLines(fileName):
         while pos2 + sliceWidth < rightBounds[pos1]:
             tempSlice = iterXDay[pos1][pos2:min(pos2+sliceWidth+1,days)]
             localPeak = max(tempSlice)
-            localMaxima = tempSlice.index(max(localPeak))
+	    print tempSlice, localPeak
+            localMaxima = tempSlice.index(localPeak)
             
-            if localMaxima > sliceWidth/2:
+	    if localMaxima == 0:
+		pos2 += 1
+            elif localMaxima > sliceWidth/2:
                 pos2 += localMaxima - sliceWidth/2
-            elif localPeak*peakToLocal >= maxNumber[pos2]:
+            elif localPeak*peakToLocal >= maxNumber[pos1] and localPeak != maxNumber[pos1] and str(localMaxima + pos2) not in secondaryMaxima[pos1]:
                 leftSlice = tempSlice[0:localMaxima]
                 rightSlice = tempSlice[localMaxima:len(tempSlice)+1]
-                leftMin = min(leftSlice)
+		leftMin = min(leftSlice)
                 rightMin = min(rightSlice)
                 if localPeak>(leftMin+rightMin)*0.5*localSNR:
-                    secondaryMaxima[pos1] += str(localMaxima) + ' '
-                    print "Secondary Maxima found in iteration %s on day %s" % (str(pos1),str())   
-            else:
+		    pos2 += localMaxima
+                    secondaryMaxima[pos1] += str(localMaxima+pos2) + ' '
+                    print "Secondary Maxima found in iteration %s on day %s" % (str(pos1),str(pos2+localMaxima))   
+            	else:
+			pos2 += 1
+	    else:
                 pos2 += 1
         pos1 += 1
         
@@ -217,12 +234,15 @@ def main():
         limit = len(qsubList)
         while pos < limit:
             qsubList[pos] = qsubList[pos].replace('qsub ','').replace('qsub','').replace(directoryIn,'').replace('/\n','')
-            splitList.append(qsubList[pos].split('/'))
+            if qsubList[pos].split('/') not in splitList:
+		splitList.append(qsubList[pos].split('/'))
+	    else:
+		print "Duplicate entry on line %s ignored" % (pos)
+
             pos += 1
-        width = qsubList[0].count('/') + 1
-        
+        width = qsubList[0].count('/') + 1 
         if runAll:
-        
+            limit = len(splitList)
             targetStrings = ['']*width
             tracker = [0] * width
             pos1 = 0
