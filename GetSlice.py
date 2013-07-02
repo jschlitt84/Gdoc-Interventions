@@ -46,13 +46,12 @@ def writeToFile(directory, runList, refMatrix, valMatrix, xTitles, yTitles, titl
     writeOut.close()
     
 
-def checkLines(file):
-    wholeThing = open(file)
+def checkLines(fileName):
+    wholeThing = open(fileName)
     content = wholeThing.readlines()
     params = content[0].split(' ')    
     popSize = params[1]
     iterations = params[3]
-    numInfected =  popSize/iterations
     trimmed = content[popSize:]
     pos = 0
     length =  len(trimmed)
@@ -88,28 +87,19 @@ def checkLines(file):
     print "Peak Infected:". maxNumber
     
     pos = 0
+    epiAttack = 0
     while pos < iterations:
         if attackRates[pos] < meanAttack/10:
             ignore[pos] =  True
             ignored += 1
             print "Iteration",pos,"did not reach epidemic status"
+        else:
+            epiAttack += attackRates[pos]
         pos += 1
     print "Ignored:", ignored
-    
-    
-    pos1 = 0
-    meanInfected = []
-    while pos1 < days:
-        pos2 = 0
-        total = 0
-        while pos2 < iterations:
-            if not ignore[pos2]:
-                total += iterXDay[pos2][pos1]
-            pos2 += 1
-        meanInfected += total/(iterations-ignored)
-        pos1+=1
-    print "Mean infections"
-    
+    epiMean = epiAttack/(iterations-ignored)
+    epiPercent = (iterations-ignored)/iterations
+        
     leftBounds = []*iterations
     rightBounds = []*iterations
     lengths = []*iterations
@@ -157,7 +147,8 @@ def checkLines(file):
             else:
                 pos2 += 1
         pos1 += 1
-    return content.count('\n') - popSize + 1
+        
+    return {'directory':fileName,'popsize':popsize,'iterations':iterations,'attackRates':attackRates,"Ignored":ignored,'epiMean':epiMean,'epiPercent':epiPercent,'peakDay':peakDay,'peakNumber':peakNumber,'secondaryMaxima':secondaryMaxima,"iterationsByDay":iterXDay}
     
 def prepDir(directory):
     return (directory+'/').replace('//','/')
@@ -329,7 +320,8 @@ def main():
                 refMatrix[xPos][yPos] = pos1
                 testMatrix[xPos][yPos] = xPos
                 dirMatrix[xPos][yPos] = directoryIn + qsubList[pos1] + '/' + target
-                valMatrix[xPos][yPos] = int(checkLines(dirMatrix[xPos][yPos]))/5            
+                temp = checkLines(dirMatrix[xPos][yPos])
+                valMatrix[xPos][yPos] = temp['epiMean']          
                 print pos1
                 print qsubList[pos1]
                 runList.append(qsubList[pos1])
