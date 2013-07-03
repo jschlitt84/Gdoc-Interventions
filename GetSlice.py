@@ -59,6 +59,8 @@ def writeAll(directory,title,data):
     summaryOut.write("\nIgnored:\t" + str(data['ignored']))
     summaryOut.write("\nPercent Reaching Epidemic:\t" + str(data['epiPercent']))
     summaryOut.write("\nEpidemic Mean Attack Rate:\t" + str(data['epiMean']))
+    summaryOut.write("\nEpidemic Mean Peak Day:\t" + str(data['epiPeak']))
+    summaryOut.write("\nEpidemic Mean Peak Number:\t" + str(data['epiNumber']))
     summaryOut.write("\nSecondary Maxima:\t" + str(data['secondaryMaxima']))
     summaryOut.close()
     chartsOut.write('ATTACK RATE V DAY' + ','*(data['iterations']+1) + '\n')
@@ -138,8 +140,8 @@ def checkLines(fileName):
         pos += 1
     print "Ignored:", ignored
     epiMean = epiAttack/(iterations-ignored)
-    epiPercent = (iterations-ignored)/iterations
-    print "Percent Reaching Epidemic:", epiPercent*100
+    epiPercent = ((iterations-ignored)/iterations)*100
+    print "Percent Reaching Epidemic:", epiPercent
     print "Mean epdidemic attack rate:", epiMean
     
     pos1 = 0
@@ -152,6 +154,9 @@ def checkLines(fileName):
             pos2 += 1
   	pos1 += 1    
         meanCurve.append(temp/(iterations-ignored))
+        
+    epiNumber = max(meanCurve)
+    epiPeak =  meanCurve.index(epiNumber)
     
     leftBounds = []
     rightBounds = []
@@ -210,7 +215,7 @@ def checkLines(fileName):
         pos1 += 1
         
 
-    return {'directory':fileName,'days':days,'meanCurve':meanCurve,'popsize':popSize,'iterations':iterations,'attackRates':attackRates,"ignored":ignored,'epiMean':epiMean,'epiPercent':epiPercent,'peakDay':maxDay,'peakNumber':maxNumber,'secondaryMaxima':secondaryMaxima,"iterationsByDay":iterXDay}
+    return {'directory':fileName,'days':days,'meanCurve':meanCurve, 'epiPeak': epiPeak, 'epiNumber': epiNumber,'popsize':popSize,'iterations':iterations,'attackRates':attackRates,"ignored":ignored,'epiMean':epiMean,'epiPercent':epiPercent,'peakDay':maxDay,'peakNumber':maxNumber,'secondaryMaxima':secondaryMaxima,"iterationsByDay":iterXDay}
     
 def prepDir(directory):
     return (directory+'/').replace('//','/')
@@ -423,7 +428,8 @@ def main():
             attackOut.write("# Attack Rate List\n")
             while pos < limit:
                 data = checkLines(qsubList[pos]+'/'+target)
-                writeAll(directoryOut, studyName+qsubList[pos].replace(directoryIn,'').replace('/','_'), data)
+                writeAll(qsubList[pos], studyName, data)
+#               writeAll(directoryOut, studyName+qsubList[pos].replace(directoryIn,'').replace('/','_'), data)                 
                 attackOut.write(qsubList[pos].replace(directoryIn,'') + ' ' + str(data['epiMean']) + '\n')
                 pos += 1
 	    attackOut.close()
