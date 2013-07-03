@@ -423,8 +423,8 @@ def main():
             attackOut.write("# Attack Rate List\n")
             while pos < limit:
                 data = checkLines(qsubList[pos]+'/'+target)
-                writeAll(directoryOut, studyName+qsubList[pos].replace('/','_').replace(directoryIn,''), data)
-                attackOut.write(qsubList[pos] + ' ' + str(data['epiMean']) + '\n')
+                writeAll(directoryOut, studyName+qsubList[pos].replace(directoryIn,'').replace('/','_'), data)
+                attackOut.write(qsubList[pos].replace(directoryIn,'') + ' ' + str(data['epiMean']) + '\n')
                 pos += 1
 	    attackOut.close()
                 
