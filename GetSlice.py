@@ -62,6 +62,9 @@ def writeAll(directory,title,data):
     summaryOut.write("\nEpidemic Mean Peak Day:\t" + str(data['epiPeak']))
     summaryOut.write("\nEpidemic Mean Peak Number:\t" + str(data['epiNumber']))
     summaryOut.write("\nSecondary Maxima:\t" + str(data['secondaryMaxima']))
+    summaryOut.write("\nEpicurve Left Bounds:\t" + str(data['leftBound']))
+    summaryOut.write("\nEpicurve Right Bounds:\t" + str(data['rightBound']))
+    
     summaryOut.close()
     chartsOut.write('ATTACK RATE V DAY' + ','*(data['iterations']+1) + '\n')
     chartsOut.write('DAY')
@@ -215,7 +218,7 @@ def checkLines(fileName):
         pos1 += 1
         
 
-    return {'directory':fileName,'days':days,'meanCurve':meanCurve, 'epiPeak': epiPeak, 'epiNumber': epiNumber,'popsize':popSize,'iterations':iterations,'attackRates':attackRates,"ignored":ignored,'epiMean':epiMean,'epiPercent':epiPercent,'peakDay':maxDay,'peakNumber':maxNumber,'secondaryMaxima':secondaryMaxima,"iterationsByDay":iterXDay}
+    return {'directory':fileName,'days':days,'meanCurve':meanCurve, 'epiPeak': epiPeak, 'epiNumber': epiNumber,'popsize':popSize,'iterations':iterations,'attackRates':attackRates,"ignored":ignored,'epiMean':epiMean,'epiPercent':epiPercent,'peakDay':maxDay,'peakNumber':maxNumber,'secondaryMaxima':secondaryMaxima,'leftBound':leftBounds,'rightBound':rightBounds,"iterationsByDay":iterXDay}
     
 def prepDir(directory):
     return (directory+'/').replace('//','/')
@@ -428,7 +431,7 @@ def main():
             attackOut.write("# Attack Rate List\n")
             while pos < limit:
                 data = checkLines(qsubList[pos]+'/'+target)
-                writeAll(qsubList[pos], studyName, data)
+                writeAll(qsubList[pos]+'/', studyName, data)
 #               writeAll(directoryOut, studyName+qsubList[pos].replace(directoryIn,'').replace('/','_'), data)                 
                 attackOut.write(qsubList[pos].replace(directoryIn,'') + ' ' + str(data['epiMean']) + '\n')
                 pos += 1
