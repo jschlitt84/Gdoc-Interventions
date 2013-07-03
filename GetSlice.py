@@ -424,7 +424,7 @@ def main():
             while pos < limit:
                 data = checkLines(qsubList[pos]+'/'+target)
                 writeAll(directoryOut, studyName+qsubList[pos].replace('/','_').replace(directoryIn,''), data)
-                attackOut.write(qsubList[pos] + ' ' + str(data['epiMean'])) + '\n')
+                attackOut.write(qsubList[pos] + ' ' + str(data['epiMean']) + '\n')
                 pos += 1
 	    attackOut.close()
                 
