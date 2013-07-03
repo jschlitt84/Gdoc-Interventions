@@ -53,7 +53,7 @@ def writeAll(directory,title,data):
     summaryOut.write("Directory:\t" + str(data['directory']))
     summaryOut.write("\nPopsize:\t" + str(data['popsize']))
     summaryOut.write("\nIterations:\t" + str(data['iterations']))
-    summaryOut.write("\nAttack Rates:\t" + str(data['directory']))
+    summaryOut.write("\nAttack Rates:\t" + str(data['attackRates']))
     summaryOut.write("\nPeak Day:\t" + str(data['peakDay']))
     summaryOut.write("\nPeak Number:\t" + str(data['peakNumber']))
     summaryOut.write("\nIgnored:\t" + str(data['ignored']))
@@ -62,10 +62,10 @@ def writeAll(directory,title,data):
     summaryOut.write("\nSecondary Maxima:\t" + str(data['secondaryMaxima']))
     summaryOut.close()
     chartsOut.write('ATTACK RATE V DAY' + ','*(data['iterations']+1) + '\n')
-    chartsOut.write('DAY, ')
+    chartsOut.write('DAY')
     pos = 0
     while pos < data['iterations']:
-        chartsOut.write(',' + str(pos) + ' ')
+        chartsOut.write(', ' + str(pos) + ' ')
         pos += 1
     chartsOut.write(', MEAN\n')
     pos1 = 0
@@ -424,7 +424,7 @@ def main():
             while pos < limit:
                 data = checkLines(qsubList[pos]+'/'+target)
                 writeAll(directoryOut, studyName+qsubList[pos].replace('/','_'), data)
-                attackOut.write(qsubList[pos] + ' ' + str(data['epiMean']))
+                attackOut.write(qsubList[pos] + ' ' + str(data['epiMean'])) + '\n'
                 pos += 1
 	    attackOut.close()
                 
