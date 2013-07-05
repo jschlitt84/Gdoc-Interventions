@@ -440,15 +440,15 @@ def main():
             
     print "Intervention iteration succesfully complete!"
     
-    pos = 0
-    limit = len(toSetPermissions)
-    while pos < limit:
-        if toSetPermissions[pos]:
-            print "Appending bash set permissions to 775 command to qsub list in directory:", directories[pos]
-            qsubs = open(directories[pos] + '/qsublist', 'a+b')
-            qsubs.write("chmod -R 775 " + directories[pos])   
-            qsubs.close()  
-            pos += 1 
+ #   pos = 0
+ #   limit = len(toSetPermissions)
+ #   while pos < limit:
+ #       if toSetPermissions[pos]:
+ #           print "Appending bash set permissions to 775 command to qsub list in directory:", directories[pos]
+ #           qsubs = open(directories[pos] + '/qsublist', 'a+b')
+ #           qsubs.write("chmod -R 775 " + directories[pos])   
+ #           qsubs.close()  
+ #       pos += 1 
  
 
             

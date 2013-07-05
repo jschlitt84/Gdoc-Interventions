@@ -1,6 +1,64 @@
 import gDocsImport
 import sys, os
 
+def isDigit(character):
+    try:
+        int(character)
+        return True
+    except:
+        return False
+
+def getSpreadSheet(data, line, hide):
+    script = ''
+    ve = v = vti = vtd = '-1'
+    sd = sdti = sdtd = sdl = '-1'
+    cw = cwti = cwtd = cwl '-1'
+    cs = csti = cstd = csl = '-1'
+    ate = at = atdr = atti =attd = atl = '-1'
+    ape = ap = apti = aptd = aptl = '-1'
+    paramDict = {'ve':'-1','v':'-1','vti':'-1','vtd':'-1','sd':'-1','sdti':'-1','sdtd':'-1','sdl':'-1','cw':'-1','cwti':'-1','cwtd':'-1','cwl':'-1','cs':'-1','csti':'-1','cstd':'-1','csl':'-1','ate':'-1','at':'-1','atdr':'-1','atti':'-1','attd':'-1','atl':'-1','ape':'-1','ap':'-1','apti':'-1','aptd':'-1','aptl':'-1'}
+    words = []
+    numbers = []
+    extra = ''
+    pos = 0
+    wasDigit = False
+    tempString = ''
+    line = line.replace(' ','').replace('\n','').replace('//','/')
+    while pos < len(line):
+        if not isDigit(line[pos]):
+            tempString += line[pos]
+        else:
+            if pos == len(line) -1 or line[pos] ==  '/':
+                extra += tempString + ' '
+                tempString = ''
+            else:
+                words.append(tempString)
+                tempString = ''
+                while pos < len(line) and isDigit(line[pos]) :
+                    tempString += line[pos]
+                    pos += 1
+                numbers.append(tempString)
+                tempString = ''
+        pos += 1
+    pos = 0
+    if len(words) != len(numbers):
+        print "Data output error, word & number list lengths do not match"
+        quit()
+    while pos < len(words):
+        word =  words[pos]
+        if word not in hide:
+            try:
+                paramDict[word] =  numbers[pos]
+            except:
+                print "Warning: word", word, "with value", numbers[pos], "not found"
+        pos += 1
+    
+            
+        
+        
+
+    
+
 def writeToFiles(directory, runList, refMatrix, valMatrix, xTitles, yTitles, title):
     if not os.path.exists(directory):
         os.mkdir(directory)
