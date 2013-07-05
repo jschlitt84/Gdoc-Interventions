@@ -1,27 +1,41 @@
 import gDocsImport
 import sys, os
 
+
 def isDigit(character):
     try:
         int(character)
         return True
     except:
         return False
-
-def getSpreadSheet(data, line, hide):
-    script = ''
-    ve = v = vti = vtd = '-1'
-    sd = sdti = sdtd = sdl = '-1'
-    cw = cwti = cwtd = cwl '-1'
-    cs = csti = cstd = csl = '-1'
-    ate = at = atdr = atti =attd = atl = '-1'
-    ape = ap = apti = aptd = aptl = '-1'
-    paramDict = {'ve':'-1','v':'-1','vti':'-1','vtd':'-1','sd':'-1','sdti':'-1','sdtd':'-1','sdl':'-1','cw':'-1','cwti':'-1','cwtd':'-1','cwl':'-1','cs':'-1','csti':'-1','cstd':'-1','csl':'-1','ate':'-1','at':'-1','atdr':'-1','atti':'-1','attd':'-1','atl':'-1','ape':'-1','ap':'-1','apti':'-1','aptd':'-1','aptl':'-1'}
+        
+        
+def filterDict(paramDict,isKeys,hide):
+    tempDict = paramDict[:]
+    hideThese = hide.split(' ')
+    pos = 0
+    while pos < len(hideThese):
+        try:
+            del tempDict[hideThese[pos]]
+        except:
+            print "Warning, key", hideThese[pos], "not found"
+        pos += 1 
+    if isKeys:
+        string = str(paramDict.keys())
+    else:
+        string = str(paramDict.values())
+    return string.replace('[','').replace(']','').replace("'",'')
+    
+    
+def getSpreadSheet(data, line, hide, justGetKeys):
+    paramDict = {'ve':-1,'v':-1,'vti':-1,'vtd':-1,'sd':-1,'sdti':-1,'sdtd':-1,'sdl':-1,'cw':-1,'cwti':-1,'cwtd':-1,'cwl':-1,'cs':-1,'csti':-1,'cstd':-1,'csl':-1,'ate':-1,'at':-1,'atdr':-1,'atti':-1,'attd':-1,'atl':-1,'ape':-1,'ap':-1,'apti':-1,'aptd':-1,'aptl':-1, 'other':''}
+    dataDict = {'attackRate':0,'peakDay':0,'peakNumber':0,'isEpidemic':0,'leftBound':0,'rightBound':0, 'secondaryMaxima':''}
+    if justGetKeys:
+        return "directory, iteration, " + filterDict(paramDict, True, hide) + ', ' + filterDict(dataDict, True, hide) + '\n'
     words = []
     numbers = []
     extra = ''
     pos = 0
-    wasDigit = False
     tempString = ''
     line = line.replace(' ','').replace('\n','').replace('//','/')
     while pos < len(line):
@@ -29,7 +43,7 @@ def getSpreadSheet(data, line, hide):
             tempString += line[pos]
         else:
             if pos == len(line) -1 or line[pos] ==  '/':
-                extra += tempString + ' '
+                extra += tempString + '-'
                 tempString = ''
             else:
                 words.append(tempString)
@@ -41,6 +55,10 @@ def getSpreadSheet(data, line, hide):
                 tempString = ''
         pos += 1
     pos = 0
+    
+    if len(extra)>1:
+        extra = extra[0:-1]
+    
     if len(words) != len(numbers):
         print "Data output error, word & number list lengths do not match"
         quit()
@@ -52,10 +70,36 @@ def getSpreadSheet(data, line, hide):
             except:
                 print "Warning: word", word, "with value", numbers[pos], "not found"
         pos += 1
+    paramDict['other'] = extra
     
-            
-        
-        
+    pos = 0
+    outString = ''
+    while pos < data['iterations']:
+        dataDict['attackRate'] = data['attackRate'][pos]
+        dataDict['peakDay'] = data['peakDay'][pos]
+        dataDict['peakNumber'] = data['peakNumber'][pos]
+        dataDict['isEpidemic'] = data['isEpidemic'][pos]
+        dataDict['leftBound'] = data['leftBounds'][pos]
+        dataDict['rightBound'] = data['rightBounds'][pos]
+        try:
+            dataDict['secondaryMaxima'] = data['secondaryMaxima'][pos][0:-1].replace(' ','-')
+        except:
+            dataDict['secondaryMaxima'] = ''
+        lineOut = line + ', ' + str(pos) + ', ' + filterDict(paramDict, False, hide) + ', ' + filterDict(dataDict, False, hide) + '\n'
+        outString += lineOut
+        pos += 1
+    dataDict['attackRate'] = data['epiMean']
+    dataDict['peakDay'] = data['epiPeak']
+    dataDict['peakNumber'] = data['epiNumber']
+    dataDict['isEpidemic'] = '-1'
+    dataDict['leftBound'] = data['epiLeft']
+    dataDict['rightBound'] = data['epiRight']
+    try:
+            dataDict['secondaryMaxima'] = data['epiSecondary'][0:-1].replace(' ','-')
+    except:
+            dataDict['secondaryMaxima'] = ''
+    outString += line + ', Mean, ' + filterDict(paramDict, False, hide) + ', ' + filterDict(dataDict, False, hide) + '\n'
+    return outString
 
     
 
@@ -228,11 +272,15 @@ def checkLines(fileName):
     peakToLocal = 10
     localSNR = 2
     pos1 = 0
-    while pos1 < iterations:
+    while pos1 < iterations + 1:
+        isMean = pos1 == iterations
         pos2 = temp = 0
         outside = (1-curveWidth)*attackRates[pos1]*0.5
         while pos2 < days:
-            temp += iterXDay[pos1][pos2]
+            if isMean:
+                temp += meanCurve(pos2)
+            else:
+                temp += iterXDay[pos1][pos2]
             if temp > outside:
                 leftBounds.append(pos2)
                 print "left bound:",pos2
@@ -241,7 +289,10 @@ def checkLines(fileName):
         pos2 = days-1
         temp = 0
         while pos2 > 0:
-            temp += iterXDay[pos1][pos2]
+            if isMean:
+                temp += meanCurve(pos2)
+            else:
+                temp += iterXDay[pos1][pos2]
             if temp > outside:
 		print "right bound:",pos2
                 rightBounds.append(pos2)
@@ -251,7 +302,10 @@ def checkLines(fileName):
         sliceWidth = int(lengths[pos1]*searchWidth)
         pos2 = leftBounds[pos1]
         while pos2 + sliceWidth < rightBounds[pos1]:
-            tempSlice = iterXDay[pos1][pos2:min(pos2+sliceWidth+1,days)]
+            if isMean:
+                tempSlice = meanCurve[pos2:min(pos2+sliceWidth+1,days)]
+            else:
+                tempSlice = iterXDay[pos1][pos2:min(pos2+sliceWidth+1,days)]
             localPeak = max(tempSlice)
 	    print tempSlice, localPeak
             localMaxima = tempSlice.index(localPeak)
@@ -274,9 +328,15 @@ def checkLines(fileName):
 	    else:
                 pos2 += 1
         pos1 += 1
-        
-
-    return {'directory':fileName,'days':days,'meanCurve':meanCurve, 'epiPeak': epiPeak, 'epiNumber': epiNumber,'popsize':popSize,'iterations':iterations,'attackRates':attackRates,"ignored":ignored,'epiMean':epiMean,'epiPercent':epiPercent,'peakDay':maxDay,'peakNumber':maxNumber,'secondaryMaxima':secondaryMaxima,'leftBound':leftBounds,'rightBound':rightBounds,"iterationsByDay":iterXDay}
+    
+    epiLeft = leftBounds[-1]
+    epiRight = rightBounds[-1]    
+    epiSecondary = secondaryMaxima[-1]
+    del leftBounds[-1]
+    del rightBounds[-1]
+    del secondaryMaxima[-1]
+    
+    return {'directory':fileName,'days':days,'meanCurve':meanCurve,'epiPeak':epiPeak,'epiNumber':epiNumber,'epiLeft':epiLeft,'epiRight':epiRight,'epiSecondary':epiSecondary,'popsize':popSize,'iterations':iterations,'attackRates':attackRates,"ignored":ignored,'epiMean':epiMean,'epiPercent':epiPercent,'peakDay':maxDay,'peakNumber':maxNumber,'secondaryMaxima':secondaryMaxima,'leftBound':leftBounds,'rightBound':rightBounds,"iterationsByDay":iterXDay}
     
 def prepDir(directory):
     return (directory+'/').replace('//','/')
@@ -331,7 +391,7 @@ def main():
         	toIgnoreY = yIgnore != ['']
         
         	const =  params[13].split(' ')
-        	cLen = len(const)
+#        	cLen = len(const)
         
         
         fileIn = open(directoryIn + qsubDir)
@@ -487,13 +547,23 @@ def main():
             attackOut.close()
             attackOut = open(directoryOut + '/' + studyName + 'AttackList.txt','a+b')
             attackOut.write("# Attack Rate List\n")
+            statsOut = open(directoryOut + '/' + studyName + 'DetailStats.txt','w')
+            statsOut.close()
+            
+            
             while pos < limit:
                 data = checkLines(qsubList[pos]+'/'+target)
+                if pos == 0:
+                    statsOut = open(directoryOut + '/' + studyName + 'DetailStats.txt','a+b')
+                    statsOut.write("# Detailed Stats\n")
+                    statsOut.write(getSpreadSheet(data, '', '', True))
                 writeAll(qsubList[pos]+'/', studyName, data)
 #               writeAll(directoryOut, studyName+qsubList[pos].replace(directoryIn,'').replace('/','_'), data)                 
                 attackOut.write(qsubList[pos].replace(directoryIn,'') + ' ' + str(data['epiMean']) + '\n')
+                statsOut.write(data, qsubList[pos].replace(directoryIn,''), False)
                 pos += 1
 	    attackOut.close()
+	    statsOut.close()
                 
         
         column += 1
