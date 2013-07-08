@@ -281,7 +281,7 @@ def checkLines(fileName):
             outside = (1-curveWidth)*attackRates[pos1]*0.5
         while pos2 < days:
             if isMean:
-                temp += meanCurve(pos2)
+                temp += meanCurve[pos2]
             else:
                 temp += iterXDay[pos1][pos2]
             if temp > outside:
