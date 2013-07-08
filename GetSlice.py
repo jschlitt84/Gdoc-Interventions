@@ -266,7 +266,7 @@ def checkLines(fileName):
     leftBounds = []
     rightBounds = []
     lengths = []
-    secondaryMaxima = [""]*iterations
+    secondaryMaxima = [""]*iterations + 1
     curveWidth = .95
     searchWidth = .20
     peakToLocal = 10
