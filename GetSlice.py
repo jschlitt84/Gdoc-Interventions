@@ -574,7 +574,7 @@ def main():
             pos = 0
             limit = len(qsubList)
             
-            while pos < limit and pos < 10:
+            while pos < limit:
                 data = checkLines(qsubList[pos]+'/'+target)
                 if pos == 0:
                     attackOut = open(directoryOut + '/' + studyName + 'AttackList.txt','w')
