@@ -1,7 +1,9 @@
 import gDocsImport
-from collections import OrderedDict
 import sys, os
-
+try:
+    from collections import OrderedDict
+except:
+    import OrderedDict
 
 def isDigit(character):
     try:
