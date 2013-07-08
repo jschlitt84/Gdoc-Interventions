@@ -18,7 +18,7 @@ def filterDict(paramDict,isKeys,hide):
         try:
             del tempDict[hideThese[pos]]
         except:
-            print "Warning, key", hideThese[pos], "not found"
+            print "Warning, key '", hideThese[pos], "' not found"
         pos += 1 
     if isKeys:
         string = str(paramDict.keys())
@@ -556,27 +556,26 @@ def main():
             
             pos = 0
             limit = len(qsubList)
-            attackOut = open(directoryOut + '/' + studyName + 'AttackList.txt','w')
-            attackOut.close()
-            attackOut = open(directoryOut + '/' + studyName + 'AttackList.txt','a+b')
-            attackOut.write("# Attack Rate List\n")
-            statsOut = open(directoryOut + '/' + studyName + 'DetailStats.txt','w')
-            statsOut.close()
-            
             
             while pos < limit:
                 data = checkLines(qsubList[pos]+'/'+target)
                 if pos == 0:
-                    statsOut = open(directoryOut + '/' + studyName + 'DetailStats.txt','a+b')
+                    attackOut = open(directoryOut + '/' + studyName + 'AttackList.txt','w')
+                    attackOut.write("# Attack Rate List\n")
+                    attackOut.close()
+                    statsOut = open(directoryOut + '/' + studyName + 'DetailStats.txt','w')
                     statsOut.write("# Detailed Stats\n")
                     statsOut.write(getSpreadSheet(data, '', hideThese, True))
+                attackOut = open(directoryOut + '/' + studyName + 'AttackList.txt','a+b')            
+                statsOut = open(directoryOut + '/' + studyName + 'DetailStats.txt','a+b')
                 writeAll(qsubList[pos]+'/', studyName, data)
 #               writeAll(directoryOut, studyName+qsubList[pos].replace(directoryIn,'').replace('/','_'), data)                 
                 attackOut.write(qsubList[pos].replace(directoryIn,'') + ' ' + str(data['epiMean']) + '\n')
                 statsOut.write(getSpreadSheet(data, qsubList[pos].replace(directoryIn,''),hideThese, False))
+                attackOut.close()
+	        statsOut.close()
                 pos += 1
-	    attackOut.close()
-	    statsOut.close()
+	    
                 
         
         column += 1
