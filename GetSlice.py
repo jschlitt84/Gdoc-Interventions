@@ -306,6 +306,10 @@ def checkLines(fileName):
         pos2 = leftBounds[pos1]
         while pos2 + sliceWidth < rightBounds[pos1]:
             if isMean:
+                tempMax =  epiNumber
+            else:
+                tempMax = maxNumber[pos1]
+            if isMean:
                 tempSlice = meanCurve[pos2:min(pos2+sliceWidth+1,days)]
             else:
                 tempSlice = iterXDay[pos1][pos2:min(pos2+sliceWidth+1,days)]
@@ -317,7 +321,7 @@ def checkLines(fileName):
 		pos2 += 1
             elif localMaxima > sliceWidth/2:
                 pos2 += localMaxima - sliceWidth/2
-            elif localPeak*peakToLocal >= maxNumber[pos1] and localPeak != maxNumber[pos1] and str(localMaxima + pos2) not in secondaryMaxima[pos1]:
+            elif localPeak*peakToLocal >= tempMax and localPeak != tempMax and str(localMaxima + pos2) not in secondaryMaxima[pos1]:
                 leftSlice = tempSlice[0:localMaxima]
                 rightSlice = tempSlice[localMaxima:len(tempSlice)+1]
 		leftMin = min(leftSlice)
