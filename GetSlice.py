@@ -275,7 +275,10 @@ def checkLines(fileName):
     while pos1 < iterations + 1:
         isMean = pos1 == iterations
         pos2 = temp = 0
-        outside = (1-curveWidth)*attackRates[pos1]*0.5
+        if isMean:
+            outside = (1-curveWidth)*epiMean*0.5
+        else:
+            outside = (1-curveWidth)*attackRates[pos1]*0.5
         while pos2 < days:
             if isMean:
                 temp += meanCurve(pos2)
