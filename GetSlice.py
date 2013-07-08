@@ -65,10 +65,11 @@ def getSpreadSheet(data, line, hide, justGetKeys):
                     tempString += line[pos]
                     pos += 1
                 numbers.append(tempString)
-                if line[pos] != '/':
-                    tempString = line[pos]
-                else:
-                    tempString = ''
+                if pos < len(line):
+                    if line[pos] != '/':
+                        tempString = line[pos]
+                    else:
+                        tempString = ''
         pos += 1
     pos = 0
     
@@ -580,11 +581,11 @@ def main():
                     attackOut = open(directoryOut + '/' + studyName + 'AttackList.txt','w')
                     attackOut.write("# Attack Rate List\n")
                     attackOut.close()
-                    statsOut = open(directoryOut + '/' + studyName + 'DetailStats.txt','w')
+                    statsOut = open(directoryOut + '/' + studyName + 'DetailStats.csv','w')
                     statsOut.write("# Detailed Stats\n")
                     statsOut.write(getSpreadSheet(data, '', hideThese, True))
                 attackOut = open(directoryOut + '/' + studyName + 'AttackList.txt','a+b')            
-                statsOut = open(directoryOut + '/' + studyName + 'DetailStats.txt','a+b')
+                statsOut = open(directoryOut + '/' + studyName + 'DetailStats.csv','a+b')
                 writeAll(qsubList[pos]+'/', studyName, data)
 #               writeAll(directoryOut, studyName+qsubList[pos].replace(directoryIn,'').replace('/','_'), data)                 
                 attackOut.write(qsubList[pos].replace(directoryIn,'') + ' ' + str(data['epiMean']) + '\n')

@@ -68,10 +68,11 @@ def getSpreadSheet(data, line, hide, justGetKeys):
                     tempString += line[pos]
                     pos += 1
                 numbers.append(tempString)
-                if line[pos] != '/':
-                    tempString = line[pos]
-                else:
-                    tempString = ''
+                if pos < len(line):
+                    if line[pos] != '/':
+                        tempString = line[pos]
+                    else:
+                        tempString = ''
         pos += 1
     pos = 0
     
@@ -619,6 +620,6 @@ def main():
     
 
 
-getSpreadSheet(None,"ve30v90vtd17active/ate87at90atdr80atti01attd0atl10/cw25cwtd10cwl7",None,None)
+getSpreadSheet(None,"ve30v90vtd17active/ate87at90atdr80atti01attd0atl10/cw25cwtd10cwl14",None,None)
 main()
 quit()
