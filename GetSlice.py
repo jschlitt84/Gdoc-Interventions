@@ -20,11 +20,12 @@ def filterDict(paramDict,isKeys,hide):
     hideThese = hide.split(' ')
     pos = 0
     while pos < len(hideThese):
-        try:
-            del tempDict[hideThese[pos]]
-            print "Column", hideThese[pos], "deleted"
-        except:
-            print "Warning, key '", hideThese[pos], "' not found"
+        if hideThese[pos].replace(' ','') != '':
+            try:
+                del tempDict[hideThese[pos]]
+                print "Column", hideThese[pos], "deleted"
+            except:
+                print "Warning, key '", hideThese[pos], "' not found"
         pos += 1 
     if isKeys:
         string = str(paramDict.keys())
@@ -68,6 +69,10 @@ def getSpreadSheet(data, line, hide, justGetKeys):
     if len(words) != len(numbers):
         print "Data output error, word & number list lengths do not match"
         quit()
+    
+    print words
+    print numbers
+    quit()
     while pos < len(words):
         word =  words[pos]
         if word not in hide:
@@ -76,7 +81,7 @@ def getSpreadSheet(data, line, hide, justGetKeys):
             except:
                 print "Warning: word", word, "with value", numbers[pos], "not found"
         pos += 1
-    paramDict['other'] = extra
+    paramDict['other'] = extra.join('-')
     
     pos = 0
     outString = ''
