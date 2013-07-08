@@ -46,7 +46,7 @@ def getSpreadSheet(data, line, hide, justGetKeys):
     tempString = ''
     line = line.replace(' ','').replace('\n','').replace('//','/')
     while pos < len(line):
-        if not isDigit(line[pos]):
+        if not isDigit(line[pos]) and line[pos] != '/':
             tempString += line[pos]
         else:
             if pos == len(line) -1 or line[pos] ==  '/':
