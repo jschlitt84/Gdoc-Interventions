@@ -541,6 +541,9 @@ def main():
             writeToFiles(directoryOut, runList, refMatrix, valMatrix, xTitles, yTitles, studyName)
         
         if runAll:
+            if not os.path.exists(directoryOut):
+                os.mkdir(directoryOut)
+            
             pos = 0
             limit = len(qsubList)
             attackOut = open(directoryOut + '/' + studyName + 'AttackList.txt','w')
