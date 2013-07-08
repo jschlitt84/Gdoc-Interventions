@@ -59,7 +59,7 @@ def getSpreadSheet(data, line, hide, justGetKeys):
                     tempString += line[pos]
                     pos += 1
                 numbers.append(tempString)
-                tempString = ''
+                tempString = line[pos]
         pos += 1
     pos = 0
     
