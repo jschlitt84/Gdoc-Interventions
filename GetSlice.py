@@ -78,7 +78,7 @@ def getSpreadSheet(data, line, hide, justGetKeys):
         dataDict['attackRate'] = data['attackRate'][pos]
         dataDict['peakDay'] = data['peakDay'][pos]
         dataDict['peakNumber'] = data['peakNumber'][pos]
-        dataDict['isEpidemic'] = not data['ignored'][pos]
+        dataDict['isEpidemic'] = data['isEpidemic'][pos]
         dataDict['leftBound'] = data['leftBounds'][pos]
         dataDict['rightBound'] = data['rightBounds'][pos]
         try:
