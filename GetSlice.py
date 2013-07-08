@@ -44,14 +44,20 @@ def getSpreadSheet(data, line, hide, justGetKeys):
     extra = ''
     pos = 0
     tempString = ''
-    line = line.replace(' ','').replace('\n','').replace('//','/')
+    while '//' in line:
+        line =  line.replace('//','/')
+    line = line.replace(' ','').replace('\n','')
     while pos < len(line):
-        if not isDigit(line[pos]) and line[pos] != '/':
+        if not isDigit(line[pos]):
             tempString += line[pos]
         else:
             if pos == len(line) -1 or line[pos] ==  '/':
-                extra += tempString + '-'
-                tempString = ''
+                if isDigit(line[pos]):
+                    words.append(tempString)
+                    numbers.append(line[pos])
+                else:
+                    extra += tempString + '+'
+                    tempString = ''
             else:
                 words.append(tempString)
                 tempString = ''
@@ -59,7 +65,10 @@ def getSpreadSheet(data, line, hide, justGetKeys):
                     tempString += line[pos]
                     pos += 1
                 numbers.append(tempString)
-                tempString = line[pos]
+                if line[pos] != '/':
+                    tempString = line[pos]
+                else:
+                    tempString = ''
         pos += 1
     pos = 0
     
@@ -69,10 +78,7 @@ def getSpreadSheet(data, line, hide, justGetKeys):
     if len(words) != len(numbers):
         print "Data output error, word & number list lengths do not match"
         quit()
-    
-    print words
-    print numbers
-    quit()
+        
     while pos < len(words):
         word =  words[pos]
         if word not in hide:
@@ -81,7 +87,7 @@ def getSpreadSheet(data, line, hide, justGetKeys):
             except:
                 print "Warning: word", word, "with value", numbers[pos], "not found"
         pos += 1
-    paramDict['other'] = extra.join('-')
+    paramDict['other'] = extra
     
     pos = 0
     outString = ''
@@ -594,18 +600,6 @@ def main():
     print "Finished analyses, quitting now"
         
         
-    
-
-    
-    
-                
-                    
-                
-    
-
-    
-
-
 
 main()
 quit()
