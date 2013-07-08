@@ -11,7 +11,7 @@ def isDigit(character):
         
         
 def filterDict(paramDict,isKeys,hide):
-    tempDict = paramDict[:]
+    tempDict = paramDict.copy()
     hideThese = hide.split(' ')
     pos = 0
     while pos < len(hideThese):
@@ -75,12 +75,12 @@ def getSpreadSheet(data, line, hide, justGetKeys):
     pos = 0
     outString = ''
     while pos < data['iterations']:
-        dataDict['attackRate'] = data['attackRate'][pos]
+        dataDict['attackRate'] = data['attackRates'][pos]
         dataDict['peakDay'] = data['peakDay'][pos]
         dataDict['peakNumber'] = data['peakNumber'][pos]
-        dataDict['isEpidemic'] = data['isEpidemic'][pos]
-        dataDict['leftBound'] = data['leftBounds'][pos]
-        dataDict['rightBound'] = data['rightBounds'][pos]
+	dataDict['isEpidemic'] = not data['ignored'][pos]
+        dataDict['leftBound'] = data['leftBound'][pos]
+        dataDict['rightBound'] = data['rightBound'][pos]
         try:
             dataDict['secondaryMaxima'] = data['secondaryMaxima'][pos][0:-1].replace(' ','-')
         except:
@@ -143,6 +143,7 @@ def writeToFiles(directory, runList, refMatrix, valMatrix, xTitles, yTitles, tit
     writeOut.write('\nLines Ran' + ', '*(xLen) + '\n')
     while pos < len(runList):
         print runList[pos]
+
         writeOut.write(runList[pos] + ', '*(xLen) + '\n')
         pos += 1
     writeOut.close()
@@ -266,7 +267,7 @@ def checkLines(fileName):
     leftBounds = []
     rightBounds = []
     lengths = []
-    secondaryMaxima = [""]*iterations + 1
+    secondaryMaxima = [""]*(iterations + 1)
     curveWidth = .95
     searchWidth = .20
     peakToLocal = 10
@@ -291,6 +292,7 @@ def checkLines(fileName):
             pos2 += 1
         pos2 = days-1
         temp = 0
+
         while pos2 > 0:
             if isMean:
                 temp += meanCurve[pos2]
@@ -343,7 +345,7 @@ def checkLines(fileName):
     del rightBounds[-1]
     del secondaryMaxima[-1]
     
-    return {'directory':fileName,'days':days,'meanCurve':meanCurve,'epiPeak':epiPeak,'epiNumber':epiNumber,'epiLeft':epiLeft,'epiRight':epiRight,'epiSecondary':epiSecondary,'popsize':popSize,'iterations':iterations,'attackRates':attackRates,"ignored":ignored,'epiMean':epiMean,'epiPercent':epiPercent,'peakDay':maxDay,'peakNumber':maxNumber,'secondaryMaxima':secondaryMaxima,'leftBound':leftBounds,'rightBound':rightBounds,"iterationsByDay":iterXDay}
+    return {'directory':fileName,'days':days,'meanCurve':meanCurve,'epiPeak':epiPeak,'epiNumber':epiNumber,'epiLeft':epiLeft,'epiRight':epiRight,'epiSecondary':epiSecondary,'popsize':popSize,'iterations':iterations,'attackRates':attackRates,"ignored":ignore,'epiMean':epiMean,'epiPercent':epiPercent,'peakDay':maxDay,'peakNumber':maxNumber,'secondaryMaxima':secondaryMaxima,'leftBound':leftBounds,'rightBound':rightBounds,"iterationsByDay":iterXDay}
     
 def prepDir(directory):
     return (directory+'/').replace('//','/')
@@ -378,6 +380,7 @@ def main():
         studyName = params[2]
         qsubDir = params[3]
         target = params[4]
+	hideThese = params[15]
         runAll = params[14].lower()[0] == 'y'
     
         if not runAll:
@@ -566,11 +569,11 @@ def main():
                 if pos == 0:
                     statsOut = open(directoryOut + '/' + studyName + 'DetailStats.txt','a+b')
                     statsOut.write("# Detailed Stats\n")
-                    statsOut.write(getSpreadSheet(data, '', '', True))
+                    statsOut.write(getSpreadSheet(data, '', hideThese, True))
                 writeAll(qsubList[pos]+'/', studyName, data)
 #               writeAll(directoryOut, studyName+qsubList[pos].replace(directoryIn,'').replace('/','_'), data)                 
                 attackOut.write(qsubList[pos].replace(directoryIn,'') + ' ' + str(data['epiMean']) + '\n')
-                statsOut.write(data, qsubList[pos].replace(directoryIn,''), False)
+                statsOut.write(getSpreadSheet(data, qsubList[pos].replace(directoryIn,''),hideThese, False))
                 pos += 1
 	    attackOut.close()
 	    statsOut.close()
