@@ -2,8 +2,10 @@ import gDocsImport
 import sys, os
 try:
     from collections import OrderedDict
+    print "Python 2.7+, loading OrderedDict from Collections"
 except:
     import OrderedDict
+    print "OrderDict not found in collections, using drop in version"
 
 def isDigit(character):
     try:
