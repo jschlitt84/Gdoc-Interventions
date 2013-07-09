@@ -151,7 +151,11 @@ def loadNClean(isPrivate,publicData, start, end, cleanType):
     length = len(script)
     
     while pos < length:
-        if "#" in script[pos] or len(script[pos].replace(",",''))<1:
+        if "#IGNORE" in script[pos]  in script[pos]:            
+            del script[pos:length+1]
+            pos = length - 1
+            break
+        elif "#" in script[pos] or len(script[pos].replace(",",''))<1:
             del script[pos]
             length -= 1
         else:
@@ -191,17 +195,6 @@ def loadNClean(isPrivate,publicData, start, end, cleanType):
         if end < length:
             del script[end:length+1]
             length = end  
-      
-    while pos < length:
-        script[pos]= script[pos].replace('\n','')
-        if "#IGNORE" in script[pos]:
-            del script[pos:length+1]
-            break
-        if "#" in script[pos] or len(script[pos].replace(",",''))<1:
-            del script[pos]
-            pos -= 1
-            length -= 1
-
 
 # CONVERTS INTERVENTION/ ENUMERATION SCRIPT TO INTERNAL STRING FORMAT               
                 

@@ -385,12 +385,18 @@ def main():
     
     column = 1
     while column < len(script[0]):
-        params = []
-        pos = 0
         limit  = len(script)
-        while pos < limit:
-            params.append(script[pos][column])
-            pos += 1
+        hasContent = False
+        while not hasContent and column < len(script[0]):  
+            pos = 0
+            params = []
+            while pos < limit:
+                params.append(script[pos][column])
+                pos += 1
+            column +=1
+            hasContent = len(''.join(params).replace(' ','') ) != 0
+        if column == len(script[0]) and not hasContent:
+            break
         
         print params
         directoryIn = prepDir(params[0])
@@ -595,8 +601,7 @@ def main():
                 pos += 1
 	    
                 
-        
-        column += 1
+    
         
     print "Finished analyses, quitting now"
         
