@@ -20,18 +20,21 @@ stopWord = "Diagnosis Model Version,Antiviral Model Version,"
 def filterIDs(directory):   
     print "Initiating one time ID load/ filter to memory"
     popfile = open(directory)
-    ids = []                 
+    #ids = []   
+    ids = set()              
     line = 0
     while True:
             testline = popfile.readline()
             if len(testline) == 0:
                 break
             if not testline.startswith("#"):
-                ids.append(testline)
+                #ids.append(testline)
+                ids.add(testline)
                 line += 1
           
     print str(line), "entries with IDS\n", int(ids[0]), "through", int(ids[line-1]), "loaded,\npreparing to chop\n"
     
+    """
     print "(sub)Population loaded succesfully, checking for duplicate IDs...\n"
     duplicates = pos1 = 0
     
@@ -42,7 +45,10 @@ def filterIDs(directory):
             line -= 1
             duplicates += 1
         pos1 += 1
-    print "Load & filter complete"
+    print "Load & filter complete""""
+    
+    ids =  sorted(list(ids))
+    
     return {"directory":directory,"ids":ids}
 
 # WRITES ANTIVIRAL AND DIAGNOSIS SCRIPTS TO DIRECTORY 
