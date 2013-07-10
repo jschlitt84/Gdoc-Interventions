@@ -45,7 +45,7 @@ def filterIDs(directory):
             line -= 1
             duplicates += 1
         pos1 += 1
-    print "Load & filter complete""""
+    print "Load & filter complete" """
     
     ids =  sorted(list(ids))
     
