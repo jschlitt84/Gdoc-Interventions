@@ -31,7 +31,8 @@ def filterIDs(directory):
                 #ids.append(testline)
                 ids.add(testline)
                 line += 1
-          
+                
+    ids =  sorted(list(ids))      
     print str(line), "entries with IDS\n", int(ids[0]), "through", int(ids[line-1]), "loaded,\npreparing to chop\n"
     
     """
@@ -46,8 +47,6 @@ def filterIDs(directory):
             duplicates += 1
         pos1 += 1
     print "Load & filter complete" """
-    
-    ids =  sorted(list(ids))
     
     return {"directory":directory,"ids":ids}
 
