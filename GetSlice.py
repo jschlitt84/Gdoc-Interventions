@@ -588,7 +588,7 @@ def main():
                     attackOut.write("# Attack Rate List\n")
                     attackOut.close()
                     statsOut = open(directoryOut + '/' + studyName + 'DetailStats.csv','w')
-                    statsOut.write("# Detailed Stats\n")
+                    ##statsOut.write("# Detailed Stats\n")
                     statsOut.write(getSpreadSheet(data, '', hideThese, True))
                 attackOut = open(directoryOut + '/' + studyName + 'AttackList.txt','a+b')            
                 statsOut = open(directoryOut + '/' + studyName + 'DetailStats.csv','a+b')
