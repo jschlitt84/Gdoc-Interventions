@@ -9,7 +9,8 @@ pdf("Summary_Stats.pdf")
 
 ### Attack Rate
 AR_hist = hist(av$attackRate)
-barplot(AR_hist$counts,names.arg=AR_hist$breaks[1:23],xlab="Attack Rate",ylab="Frequency",main="")
+n_breaks = length(AR_hist$breaks)
+barplot(AR_hist$counts,names.arg=AR_hist$breaks[1:n_breaks-1],xlab="Attack Rate",ylab="Frequency",main="")
 
 
 
