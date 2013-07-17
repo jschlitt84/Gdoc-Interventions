@@ -693,6 +693,7 @@ def main():
 	    while pos < uniqueLimit:
 	        prepped = prepSingle(params,qsubList,splitList,'ate','ve',uniqueInterventions[pos],uniqueIndex[pos])
 	        writeTSVcells(directoryOut+'/Vacc_Vs_Av_Charts',prepped['runList'],prepped['refMatrix'],prepped['valMatrix'],prepped['xTitles'],prepped['yTitles'],uniqueInterventions[pos].replace(' ',''))
+	        pos += 1
 	        
         
     print "Finished analyses, quitting now"
