@@ -136,7 +136,38 @@ def getSpreadSheet(data, line, hide, justGetKeys):
     outString += line + ', Mean, ' + filterDict(paramDict, False, hide) + ', ' + filterDict(dataDict, False, hide) + '\n'
     return outString
 
+def writeTSVcells(directory, runList, refMatrix, valMatrix, xTitles, yTitles, title):
+    if not os.path.exists(directory):
+        os.mkdir(directory)
+        
+    titlesOut =  open(directory+title+'Titles.txt','w')
+    xTitles = '["' + '", "'.split(xTitles) + '"],'
+    yTitles = '["' + '", "'.split(yTitles) + '"],'
+    titlesOut.write("xAxisLables = " + xTitles + '\n')
+    titlesOut.write("yAxisLables = " + yTitles)
+    titlesOut.close()
     
+    chartsOut = open(directory+title+'Chart.tsv','w')
+    refsOut =  open(directory+title+'Refs.tsv','w')
+    chartsOut.write('y\tx\tattackRate\n')
+    refsOut.write('y\tx\tcellReference\n')
+    
+    
+    xLen = len(xTitles)
+    yLen = len(yTitles)
+    posY =0
+    while posY < yLen:
+        chartsOut.write(yTitles[posY] + ', ')
+        posX = 0
+        while posX < xLen:
+            chartsOut.write(str(posY+1) + '\t' + str(posX+1) + '\t' + str(valMatrix[posX][posY]) + '\n')
+            refsOut.write(str(posY+1) + '\t' + str(posX+1) + '\t' + refMatrix[posX][posY] + '\n')
+            posX += 1
+        posY += 1
+    
+    chartsOut.close()
+    refsOut.close()
+        
 
 def writeToFiles(directory, runList, refMatrix, valMatrix, xTitles, yTitles, title):
     if not os.path.exists(directory):
@@ -384,23 +415,36 @@ def checkLines(fileName):
     
 def prepDir(directory):
     return (directory+'/').replace('//','/')
-    
-def prepSingle(params,qsubList,splitList):
-    xID = int(params[7])
-    xFind = params[8].split(' ')
-    xFLen = len(xFind)
+        
+def prepSingle(params,qsubList,splitList,mode,passedX,passedY,passedC,lineIndex):
+    if passedX != '':
+        xID = passedX.index(qsubList[lineIndex].split('/'))
+        xFind = passedX
+    else:
+        xID = int(params[7])
+        xFind = params[8].split(' ')
+        xFLen = len(xFind)
+        xIgnore = params[9].split(' ')
+        xILen = len(xIgnore)
     toFindX = xFLen > 0
-    xIgnore = params[9].split(' ')
-    xILen = len(xIgnore)
     toIgnoreX = xIgnore != ['']
-    yID =  int(params[10])
-    yFind = params[11].split(' ')
-    yFLen =  len(yFind)
+    
+    if passedY != '':
+        yID = passedY.index(qsubList[lineIndex].split('/'))
+        yFind = passedY
+    else:
+        yID =  int(params[10])
+        yFind = params[11].split(' ')
+        yFLen =  len(yFind)
+        yIgnore = params[12].split(' ')
+        yILen = len(yIgnore)
     toFindY = yFLen > 0
-    yIgnore = params[12].split(' ')
-    yILen = len(yIgnore)
     toIgnoreY = yIgnore != ['']
-    const =  params[13].split(' ')
+    
+    if passedC != '':
+        const = passedC
+    else:
+        const =  params[13].split(' ')
     width = qsubList[0].count('/') + 1 
     limit = len(splitList)
     targetStrings = ['']*width
@@ -526,6 +570,13 @@ def prepSingle(params,qsubList,splitList):
     writeParams = {'directoryOut':directoryOut,'runList':runList,'refMatrix':refMatrix,'valMatrix':valMatrix,'xTitles':xTitles,'yTitles':yTitles,'studyName':studyName}
     return writeParams
 
+def curveToTSV(epiMean):
+    pos = 0
+    text = "day\tinfected\n"
+    while pos < len(epiMean):
+        text += str(pos+1) + '\t' + str(epiMean[pos]) + '\n'
+        pos += 1
+    return text
 
 def main():
     
@@ -590,48 +641,62 @@ def main():
 		limit -= 1
     
         if not runAll:
-            prepped = prepSingle(params,qsubList,splitList)
+            prepped = prepSingle(params,qsubList,splitList,'','','','')
             writeToFiles(prepped['directoryOut'],prepped['runList'],prepped['refMatrix'],prepped['valMatrix'],prepped['xTitles'],prepped['yTitles'],prepped['studyName'])
         
         if runAll:
-            if not os.path.exists(directoryOut+'/Vacc_Vs_Av_Charts'):
-                os.mkdir(directoryOut+'/Vacc_Vs_Av_Charts')
-            if not os.path.exists(directoryOut+'/Individual_Mean_Stats'):
-                os.mkdir(directoryOut+'/Individual_Mean_Stats')
+            studyPrefix = directoryOut + '/' + studyName 
+            VAVPrefix = studyPrefix + '/Vacc_Vs_Av_Charts' 
+            meansPrefix = studyPrefix + '/Individual_Mean_Stats'
+            if not os.path.exists(VAVPrefix):
+                os.mkdir(VAVPrefix)
+            if not os.path.exists(meansPrefix):
+                os.mkdir(meansPrefix)
             
             
             
             pos = 0
-            limit = len(qsubList)
+            qsubLimit = len(qsubList)
             uniqueInterventions = []
+            uniqueIndex = []
             
-            while pos < limit:
+            while pos < qsubLimit:
                 data = checkLines(qsubList[pos]+'/'+target)
-                filteredName = removeDescriptor(qsubList[pos],['ve','ate','ape']).replace('/','_')
+                filteredName = removeDescriptor(qsubList[pos],['ve','ate','ape']).replace('/',' ')
                 if filteredName not in uniqueInterventions:
                     uniqueInterventions.append(filteredName)
+                    uniqueIndex.append(pos)
                 if pos == 0:
-                    attackOut = open(directoryOut + '/' + studyName + 'AttackList.txt','w')
+                    attackOut = open(studyPrefix + 'AttackList.txt','w')
                     attackOut.write("# Attack Rate List\n")
                     attackOut.close()
-                    statsOut = open(directoryOut + '/' + studyName + 'DetailStats.csv','w')
-                    ##statsOut.write("# Detailed Stats\n")
+                    statsOut = open(studyPrefix + 'DetailStats.csv','w')
                     statsOut.write(getSpreadSheet(data, '', hideThese, True))
-                attackOut = open(directoryOut + '/' + studyName + 'AttackList.txt','a+b')            
-                statsOut = open(directoryOut + '/' + studyName + 'DetailStats.csv','a+b')
-                writeAll(qsubList[pos]+'/', studyName, data)               
+                    statsOut.close()
+                attackOut = open(studyPrefix + 'AttackList.txt','a+b')            
+                statsOut = open(studyPrefix + 'DetailStats.csv','a+b')
+                qsubLine = meansPrefix + '/' + qsubList[pos].replace('/','_')
+                meansOut = open(qsubLine + 'Means.tsv','w')
+                writeAll(qsubList[pos]+'/', studyName, data)
+                writeAll(meansPrefix, studyName, data)              
                 attackOut.write(qsubList[pos].replace(directoryIn,'') + ' ' + str(data['epiMean']) + '\n')
                 statsOut.write(getSpreadSheet(data, qsubList[pos].replace(directoryIn,''),hideThese, False))
+                meansOut.write(curveToTSV(data['meanCurve']))
                 attackOut.close()
 	        statsOut.close()
                 pos += 1
-	    
-                
-    
+            print "Finished generation of cell summaries & detail stats, starting mass chart generation"
+            uniqueLimit = len(uniqueInterventions)
+            cells =  qsubLimit/uniqueLimit
+            print "%s unique interventions found with %s antiviral & vaccine effectiveness cells per graph" % (str(uniqueLimit),str(cells))
+	    pos = 0
+	    while pos < uniqueLimit:
+	        prepped = prepSingle(params,qsubList,splitList,'ate','ve',uniqueInterventions[pos],uniqueIndex[pos])
+	        writeTSVcells(directoryOut+'/Vacc_Vs_Av_Charts',prepped['runList'],prepped['refMatrix'],prepped['valMatrix'],prepped['xTitles'],prepped['yTitles'],uniqueInterventions[pos].replace(' ',''))
+	        
         
     print "Finished analyses, quitting now"
         
-        
-removeDescriptor('ave122blargwoof2',['blarg','woof'])
+    
 main()
 quit()
