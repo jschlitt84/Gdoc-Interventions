@@ -648,6 +648,9 @@ def main():
             studyPrefix = directoryOut + '/' + studyName 
             VAVPrefix = studyPrefix + '/Vacc_Vs_Av_Charts' 
             meansPrefix = studyPrefix + '/Individual_Mean_Stats'
+            print studyPrefix
+            print VAVPrefix
+            print meansPrefix
             if not os.path.exists(VAVPrefix):
                 os.mkdir(VAVPrefix)
             if not os.path.exists(meansPrefix):
