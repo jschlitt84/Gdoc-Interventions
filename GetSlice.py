@@ -416,7 +416,9 @@ def checkLines(fileName):
 def prepDir(directory):
     while '//' in directory:
         directory = directory.replace('//','/')
-    return (directory+'/')
+    if directory[-1] != '/':
+        directory += '/'
+    return directory
         
 def prepSingle(params,qsubList,splitList,mode,passedX,passedY,passedC,lineIndex):
     if passedX != '':
