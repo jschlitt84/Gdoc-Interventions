@@ -707,9 +707,14 @@ def main():
             print "%s unique interventions found with %s antiviral & vaccine effectiveness cells per graph" % (str(uniqueLimit),str(cells))
 	    pos = 0
 	    while pos < uniqueLimit:
-	        print uniqueInterventions, uniqueLimit
-	        prepped = prepSingle(params,qsubList,splitList,'ate','ve',uniqueInterventions[pos],uniqueIndex[pos])
-	        writeTSVcells(directoryOut+'/Vacc_Vs_Av_Charts',prepped['runList'],prepped['refMatrix'],prepped['valMatrix'],prepped['xTitles'],prepped['yTitles'],uniqueInterventions[pos].replace(' ',''))
+	        qsubTemp = qsubList[uniqueIndex[pos]].replace(directoryIn,'')
+	        if 've' in qsubTemp and ('ate' in qsubTemp or 'ape' in qsubTemp):
+	           if 'ate' not in qsubTemp:
+	                prepped = prepSingle(params,qsubList,splitList,'ape','ve',uniqueInterventions[pos],uniqueIndex[pos])
+	           else:
+	               prepped = prepSingle(params,qsubList,splitList,'ate','ve',uniqueInterventions[pos],uniqueIndex[pos])
+	           print uniqueInterventions, uniqueLimit
+	           writeTSVcells(directoryOut+'/Vacc_Vs_Av_Charts',prepped['runList'],prepped['refMatrix'],prepped['valMatrix'],prepped['xTitles'],prepped['yTitles'],uniqueInterventions[pos].replace(' ',''))
 	        pos += 1
 	        
         
