@@ -414,7 +414,9 @@ def checkLines(fileName):
     return {'directory':fileName,'days':days,'meanCurve':meanCurve,'epiPeak':epiPeak,'epiNumber':epiNumber,'epiLeft':epiLeft,'epiRight':epiRight,'epiSecondary':epiSecondary,'popsize':popSize,'iterations':iterations,'attackRates':attackRates,"ignored":ignore,'epiMean':epiMean,'epiPercent':epiPercent,'peakDay':maxDay,'peakNumber':maxNumber,'secondaryMaxima':secondaryMaxima,'leftBound':leftBounds,'rightBound':rightBounds,"iterationsByDay":iterXDay}
     
 def prepDir(directory):
-    return (directory+'/').replace('//','/')
+    while '//' in directory:
+        directory = directory.replace('//','/')
+    return (directory+'/')
         
 def prepSingle(params,qsubList,splitList,mode,passedX,passedY,passedC,lineIndex):
     if passedX != '':
@@ -645,9 +647,9 @@ def main():
             writeToFiles(prepped['directoryOut'],prepped['runList'],prepped['refMatrix'],prepped['valMatrix'],prepped['xTitles'],prepped['yTitles'],prepped['studyName'])
         
         if runAll:
-            studyPrefix = directoryOut + '/' + studyName 
-            VAVPrefix = studyPrefix + '/Vacc_Vs_Av_Charts' 
-            meansPrefix = studyPrefix + '/Individual_Mean_Stats'
+            studyPrefix = prepDir(directoryOut + '/' + studyName)
+            VAVPrefix = prepDir(studyPrefix + 'Vacc_Vs_Av_Charts') 
+            meansPrefix = prepDir(studyPrefix + 'Individual_Mean_Stats')
             print studyPrefix
             print VAVPrefix
             print meansPrefix
