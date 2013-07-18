@@ -686,13 +686,13 @@ def main():
                 qsubLine = meansPrefix + '/' + qsubList[pos].replace('/','_')
                 meansOut = open(qsubLine + 'Means.tsv','w')
                 writeAll(qsubList[pos]+'/', studyName, data)
-                writeAll(meansPrefix, qsubTemp, data)   
-                quit()           
+                writeAll(meansPrefix, qsubTemp, data)           
                 attackOut.write(qsubList[pos].replace(directoryIn,'') + ' ' + str(data['epiMean']) + '\n')
                 statsOut.write(getSpreadSheet(data, qsubList[pos].replace(directoryIn,''),hideThese, False))
                 meansOut.write(curveToTSV(data['meanCurve']))
                 attackOut.close()
 	        statsOut.close()
+	        quit()   
                 pos += 1
             print "Finished generation of cell summaries & detail stats, starting mass chart generation"
             uniqueLimit = len(uniqueInterventions)
