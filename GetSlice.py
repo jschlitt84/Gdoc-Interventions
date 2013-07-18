@@ -675,6 +675,7 @@ def main():
                 data = checkLines(qsubList[pos]+'/'+target)
                 qsubTemp = qsubList[pos].replace(directoryIn,'').replace('/','_')
                 filteredName = removeDescriptor(qsubTemp,['ve','ate','ape']).replace('/',' ')
+                qsubTemp = qsubTemp.replace('/','_')
                 if filteredName not in uniqueInterventions:
                     uniqueInterventions.append(filteredName)
                     uniqueIndex.append(pos)
