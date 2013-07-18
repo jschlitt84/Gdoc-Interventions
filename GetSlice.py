@@ -426,6 +426,7 @@ def prepSingle(params,qsubList,splitList,passedX,passedY,passedC,lineIndex):
     if passedX != '':
         print "passedX",passedX
         print "lineIndex", lineIndex
+        print 'qsubList', qsubList
         print qsubList[lineIndex]
         xID = passedX.index(qsubList[lineIndex].replace('/',' ').split(' '))
         xFind = passedX
@@ -707,6 +708,7 @@ def main():
 	    pos = 0
 	    while pos < uniqueLimit:
 	        print uniqueInterventions, uniqueLimit
+	        print 'qsubList', qsubList
 	        prepped = prepSingle(params,qsubList,splitList,'ate','ve',uniqueInterventions[pos],uniqueIndex[pos])
 	        writeTSVcells(directoryOut+'/Vacc_Vs_Av_Charts',prepped['runList'],prepped['refMatrix'],prepped['valMatrix'],prepped['xTitles'],prepped['yTitles'],uniqueInterventions[pos].replace(' ',''))
 	        pos += 1
