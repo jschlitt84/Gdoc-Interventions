@@ -667,7 +667,8 @@ def main():
             uniqueInterventions = []
             uniqueIndex = []
             
-            while pos < qsubLimit:
+            #while pos < qsubLimit:
+            while pos < 27:
                 data = checkLines(qsubList[pos]+'/'+target)
                 qsubTemp = qsubList[pos].replace(directoryIn,'').replace('/','_')
                 filteredName = removeDescriptor(qsubList[pos],['ve','ate','ape']).replace('/',' ')
@@ -683,7 +684,7 @@ def main():
                     statsOut.close()
                 attackOut = open(studyPrefix + 'AttackList.txt','a+b')            
                 statsOut = open(studyPrefix + 'DetailStats.csv','a+b')
-                qsubLine = meansPrefix + '/' + qsubList[pos].replace(directoryIn,'').replace('/','_')
+                qsubLine = meansPrefix + '/' + qsubTemp
                 meansOut = open(qsubLine + 'Means.tsv','w')
                 writeAll(qsubList[pos]+'/', studyName, data)
                 writeAll(meansPrefix, qsubTemp, data)           
@@ -692,7 +693,6 @@ def main():
                 meansOut.write(curveToTSV(data['meanCurve']))
                 attackOut.close()
 	        statsOut.close()
-	        quit()   
                 pos += 1
             print "Finished generation of cell summaries & detail stats, starting mass chart generation"
             uniqueLimit = len(uniqueInterventions)
