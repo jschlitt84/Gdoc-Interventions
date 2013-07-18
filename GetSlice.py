@@ -217,8 +217,8 @@ def writeToFiles(directory, runList, refMatrix, valMatrix, xTitles, yTitles, tit
 def writeAll(directory,title,data):
     if not os.path.exists(directory):
         os.mkdir(directory)
-    summaryOut = open(prepDir(directory+title)+'Summary.txt','w')
-    chartsOut = open(prepDir(directory+title)+'Charts.csv','w')
+    summaryOut = open(directory+title+'Summary.txt','w')
+    chartsOut = open(directory+title+'Charts.csv','w')
     summaryOut.write("Directory:\t" + str(data['directory']))
     summaryOut.write("\nPopsize:\t" + str(data['popsize']))
     summaryOut.write("\nIterations:\t" + str(data['iterations']))
