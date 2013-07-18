@@ -217,8 +217,8 @@ def writeToFiles(directory, runList, refMatrix, valMatrix, xTitles, yTitles, tit
 def writeAll(directory,title,data):
     if not os.path.exists(directory):
         os.mkdir(directory)
-    summaryOut = open(directory+title+'Summary.txt','w')
-    chartsOut = open(directory+title+'Charts.csv','w')
+    summaryOut = open(prepDir(directory+title)+'Summary.txt','w')
+    chartsOut = open(prepDir(directory+title)+'Charts.csv','w')
     summaryOut.write("Directory:\t" + str(data['directory']))
     summaryOut.write("\nPopsize:\t" + str(data['popsize']))
     summaryOut.write("\nIterations:\t" + str(data['iterations']))
@@ -686,7 +686,7 @@ def main():
                 qsubLine = meansPrefix + '/' + qsubList[pos].replace('/','_')
                 meansOut = open(qsubLine + 'Means.tsv','w')
                 writeAll(qsubList[pos]+'/', studyName, data)
-                writeAll(meansPrefix, meansPrefix + '/' + qsubTemp, data)   
+                writeAll(meansPrefix, qsubTemp, data)   
                 quit()           
                 attackOut.write(qsubList[pos].replace(directoryIn,'') + ' ' + str(data['epiMean']) + '\n')
                 statsOut.write(getSpreadSheet(data, qsubList[pos].replace(directoryIn,''),hideThese, False))
