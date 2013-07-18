@@ -673,7 +673,7 @@ def main():
             #while pos < qsubLimit:
             while pos < 1:
                 data = checkLines(qsubList[pos]+'/'+target)
-                qsubTemp = qsubList[pos].replace(directoryIn,'').replace('/','_')
+                qsubTemp = qsubList[pos].replace(directoryIn,'')
                 filteredName = removeDescriptor(qsubTemp,['ve','ate','ape']).replace('/',' ')
                 qsubTemp = qsubTemp.replace('/','_')
                 if filteredName not in uniqueInterventions:
