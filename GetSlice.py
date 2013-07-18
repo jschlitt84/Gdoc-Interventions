@@ -425,7 +425,7 @@ def prepDir(directory):
 def prepSingle(params,qsubList,splitList,passedX,passedY,passedC,lineIndex):
     directoryIn = prepDir(params[0])
     directoryOut = prepDir(params[1])
-    qsubTemp =  qsubList[lineIndex].replace(directoryIn).replace('/',' ').split(' ')
+    qsubTemp =  qsubList[lineIndex].replace(directoryIn,'').replace('/',' ').split(' ')
     if passedX != '':
         print "passedX",passedX
         print "lineIndex", lineIndex
@@ -708,7 +708,6 @@ def main():
 	    pos = 0
 	    while pos < uniqueLimit:
 	        print uniqueInterventions, uniqueLimit
-	        print 'qsubList', qsubList
 	        prepped = prepSingle(params,qsubList,splitList,'ate','ve',uniqueInterventions[pos],uniqueIndex[pos])
 	        writeTSVcells(directoryOut+'/Vacc_Vs_Av_Charts',prepped['runList'],prepped['refMatrix'],prepped['valMatrix'],prepped['xTitles'],prepped['yTitles'],uniqueInterventions[pos].replace(' ',''))
 	        pos += 1
