@@ -22,6 +22,8 @@ def removeDescriptor(text, descriptors):
                 while isDigit(text[pos]) and pos != len(text) -1:
                     text =  text[:pos] + text[pos+1:]
         pos2 += 1
+    while text[0] == ' ':
+        text = text[1:]
     return text
         
 def isDigit(character):
@@ -422,10 +424,10 @@ def prepDir(directory):
         
 def prepSingle(params,qsubList,splitList,passedX,passedY,passedC,lineIndex):
     if passedX != '':
-        print passedX
-        print lineIndex
+        print "passedX",passedX
+        print "lineIndex", lineIndex
         print qsubList[lineIndex]
-        xID = passedX.index(qsubList[lineIndex].split('/'))
+        xID = passedX.index(qsubList[lineIndex].replace('/',' ').split(' '))
         xFind = passedX
     else:
         xID = int(params[7])
