@@ -422,6 +422,9 @@ def prepDir(directory):
         
 def prepSingle(params,qsubList,splitList,passedX,passedY,passedC,lineIndex):
     if passedX != '':
+        print passedX
+        print lineIndex
+        print qsubList[lineIndex]
         xID = passedX.index(qsubList[lineIndex].split('/'))
         xFind = passedX
     else:
@@ -668,7 +671,7 @@ def main():
             uniqueIndex = []
             
             #while pos < qsubLimit:
-            while pos < 27:
+            while pos < 9:
                 data = checkLines(qsubList[pos]+'/'+target)
                 qsubTemp = qsubList[pos].replace(directoryIn,'').replace('/','_')
                 filteredName = removeDescriptor(qsubList[pos],['ve','ate','ape']).replace('/',' ')
@@ -700,6 +703,7 @@ def main():
             print "%s unique interventions found with %s antiviral & vaccine effectiveness cells per graph" % (str(uniqueLimit),str(cells))
 	    pos = 0
 	    while pos < uniqueLimit:
+	        print uniqueInterventions, uniqueLimit
 	        prepped = prepSingle(params,qsubList,splitList,'ate','ve',uniqueInterventions[pos],uniqueIndex[pos])
 	        writeTSVcells(directoryOut+'/Vacc_Vs_Av_Charts',prepped['runList'],prepped['refMatrix'],prepped['valMatrix'],prepped['xTitles'],prepped['yTitles'],uniqueInterventions[pos].replace(' ',''))
 	        pos += 1
