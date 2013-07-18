@@ -662,6 +662,7 @@ def main():
             
             while pos < qsubLimit:
                 data = checkLines(qsubList[pos]+'/'+target)
+                qsubTemp = qsubList[pos].replace(directoryIn,'').replace('/','_')
                 filteredName = removeDescriptor(qsubList[pos],['ve','ate','ape']).replace('/',' ')
                 if filteredName not in uniqueInterventions:
                     uniqueInterventions.append(filteredName)
@@ -678,7 +679,7 @@ def main():
                 qsubLine = meansPrefix + '/' + qsubList[pos].replace('/','_')
                 meansOut = open(qsubLine + 'Means.tsv','w')
                 writeAll(qsubList[pos]+'/', studyName, data)
-                writeAll(meansPrefix, studyName, data)              
+                writeAll(meansPrefix, meansPrefix + '/' + qsubTemp, data)              
                 attackOut.write(qsubList[pos].replace(directoryIn,'') + ' ' + str(data['epiMean']) + '\n')
                 statsOut.write(getSpreadSheet(data, qsubList[pos].replace(directoryIn,''),hideThese, False))
                 meansOut.write(curveToTSV(data['meanCurve']))
