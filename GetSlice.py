@@ -683,7 +683,7 @@ def main():
                     statsOut.close()
                 attackOut = open(studyPrefix + 'AttackList.txt','a+b')            
                 statsOut = open(studyPrefix + 'DetailStats.csv','a+b')
-                qsubLine = meansPrefix + '/' + qsubList[pos].replace('/','_')
+                qsubLine = meansPrefix + '/' + qsubList[pos].replace(directoryIn,'').replace('/','_')
                 meansOut = open(qsubLine + 'Means.tsv','w')
                 writeAll(qsubList[pos]+'/', studyName, data)
                 writeAll(meansPrefix, qsubTemp, data)           
