@@ -423,12 +423,14 @@ def prepDir(directory):
     return directory
         
 def prepSingle(params,qsubList,splitList,passedX,passedY,passedC,lineIndex):
+    directoryIn = prepDir(params[0])
+    directoryOut = prepDir(params[1])
+    qsubTemp =  qsubList[lineIndex].replace(directoryIn).replace('/',' ').split(' ')
     if passedX != '':
         print "passedX",passedX
         print "lineIndex", lineIndex
-        print 'qsubList', qsubList
-        print qsubList[lineIndex]
-        xID = passedX.index(qsubList[lineIndex].replace('/',' ').split(' '))
+        print qsubTemp
+        xID = qsubTemp.index(passedX)
         xFind = passedX
     else:
         xID = int(params[7])
@@ -440,7 +442,7 @@ def prepSingle(params,qsubList,splitList,passedX,passedY,passedC,lineIndex):
     toIgnoreX = xIgnore != ['']
     
     if passedY != '':
-        yID = passedY.index(qsubList[lineIndex].split('/'))
+        yID = qsubTemp.index(passedY)
         yFind = passedY
     else:
         yID =  int(params[10])
@@ -458,8 +460,6 @@ def prepSingle(params,qsubList,splitList,passedX,passedY,passedC,lineIndex):
     width = qsubList[0].count('/') + 1 
     limit = len(splitList)
     targetStrings = ['']*width
-    directoryIn = prepDir(params[0])
-    directoryOut = prepDir(params[1])
     studyName = params[2]
     target = params[4]
     
