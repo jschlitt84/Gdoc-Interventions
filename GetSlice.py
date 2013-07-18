@@ -671,7 +671,7 @@ def main():
             uniqueIndex = []
             
             #while pos < qsubLimit:
-            while pos < 9:
+            while pos < 1:
                 data = checkLines(qsubList[pos]+'/'+target)
                 qsubTemp = qsubList[pos].replace(directoryIn,'').replace('/','_')
                 filteredName = removeDescriptor(qsubTemp,['ve','ate','ape']).replace('/',' ')
