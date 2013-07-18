@@ -420,7 +420,7 @@ def prepDir(directory):
         directory += '/'
     return directory
         
-def prepSingle(params,qsubList,splitList,mode,passedX,passedY,passedC,lineIndex):
+def prepSingle(params,qsubList,splitList,passedX,passedY,passedC,lineIndex):
     if passedX != '':
         xID = passedX.index(qsubList[lineIndex].split('/'))
         xFind = passedX
