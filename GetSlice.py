@@ -491,6 +491,7 @@ def prepSingle(params,qsubList,splitList,passedX,passedY,passedC,lineIndex):
                 found = False
                 pos3 = 0
                 while pos3 < xFLen:
+                    print word, xFind[pos3]
                     if xFind[pos3] in word:
                         found = True
                         break
