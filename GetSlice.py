@@ -158,8 +158,8 @@ def writeTSVcells(directory, runList, refMatrix, valMatrix, xTitles, yTitles, ti
         os.mkdir(directory)
         
     titlesOut =  open(directory+title+'Titles.txt','w')
-    xTitles = '["' + '", "'.split(xTitles) + '"],'
-    yTitles = '["' + '", "'.split(yTitles) + '"],'
+    xTitles = '["' + xTitles.split('", "') + '"],'
+    yTitles = '["' + yTitles.split('", "') + '"],'
     titlesOut.write("xAxisLables = " + xTitles + '\n')
     titlesOut.write("yAxisLables = " + yTitles)
     titlesOut.close()
