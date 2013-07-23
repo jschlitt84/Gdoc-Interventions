@@ -154,15 +154,21 @@ def getSpreadSheet(data, line, hide, justGetKeys):
     return outString
 
 def writeTSVcells(directory, runList, refMatrix, valMatrix, xTitles, yTitles, title):
+    print "refMatrix", refMatrix
+    print "valMatrix", valMatrix
+    print "xTitles", xTitles
+    print "yTitles", yTitles,
+    print "title", title
+    
     if not os.path.exists(directory):
         os.mkdir(directory)
         
     dirTemp = directory+'/'+title
     titlesOut =  open(dirTemp+'Titles.txt','w')
-    xTitles = '["' + '", "'.join(xTitles) + '"],'
-    yTitles = '["' + '", "'.join(yTitles) + '"],'
-    titlesOut.write("xAxisLables = " + xTitles + '\n')
-    titlesOut.write("yAxisLables = " + yTitles)
+    xTitlesTemp = '["' + '", "'.join(xTitles) + '"],'
+    yTitlesTemp = '["' + '", "'.join(yTitles) + '"],'
+    titlesOut.write("xAxisLables = " + xTitlesTemp + '\n')
+    titlesOut.write("yAxisLables = " + yTitlesTemp)
     titlesOut.close()
     
     chartsOut = open(dirTemp+'Chart.tsv','w')
