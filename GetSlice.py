@@ -583,7 +583,7 @@ def prepSingle(params,qsubList,splitList,passedX,passedY,passedC,lineIndex):
             print xPos, yPos
             refMatrix[xPos][yPos] = pos1
             testMatrix[xPos][yPos] = xPos
-            dirMatrix[xPos][yPos] = directoryIn + qsubList[pos1] + '/' + target
+            dirMatrix[xPos][yPos] = directoryIn + qsubList[pos1].replace(directoryIn,'') + '/' + target
             temp = checkLines(dirMatrix[xPos][yPos])
             valMatrix[xPos][yPos] = temp['epiMean']          
             print pos1
