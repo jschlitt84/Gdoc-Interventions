@@ -436,11 +436,8 @@ def prepSingle(params,qsubList,splitList,passedX,passedY,passedC,lineIndex):
     directoryIn = prepDir(params[0])
     directoryOut = prepDir(params[1])
     qsubTemp =  qsubList[lineIndex].replace(directoryIn,'').replace('/',' ').split(' ')
+    print 'x/y', passedX, passedY
     if passedX != '':
-        print "passedX",passedX
-        print "lineIndex", lineIndex
-        print qsubTemp
-        print passedX
         xID = checkList(passedX,qsubTemp)
         xFind = passedX
         xIgnore = ['']
