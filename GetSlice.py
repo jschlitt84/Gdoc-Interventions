@@ -157,15 +157,16 @@ def writeTSVcells(directory, runList, refMatrix, valMatrix, xTitles, yTitles, ti
     if not os.path.exists(directory):
         os.mkdir(directory)
         
-    titlesOut =  open(directory+title+'Titles.txt','w')
+    dirTemp = prepDir(directory+title)
+    titlesOut =  open(dirTemp+'Titles.txt','w')
     xTitles = '["' + '", "'.join(xTitles) + '"],'
     yTitles = '["' + '", "'.join(yTitles) + '"],'
     titlesOut.write("xAxisLables = " + xTitles + '\n')
     titlesOut.write("yAxisLables = " + yTitles)
     titlesOut.close()
     
-    chartsOut = open(directory+title+'Chart.tsv','w')
-    refsOut =  open(directory+title+'Refs.tsv','w')
+    chartsOut = open(dirTemp+'Chart.tsv','w')
+    refsOut =  open(dirTemp+'Refs.tsv','w')
     chartsOut.write('y\tx\tattackRate\n')
     refsOut.write('y\tx\tcellReference\n')
     
