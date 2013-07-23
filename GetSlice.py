@@ -439,7 +439,7 @@ def prepSingle(params,qsubList,splitList,passedX,passedY,passedC,lineIndex):
     print 'x/y', passedX, passedY
     if passedX != '':
         xID = checkList(passedX,qsubTemp)
-        xFind = passedX
+        xFind = passedX.split(' ')
         xIgnore = ['']
     else:
         xID = int(params[7])
@@ -452,7 +452,7 @@ def prepSingle(params,qsubList,splitList,passedX,passedY,passedC,lineIndex):
     
     if passedY != '':
         yID = checkList(passedY,qsubTemp)
-        yFind = passedY
+        yFind = passedY.split(' ')
         yIgnore = ['']
     else:
         yID =  int(params[10])
@@ -462,7 +462,7 @@ def prepSingle(params,qsubList,splitList,passedX,passedY,passedC,lineIndex):
     yFLen =  len(yFind)
     toFindY = yFLen > 0
     toIgnoreY = yIgnore != ['']
-    print 'ids(x,y)', x, y
+    print 'ids(x,y)', xID, yID
     if passedC != '':
         const = passedC
     else:
@@ -472,7 +472,8 @@ def prepSingle(params,qsubList,splitList,passedX,passedY,passedC,lineIndex):
     targetStrings = ['']*width
     studyName = params[2]
     target = params[4]
-    
+    print 'Flen',xFLen, yFLen
+ 
     tracker = [0] * width
     pos1 = 0
     while pos1 < limit:
@@ -503,6 +504,7 @@ def prepSingle(params,qsubList,splitList,passedX,passedY,passedC,lineIndex):
                 while pos3 <yFLen:
                     if yFind[pos3] in word:
                         found = True
+			print "huzzah!"
                         break
                     pos3 += 1
                 pos3 = 0
