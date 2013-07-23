@@ -661,11 +661,13 @@ def main():
         while pos < limit:
             if runAll:
                 qsubList[pos] = qsubList[pos].replace('qsub ','').replace('qsub','').replace('/\n','')
+                temp = qsubList[pos].replace(directoryIn,'').split('/')
             else:
                 qsubList[pos] = qsubList[pos].replace('qsub ','').replace('qsub','').replace(directoryIn,'').replace('/\n','')
-            if qsubList[pos].split('/') not in splitList:
-		splitList.append(qsubList[pos].split('/'))
-		pos += 1
+                temp = qsubList[pos].split('/')
+            if temp not in splitList:
+  		splitList.append(temp)
+  		pos += 1
 	    else:
 		print "Duplicate entry on line %s ignored" % (pos)
 		del qsubList[pos]
