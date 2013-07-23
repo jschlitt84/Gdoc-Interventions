@@ -442,7 +442,7 @@ def prepSingle(params,qsubList,splitList,passedX,passedY,passedC,lineIndex):
         print qsubTemp
         print passedX
         print 
-        xID = checkList(qsubTemp,passedX)
+        xID = checkList(passedX,qsubTemp)
         xFind = passedX
     else:
         xID = int(params[7])
@@ -454,7 +454,7 @@ def prepSingle(params,qsubList,splitList,passedX,passedY,passedC,lineIndex):
     toIgnoreX = xIgnore != ['']
     
     if passedY != '':
-        yID = checkList(qsubTemp,passedY)
+        yID = checkList(passedY,qsubTemp)
         yFind = passedY
     else:
         yID =  int(params[10])
