@@ -672,7 +672,6 @@ def main():
 		limit -= 1
     
         if not runAll:
-            print "SPLIT LIST:", splitList
             prepped = prepSingle(params,qsubList,splitList,'','','','')
             writeToFiles(prepped['directoryOut'],prepped['runList'],prepped['refMatrix'],prepped['valMatrix'],prepped['xTitles'],prepped['yTitles'],prepped['studyName'])
         
@@ -730,6 +729,7 @@ def main():
 	    pos = 0
 	    while pos < uniqueLimit:
 	        qsubTemp = qsubList[uniqueIndex[pos]].replace(directoryIn,'')
+	        print "SPLIT LIST:", splitList
 	        if 've' in qsubTemp and ('ate' in qsubTemp or 'ape' in qsubTemp):
 	           if 'ate' not in qsubTemp:
 	                prepped = prepSingle(params,qsubList,splitList,'ape','ve',uniqueInterventions[pos],uniqueIndex[pos])
