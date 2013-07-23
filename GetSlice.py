@@ -462,7 +462,7 @@ def prepSingle(params,qsubList,splitList,passedX,passedY,passedC,lineIndex):
     yFLen =  len(yFind)
     toFindY = yFLen > 0
     toIgnoreY = yIgnore != ['']
-    
+    print 'ids(x,y)', x, y
     if passedC != '':
         const = passedC
     else:
