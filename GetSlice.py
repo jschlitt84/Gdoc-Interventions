@@ -484,7 +484,6 @@ def prepSingle(params,qsubList,splitList,passedX,passedY,passedC,lineIndex):
     while pos1 < limit:
         pos2 = 0
         while pos2 < width:
-            print word
             word = splitList[pos1][pos2]
             keep = True
             isAxis = True
@@ -508,6 +507,7 @@ def prepSingle(params,qsubList,splitList,passedX,passedY,passedC,lineIndex):
                 found = False
                 pos3 = 0
                 while pos3 <yFLen:
+                    print word, yFind[pos3]
                     if yFind[pos3] in word:
                         found = True
 			print "huzzah!"
