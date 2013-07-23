@@ -158,8 +158,8 @@ def writeTSVcells(directory, runList, refMatrix, valMatrix, xTitles, yTitles, ti
         os.mkdir(directory)
         
     titlesOut =  open(directory+title+'Titles.txt','w')
-    xTitles = '["' + xTitles.split('", "') + '"],'
-    yTitles = '["' + yTitles.split('", "') + '"],'
+    xTitles = '["' + '", "'.join(xTitles) + '"],'
+    yTitles = '["' + '", "'.join(yTitles) + '"],'
     titlesOut.write("xAxisLables = " + xTitles + '\n')
     titlesOut.write("yAxisLables = " + yTitles)
     titlesOut.close()
@@ -513,11 +513,11 @@ def prepSingle(params,qsubList,splitList,passedX,passedY,passedC,lineIndex):
                     print word, yFind[pos3]
                     if yFind[pos3] in word:
                         found = True
-			print "huzzah!"
+			#print "huzzah!"
                         break
                     pos3 += 1
                 pos3 = 0
-                print pos3, yILen, toIgnoreY
+                #print pos3, yILen, toIgnoreY
                 while pos3 < yILen and toIgnoreY:
                     if yIgnore[pos3] in word:
                         keep = False
