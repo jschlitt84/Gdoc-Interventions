@@ -438,6 +438,7 @@ def prepDir(directory):
     return directory
         
 def prepSingle(params,qsubList,splitList,passedX,passedY,passedC,lineIndex):
+    print splitList
     directoryIn = prepDir(params[0])
     directoryOut = prepDir(params[1])
     qsubTemp =  qsubList[lineIndex].replace(directoryIn,'').replace('/',' ').split(' ')
@@ -671,6 +672,7 @@ def main():
 		limit -= 1
     
         if not runAll:
+            print "SPLIT LIST:", splitList
             prepped = prepSingle(params,qsubList,splitList,'','','','')
             writeToFiles(prepped['directoryOut'],prepped['runList'],prepped['refMatrix'],prepped['valMatrix'],prepped['xTitles'],prepped['yTitles'],prepped['studyName'])
         
