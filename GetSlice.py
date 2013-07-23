@@ -12,11 +12,16 @@ except:
 
 def checkList(text, textList):
     pos = 0
+    double = False
+    index = -1
     while pos < len(textList):
         if text in textList[pos]:
-            return pos
+            if index == -1:
+                index = pos
+            else:
+                print "Warning, second instance of string %s found in list %s" % (text, str(textList))
         pos += 1
-    return -1
+    return index
     
 #For qsub list parsing, removes variable abbreviation and adjacent numbers from passed list of strings
 
