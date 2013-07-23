@@ -662,9 +662,9 @@ def main():
             print VAVPrefix
             print meansPrefix
             if not os.path.exists(VAVPrefix):
-                os.mkdir(VAVPrefix)
+                os.mkdirs(VAVPrefix)
             if not os.path.exists(meansPrefix):
-                os.mkdir(meansPrefix)
+                os.mkdirs(meansPrefix)
             
             
             
