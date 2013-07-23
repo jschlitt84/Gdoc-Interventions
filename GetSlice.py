@@ -473,7 +473,8 @@ def prepSingle(params,qsubList,splitList,passedX,passedY,passedC,lineIndex):
         const = passedC
     else:
         const =  params[13].split(' ')
-    width = qsubList[0].count('/') + 1 
+    #width = qsubList[0].count('/') + 1
+    width = len(splitList[0]) 
     limit = len(splitList)
     targetStrings = ['']*width
     studyName = params[2]
