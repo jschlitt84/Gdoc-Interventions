@@ -8,6 +8,16 @@ except:
     print "*** OrderedDict not found in collections, using drop in version ***"
 
 
+#Returns first instance of substring in list of strings or false if not found
+
+def checkList(text, textList):
+    pos = 0
+    while pos < len(textList):
+        if text in textList[pos]:
+            return pos
+        pos += 1
+    return -1
+    
 #For qsub list parsing, removes variable abbreviation and adjacent numbers from passed list of strings
 
 def removeDescriptor(text, descriptors):
@@ -430,7 +440,9 @@ def prepSingle(params,qsubList,splitList,passedX,passedY,passedC,lineIndex):
         print "passedX",passedX
         print "lineIndex", lineIndex
         print qsubTemp
-        xID = qsubTemp.index(passedX)
+        print passedX
+        print 
+        xID = checkList(qsubTemp,passedX)
         xFind = passedX
     else:
         xID = int(params[7])
@@ -442,7 +454,7 @@ def prepSingle(params,qsubList,splitList,passedX,passedY,passedC,lineIndex):
     toIgnoreX = xIgnore != ['']
     
     if passedY != '':
-        yID = qsubTemp.index(passedY)
+        yID = checkList(qsubTemp,passedY)
         yFind = passedY
     else:
         yID =  int(params[10])
