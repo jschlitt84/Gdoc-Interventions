@@ -157,7 +157,7 @@ def writeTSVcells(directory, runList, refMatrix, valMatrix, xTitles, yTitles, ti
     if not os.path.exists(directory):
         os.mkdir(directory)
         
-    dirTemp = directory+'/'+title)
+    dirTemp = directory+'/'+title
     titlesOut =  open(dirTemp+'Titles.txt','w')
     xTitles = '["' + '", "'.join(xTitles) + '"],'
     yTitles = '["' + '", "'.join(yTitles) + '"],'
