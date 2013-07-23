@@ -484,6 +484,7 @@ def prepSingle(params,qsubList,splitList,passedX,passedY,passedC,lineIndex):
     while pos1 < limit:
         pos2 = 0
         while pos2 < width:
+            print word
             word = splitList[pos1][pos2]
             keep = True
             isAxis = True
