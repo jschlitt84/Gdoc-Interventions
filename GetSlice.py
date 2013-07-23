@@ -447,9 +447,9 @@ def prepSingle(params,qsubList,splitList,passedX,passedY,passedC,lineIndex):
     else:
         xID = int(params[7])
         xFind = params[8].split(' ')
-        xFLen = len(xFind)
         xIgnore = params[9].split(' ')
         xILen = len(xIgnore)
+    xFLen = len(xFind)
     toFindX = xFLen > 0
     toIgnoreX = xIgnore != ['']
     
@@ -459,9 +459,9 @@ def prepSingle(params,qsubList,splitList,passedX,passedY,passedC,lineIndex):
     else:
         yID =  int(params[10])
         yFind = params[11].split(' ')
-        yFLen =  len(yFind)
         yIgnore = params[12].split(' ')
         yILen = len(yIgnore)
+    yFLen =  len(yFind)
     toFindY = yFLen > 0
     toIgnoreY = yIgnore != ['']
     
