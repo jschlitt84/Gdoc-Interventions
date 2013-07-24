@@ -181,7 +181,7 @@ def writeTSVcells(directory, runList, refMatrix, valMatrix, xTitles, yTitles, ti
     yLen = len(yTitles)
     posY =0
     while posY < yLen:
-        chartsOut.write(yTitles[posY] + ', ')
+        #chartsOut.write(yTitles[posY] + ', ')
         posX = 0
         while posX < xLen:
             chartsOut.write(str(posY+1) + '\t' + str(posX+1) + '\t' + str(valMatrix[posX][posY]) + '\n')
