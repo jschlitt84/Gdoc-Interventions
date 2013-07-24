@@ -479,8 +479,13 @@ def prepSingle(params,qsubList,splitList,passedX,passedY,passedC,lineIndex):
     if passedC != '':
         const = passedC
     else:
-        const =  params[13].split(' ')
+        const =  params[13]
+    hasConst = len(const)>0
+    const =  const.split()
+    cLen = len(const)
+    
     #width = qsubList[0].count('/') + 1
+    print const
     width = len(splitList[0]) 
     limit = len(splitList)
     targetStrings = ['']*width
@@ -491,8 +496,15 @@ def prepSingle(params,qsubList,splitList,passedX,passedY,passedC,lineIndex):
     tracker = [0] * width
     pos1 = 0
     while pos1 < limit:
-        pos2 = 0
-        while pos2 < width:
+        pos2 = pos3 = 0
+	word = qsubList[pos1].replace(directoryIn,'')
+	allFound = True
+	while pos3 < cLen:
+	    if const[pos3] not in word:
+		allFound = False
+		break
+	    pos3 += 1
+        while pos2 < width and allFound:
             word = splitList[pos1][pos2]
             keep = True
             isAxis = True
@@ -535,9 +547,9 @@ def prepSingle(params,qsubList,splitList,passedX,passedY,passedC,lineIndex):
             else:
                 isAxis = False
                 if word in const and word not in targetStrings[pos2]:
-                    tracker[pos2] += 1
+                    #tracker[pos2] += 1
                     targetStrings[pos2] += word + ' ' 
-            if isAxis and keep and word not in targetStrings[pos2]:
+	    if isAxis and keep and word not in targetStrings[pos2]:
                 targetStrings[pos2] += word + ' '
                 tracker[pos2] += 1
             pos2 += 1
@@ -704,8 +716,8 @@ def main():
             uniqueInterventions = []
             uniqueIndex = []
             
-            #while pos < qsubLimit:
-            while pos < 1:
+            while pos < qsubLimit:
+            #while pos < 1:
                 data = checkLines(qsubList[pos]+'/'+target)
                 qsubTemp = qsubList[pos].replace(directoryIn,'')
                 filteredName = removeDescriptor(qsubTemp,['ve','ate','ape']).replace('/',' ')
