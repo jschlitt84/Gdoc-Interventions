@@ -84,7 +84,7 @@ def writeAvScript(avScript, diagParams, outName, directory, subpopDirectory):
     
     while pos < length:
         avFile.write("\n\n# -----------------------\n")
-        avFile.write("\nInterventionId = " + str(pos+1))
+        avFile.write("\nInterventionId = " + str(pos+5000))
         if len(avScript[pos][1]) != 0:
             avFile.write("\nConditionDate = " + avScript[pos][1])
         if percentFix(avScript[pos][2]) >= 1:
