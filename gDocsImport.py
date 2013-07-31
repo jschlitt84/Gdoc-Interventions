@@ -77,9 +77,11 @@ def getFile(userName, __password, fileName):
 # RETURNS PUBLIC SPREADSHEET AS LIST OF STRINGS   
                        
 def getPublicFile(userName, fileName):
-    fileName = fileName.replace('#gid=0','&output=csv')
-    if not '&output=csv' in fileName:
+    try:
+        fileName = fileName[:fileName.index('#gid')]
+    finally:
         fileName += '&output=csv'
+
     print "\nLoading public file", fileName
     
     response = requests.get(fileName)
