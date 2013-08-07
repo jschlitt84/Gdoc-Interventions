@@ -87,10 +87,11 @@ def writeAvScript(avScript, diagParams, outName, directory, subpopDirectory):
         avFile.write("\nInterventionId = " + str(pos+5000))
         if len(avScript[pos][1]) != 0:
             avFile.write("\nConditionDate = " + avScript[pos][1])
-        if percentFix(avScript[pos][2]) >= 1:
-            avFile.write("\nConditionThresholdValue = " + avScript[pos][2])
-        else:
-            avFile.write("\nConditionThresholdFraction = " + str(percentFix(avScript[pos][2])))
+        if len(avScript[pos][2]) != 0:
+            if percentFix(avScript[pos][2]) >= 1:
+                avFile.write("\nConditionThresholdValue = " + avScript[pos][2])
+            else:
+                avFile.write("\nConditionThresholdFraction = " + str(percentFix(avScript[pos][2])))
         if len(avScript[pos][0]) != 0:
             avFile.write("\nConditionThresholdSubpopulation = " +tempDirectory + avScript[pos][0])
         if isYes(avScript[pos][3], "Condition Diagnosis"):
