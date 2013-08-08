@@ -9,7 +9,7 @@ Find = $MPIRUN
 Replace = $MPIRUN /vbi/projects/epifast/bin/EpiFast $DIR/config > $DIR/cout
 File = config
 Find = ContactGraphFile =
-Replace = ContactGraphFile = /vbi/protopop/USPop2009/all-regions/ft_drum/socialnet/EFIG6Bb
+Replace = ContactGraphFile = /vbi/protopop/USPopv2/regions/seattle_military_corrected/socialnet/EFIG6Bb
 Find = IncubationPeriodFile =
 Replace = IncubationPeriodFile = /home/NDSSL/study/DTRA_AVstudy/input/Incubation.Period.Distribution
 Find = InfectiousPeriodFile =
