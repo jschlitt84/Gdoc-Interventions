@@ -1,5 +1,5 @@
 ContactGraphFileFormat = EFIG6Bb
-ContactGraphFile = /vbi/isis/isis_dtra/area/5/socialnet/EFIG6Bb
+ContactGraphFile = /vbi/protopop/USPopv2/regions/seattle_military_corrected/socialnet/EFIG6Bb
 SimulationDuration = 300
 Transmissibility = 4.2E-5
 IncubationPeriodFormat = DISTRIBUTION
