@@ -106,7 +106,7 @@ def writeAvScript(avScript, diagParams, outName, directory, subpopDirectory):
         avFile.write("\nDuration = " + avScript[pos][8])
         avFile.write("\nUnitNumberEachDay = " + avScript[pos][9])
         avFile.write("\nEfficacyIn = " + avScript[pos][10])
-        avFile.write("\nCompliance = " + avScript[pos][11])
+        avFile.write("\nEfficacyOut = " + avScript[pos][11])
         
         pos +=1
     avFile.write("\n\n# ----- End of Generated Antiviral File ----")
