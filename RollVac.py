@@ -398,6 +398,8 @@ def main(arg1, arg2, arg3, arg4, polyScript, filteredIDs):
 
         diag = params[1]
         diagnosis = isYes(diag, "diagnosis")
+        newStyle = isYes(params[7], "new style")
+        
         
         if not diagnosis:
             sys.argv[3] = "null"
@@ -406,8 +408,11 @@ def main(arg1, arg2, arg3, arg4, polyScript, filteredIDs):
             avScript = gDocsImport.getScript(sys.argv[2], sys.argv[3], sys.argv[4], avStart, 0, loadType, isPoly, polyScript)
             diagParams = gDocsImport.getLine(sys.argv[2], sys.argv[3], sys.argv[4], stopWord, isPoly, polyScript)
             sys.argv[3] = "null"               
-            avTreatments = writeAvScript(avScript, diagParams, outName, path, subpopDirectory)
-        
+            if not newStyle:
+                avTreatments = writeAvScript(avScript, diagParams, outName, path, subpopDirectory)
+            else:
+                avScriptNew = prepNewAV(avScript, diagParams, outName, path, subpopDirectory)
+                avTreatments = len(avScriptNew)
         
     if arg != "user" and arg != "gDoc" and arg != "gdoc" and (not os.path.isfile(arg)):
         print arg

@@ -279,7 +279,7 @@ def main():
         dirToFlush =(directoryLines[pos][2] + '/' + directoryLines[pos][0]).replace('//','/')
         if not dirToFlush in directories: 
             directories.append(dirToFlush)
-            toSetPermissions.append(RollVac.isYes(directoryLines[pos][7],'set 775 permissions'))
+            #toSetPermissions.append(RollVac.isYes(directoryLines[pos][7],'set 775 permissions'))
         pos += 1
     
     directorySuffix = flushDirectories(directories)
