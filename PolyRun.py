@@ -4,6 +4,7 @@ import shutil
 import gDocsImport
 import RollVac
 import subprocess
+from time import sleep
     
 
 def appendSuffix(directory, suffix):
@@ -400,6 +401,7 @@ def main():
  #       homeString = ';'.join(homeList)
                
         filteredIDs = RollVac.main('poly', directory, 'null', 'null', rollScript, filteredIDs)
+        sleep(0.05)
         
         qsubs = open(homeDir + '/qsublist', 'a+b')
         qsubs.write(("qsub " + directory + 'qsub\n').replace('//','/'))   

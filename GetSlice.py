@@ -69,7 +69,7 @@ def filterDict(paramDict,isKeys,hide):
     
     
 def getSpreadSheet(data, line, hide, justGetKeys):
-    paramDict = OrderedDict((('ve',-1),('v',-1),('vti',-1),('vtd',-1),('sd',-1),('sdti',-1),('sdtd',-1),('sdl',-1),('cw',-1),('cwti',-1),('cwtd',-1),('cwl',-1),('cs',-1),('csti',-1),('cstd',-1),('csl',-1),('ate',-1),('at',-1),('atdr',-1),('atti',-1),('attd',-1),('atl',-1),('ape',-1),('ap',-1),('apti',-1),('aptd',-1),('aptl',-1),('other','')))
+    paramDict = OrderedDict((('ve',-1),('v',-1),('vti',-1),('vtd',-1),('sd',-1),('sdti',-1),('sdtd',-1),('sdl',-1),('cw',-1),('cwti',-1),('cwtd',-1),('cwl',-1),('cs',-1),('csti',-1),('cstd',-1),('csl',-1),('ate',-1),('at',-1),('atdr',-1),('atti',-1),('attd',-1),('atl',-1),('ape',-1),('ap',-1),('apti',-1),('aptd',-1),('aptl',-1),('sq',-1),('sqg',-1),('sqtd',-1),('sql',-1),('other','')))
     dataDict = OrderedDict((('attackRate',0),('peakDay',0),('peakNumber',0),('isEpidemic',0),('leftBound',0),('rightBound',0),('secondaryMaxima','')))
     if justGetKeys:
         return "directory, iteration, " + filterDict(paramDict, True, hide) + ', ' + filterDict(dataDict, True, hide) + '\n'
