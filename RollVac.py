@@ -30,6 +30,7 @@ def prepNewAction():
     actionDuration = 'null',
     actionConsumption = 'null',
     actionType = 'null',
+    actionDescription = 'null',
     actionEfficacyIn = 'null',
     actionEfficacyOut = 'null')
     return temp
@@ -65,7 +66,7 @@ def getSubpopID(subpops,name):
     print "Checking subpops for name", name
     while pos < len(subpops):
         if subpops[pos]['subpopulationName'] == name:
-            ID = subpops[pos]['subpoplationID'] 
+            ID = subpops[pos]['subpopulationID'] 
             print name, "found at ID", ID
             return ID
         pos += 1
@@ -74,13 +75,13 @@ def getSubpopID(subpops,name):
  
 # APPENDS SUBPOP IF NOT YET PRESENT      
                 
-def addSubPop(subpops, name, directory, count):
+def addSubpop(subpops, name, directory, count):
     if getSubpopID(subpops,name) == 'null':
-        tempSubpop = prepNewSubPop()
+        tempSubpop = prepNewSubpop()
         tempSubpop['subpopulationName'] = name
         tempSubpop['subpopulationFile'] = directory + name
         tempSubpop['subpopulationID'] = str(count)
-        subpops.append(tempSubPop)
+        subpops.append(tempSubpop)
         print "Subpop", name, "added"
         return 1
     else:
@@ -98,14 +99,15 @@ def prepNewAV(avScript, diagParams, outName, directory, subpopDirectory, totalsN
     intervNew = []
     avCount = 5000
     subCount = 9000
+    mutStart = 9300
     
     print "Initiating new format AV scripting"
     probDiag = diagParams[4]
     probHosp = diagParams[3]
-    probCoeff = probDiag * probHosp
-    print "Diagnoses [%s] and to hospital [%s] joined as compliance coefficient [%s]" %s (str(probDiag),str(probHosp),str(probCoeff))
+    probCoeff = float(probDiag) * float(probHosp)
+    print "Diagnoses [%s] and to hospital [%s] joined as compliance coefficient [%s]" % (probDiag,probHosp,probCoeff)
     if len(diagParams[2]) != 0:
-        totalsNew['antiviral'] = strint(diagParams[2])
+        totalsNew['antiviral'] = str(diagParams[2])
         print "Antiviral total loaded from file,",totalsNew['antiviral'],"units available"
     else:
         print "No AV unit count found, using default value of", totalsNew['antiviral'], "antiviral units"
@@ -117,7 +119,7 @@ def prepNewAV(avScript, diagParams, outName, directory, subpopDirectory, totalsN
     length = len(avScript)
     while pos < length:
         if len(avScript[pos][0]) != 0:
-            subCount += addSubPop(subPopNew,avScript[pos][0],tempDirectory,subCount)
+            subCount += addSubpop(subPopNew,avScript[pos][0],tempDirectory,subCount)
         if len(avScript[pos][4]) != 0: 
             subCount += addSubpop(subPopNew,avScript[pos][4],tempDirectory,subCount)
         pos += 1
@@ -129,13 +131,12 @@ def prepNewAV(avScript, diagParams, outName, directory, subpopDirectory, totalsN
     
     while pos < length:
         tempAction = prepNewAction()
-        tempAction['actionID'] = tempInterv['action'] = str(9200+pos)
-        tempAction['actionType'] = "Antiviral"
         tempInterv = prepNewIntervention()
+        tempAction['actionID'] = tempInterv['action'] = str(avCount+pos)
+        tempAction['actionType'] = tempAction['actionDescription'] = "Antiviral"
         tempInterv['interventionType'] = 'Offline'
-        tempInterv['interventionID'] = str(9300+pos)
+        tempInterv['interventionID'] = str(mutStart+pos)
         tempInterv['conditionTotal'] = '9101'
-        tempInterv['conditionCompliance'] = str(probCoeff)
         
         if len(avScript[pos][1]) != 0:
             tempInterv['conditionDate'] = avScript[pos][1]
@@ -145,20 +146,20 @@ def prepNewAV(avScript, diagParams, outName, directory, subpopDirectory, totalsN
             else:
                 tempInterv['conditionThresholdFraction'] = + str(percentFix(avScript[pos][2]))
         if len(avScript[pos][0]) != 0:
-            tempInterv['conditionThresholdSubpopulation'] = getSubpopID(subPops,avScript[pos][0])
+            tempInterv['conditionThresholdSubpopulation'] = getSubpopID(subPopNew,avScript[pos][0])
         if isYes(avScript[pos][3], "Condition Diagnosis"):
            tempInterv['conditionState'] = 'Diagnosed'
         if len(avScript[pos][4]) != 0:
-            tempInterv['conditionMembership'] = getSubpopID(subPops,avScript[pos][4])
+            tempInterv['conditionMembership'] = getSubpopID(subPopNew,avScript[pos][4])
         if isYes(avScript[pos][5], "Condition Mutually Exclusive"):
-            mutex.append(str(pos))
+            mutex.append(str(mutStart+pos))
         
-        tempInterv['compliance'] = avScript[pos][6]
-        tempAction['delay'] = avScript[pos][7]
-        tempAction['duration'] = avScript[pos][8]
-        tempAction['consumption'] = str(int(avScript[pos][9])*int(avScript[pos][8]))
-        tempAction['efficacyIn'] = avScript[pos][10]
-        tempAction['efficacyOut'] = avScript[pos][11]
+        tempInterv['conditionCompliance'] = str(float(avScript[pos][6]) * probCoeff)
+        tempAction['actionDelay'] = avScript[pos][7]
+        tempAction['actionDuration'] = avScript[pos][8]
+        tempAction['actionConsumption'] = str(int(avScript[pos][9])*int(avScript[pos][8]))
+        tempAction['actionEfficacyIn'] = avScript[pos][10]
+        tempAction['actionEfficacyOut'] = avScript[pos][11]
         
         actionNew.append(tempAction)
         intervNew.append(tempInterv)
@@ -168,14 +169,14 @@ def prepNewAV(avScript, diagParams, outName, directory, subpopDirectory, totalsN
     pos = 0
     length = len(avScript)
     while pos < length:
-        if str(pos) in mutex:
+        if str(pos+9300) in mutex:
             intervNew[pos]['conditionMutex'] = ";".join(mutex)
         else:
-            intervNew[pos]['conditionMutex'] = str(pos)
+            intervNew[pos]['conditionMutex'] = str(mutStart+pos)
         pos += 1
     
     print "Antiviral treatment scripting complete"
-    return {'configV':str(configV),'actionsNew':actionNew,'interventionsNew':intervNew,'subpopsNew':subpopsNew}
+    return {'configV':str(configV),'actions':actionNew,'interventions':intervNew,'subpops':subPopNew}
 
     
 ###OLD EPIFAST FORMAT COMMANDS
@@ -519,8 +520,8 @@ def main(arg1, arg2, arg3, arg4, polyScript, filteredIDs):
             path = arg2
             if os.path.exists(path):
                 shutil.rmtree(path)
-            os.makedirs(path)
-            os.makedirs(path + "/output")
+#DEBUG            os.makedirs(path)
+#DEBUG            os.makedirs(path + "/output")
         else:
             isPoly = False
         loadType = "intervention script"
@@ -576,7 +577,7 @@ def main(arg1, arg2, arg3, arg4, polyScript, filteredIDs):
                 temp = prepNewAV(avScript, diagParams, outName, path, subpopDirectory, totalsNew)
                 subpopsNew += temp['subpops']
                 actionsNew += temp['actions']
-                interventionsNew += temp['actions']
+                interventionsNew += temp['interventions']
                 print subpopsNew
                 print actionsNew
                 print interventionsNew
