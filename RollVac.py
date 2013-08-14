@@ -14,6 +14,171 @@ avStart = "Condition Threshold Subpopulation,Condition Date"
 startWord = "Subpopulation,Day/'enum',Length of Spread"
 stopWord = "Diagnosis Model Version,Antiviral Model Version,"
 
+####NEW EPIFAST FORMAT COMMANDS
+
+# GENERATE EMPTY EPIFAST INTERVENTION SCRIPT BLOCKS
+
+def prepNewSubpop():
+    temp = dict(subpopulationID = 'null',
+    subpopulationName = 'null',
+    subpopulationFile = 'null')
+    return temp
+    
+def prepNewAction():
+    temp = dict(actionID = 'null',
+    actionDelay = 'null',
+    actionDuration = 'null',
+    actionConsumption = 'null',
+    actionType = 'null',
+    actionEfficacyIn = 'null',
+    actionEfficacyOut = 'null')
+    return temp
+
+def prepNewIntervention():
+    temp = dict(interventionID = 'null',
+    interventionType = 'null',
+    conditionState = 'null',
+    conditionDate = 'null',
+    conditionTotal = 'null',
+    conditionMembership = 'null',
+    conditionMutex = 'null',
+    conditionCompliance = 'null',
+    conditionThresholdValue = 'null',
+    conditionThresholdSubpopulation = 'null',
+    action = 'null')
+    return temp
+    
+#PREPS SCRIPT OUTPUT IF BLOCK HAS CONTENTS
+
+def makeIfFound(argument, markup):
+    string = ""
+    if argument != 'null':
+        string += markup + argument + '\n'
+    return string
+
+    
+            
+# FIND ID REFERENCE TO SUBPOP
+
+def getSubpopID(subpops,name):
+    pos = 0
+    print "Checking subpops for name", name
+    while pos < len(subpops):
+        if subpops[pos]['subpopulationName'] == name:
+            ID = subpops[pos]['subpoplationID'] 
+            print name, "found at ID", ID
+            return ID
+        pos += 1
+    print "Subopulation", name, "not in subpops list"
+    return 'null'
+ 
+# APPENDS SUBPOP IF NOT YET PRESENT      
+                
+def addSubPop(subpops, name, directory, count):
+    if getSubpopID(subpops,name) == 'null':
+        tempSubpop = prepNewSubPop()
+        tempSubpop['subpopulationName'] = name
+        tempSubpop['subpopulationFile'] = directory + name
+        tempSubpop['subpopulationID'] = str(count)
+        subpops.append(tempSubPop)
+        print "Subpop", name, "added"
+        return 1
+    else:
+        return 0
+    
+# READS AVSCRIPT, APPENDS TO ACTION IDS & INTERVENTION IDS
+
+def prepNewAV(avScript, diagParams, outName, directory, subpopDirectory, totalsNew):
+    
+    tempDirectory = subpopDirectory + '/' + outName
+    tempDirectory = tempDirectory.replace('//','/')
+    
+    subPopNew = []
+    actionNew = []
+    intervNew = []
+    avCount = 5000
+    subCount = 9000
+    
+    print "Initiating new format AV scripting"
+    probDiag = diagParams[4]
+    probHosp = diagParams[3]
+    probCoeff = probDiag * probHosp
+    print "Diagnoses [%s] and to hospital [%s] joined as compliance coefficient [%s]" %s (str(probDiag),str(probHosp),str(probCoeff))
+    if len(diagParams[2]) != 0:
+        totalsNew['antiviral'] = strint(diagParams[2])
+        print "Antiviral total loaded from file,",totalsNew['antiviral'],"units available"
+    else:
+        print "No AV unit count found, using default value of", totalsNew['antiviral'], "antiviral units"
+    
+    configV = diagParams[1]
+    
+    print "Prepping AV subpopulation list"
+    pos = 0
+    length = len(avScript)
+    while pos < length:
+        if len(avScript[pos][0]) != 0:
+            subCount += addSubPop(subPopNew,avScript[pos][0],tempDirectory,subCount)
+        if len(avScript[pos][4]) != 0: 
+            subCount += addSubpop(subPopNew,avScript[pos][4],tempDirectory,subCount)
+        pos += 1
+    
+    print "Converting AV script to new action & intervention format"
+    pos = 0
+    length = len(avScript)
+    mutex = []
+    
+    while pos < length:
+        tempAction = prepNewAction()
+        tempAction['actionID'] = tempInterv['action'] = str(9200+pos)
+        tempAction['actionType'] = "Antiviral"
+        tempInterv = prepNewIntervention()
+        tempInterv['interventionType'] = 'Offline'
+        tempInterv['interventionID'] = str(9300+pos)
+        tempInterv['conditionTotal'] = '9101'
+        tempInterv['conditionCompliance'] = str(probCoeff)
+        
+        if len(avScript[pos][1]) != 0:
+            tempInterv['conditionDate'] = avScript[pos][1]
+        if len(avScript[pos][2]) != 0:
+            if percentFix(avScript[pos][2]) >= 1:
+                tempInterv['conditionThresholdValue'] = + avScript[pos][2]
+            else:
+                tempInterv['conditionThresholdFraction'] = + str(percentFix(avScript[pos][2]))
+        if len(avScript[pos][0]) != 0:
+            tempInterv['conditionThresholdSubpopulation'] = getSubpopID(subPops,avScript[pos][0])
+        if isYes(avScript[pos][3], "Condition Diagnosis"):
+           tempInterv['conditionState'] = 'Diagnosed'
+        if len(avScript[pos][4]) != 0:
+            tempInterv['conditionMembership'] = getSubpopID(subPops,avScript[pos][4])
+        if isYes(avScript[pos][5], "Condition Mutually Exclusive"):
+            mutex.append(str(pos))
+        
+        tempInterv['compliance'] = avScript[pos][6]
+        tempAction['delay'] = avScript[pos][7]
+        tempAction['duration'] = avScript[pos][8]
+        tempAction['consumption'] = str(int(avScript[pos][9])*int(avScript[pos][8]))
+        tempAction['efficacyIn'] = avScript[pos][10]
+        tempAction['efficacyOut'] = avScript[pos][11]
+        
+        actionNew.append(tempAction)
+        intervNew.append(tempInterv)
+        
+        pos +=1
+    
+    pos = 0
+    length = len(avScript)
+    while pos < length:
+        if str(pos) in mutex:
+            intervNew[pos]['conditionMutex'] = ";".join(mutex)
+        else:
+            intervNew[pos]['conditionMutex'] = str(pos)
+        pos += 1
+    
+    print "Antiviral treatment scripting complete"
+    return {'configV':str(configV),'actionsNew':actionNew,'interventionsNew':intervNew,'subpopsNew':subpopsNew}
+
+    
+###OLD EPIFAST FORMAT COMMANDS
 
 # ONE TIME LID LOAD & FILTER FROM FILE
 
@@ -34,19 +199,6 @@ def filterIDs(directory):
                 
     ids =  sorted(list(ids))      
     print str(line), "entries with IDS\n", int(ids[0]), "through", int(ids[line-1]), "loaded,\npreparing to chop\n"
-    
-    """
-    print "(sub)Population loaded succesfully, checking for duplicate IDs...\n"
-    duplicates = pos1 = 0
-    
-    while pos1 < line-1:             
-        while (ids[pos1] in ids[pos1+1:line]):
-            print "Ignoring duplicate instance of ID", ids[pos1].replace('\n','')
-            del ids[pos1]
-            line -= 1
-            duplicates += 1
-        pos1 += 1
-    print "Load & filter complete" """
     
     return {"directory":directory,"ids":ids}
 
@@ -313,6 +465,11 @@ def main(arg1, arg2, arg3, arg4, polyScript, filteredIDs):
     schoolTotal = 0
     avTreatments = 0
     toFilterIDs = len(filteredIDs) > 0
+    useNew = False
+    subpopsNew = []
+    actionsNew = []
+    totalsNew =  {'vaccination':1000000000,'antiviral':1000000000}
+    interventionsNew = []
     
 
 # UNIX PASSED ARGUMENTS DECISION TREE  
@@ -411,9 +568,20 @@ def main(arg1, arg2, arg3, arg4, polyScript, filteredIDs):
             sys.argv[3] = "null"               
             if not newStyle:
                 avTreatments = writeAvScript(avScript, diagParams, outName, path, subpopDirectory)
+                
+# PREP NEW FORMAT DICTS
+ 
             else:
-                avScriptNew = prepNewAV(avScript, diagParams, outName, path, subpopDirectory)
-                avTreatments = len(avScriptNew)
+                useNew = True
+                temp = prepNewAV(avScript, diagParams, outName, path, subpopDirectory, totalsNew)
+                subpopsNew += temp['subpops']
+                actionsNew += temp['actions']
+                interventionsNew += temp['actions']
+                print subpopsNew
+                print actionsNew
+                print interventionsNew
+                quit()
+                avTreatments = len(actionsNew)
         
     if arg != "user" and arg != "gDoc" and arg != "gdoc" and (not os.path.isfile(arg)):
         print arg
