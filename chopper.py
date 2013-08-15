@@ -43,7 +43,10 @@ def trimEnum(enumList, target):
     newEnum = []
     while total <= target:
         newEnum.append(enumList[pos])
-        total += enumList[pos+1]
+        if enumList[pos+1] > 1:
+            total += enumList[pos+1]
+        else:
+            total += enumList[pos+1] * total
         if total > target:
             newEnum.append(enumList[pos+1] - total + target)
         else:

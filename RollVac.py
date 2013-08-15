@@ -16,7 +16,7 @@ stopWord = "Diagnosis Model Version,Antiviral Model Version,"
 
 ####NEW EPIFAST FORMAT COMMANDS
 
-# GENERATE EMPTY EPIFAST INTERVENTION SCRIPT BLOCKS
+# GENERATE EMPTY EPIFAST INTERVENTION SCRIPT BLOCKS & CONVERT BLOCKS TO TEXT
 
 def prepNewSubpop():
     temp = dict(subpopulationID = 'null',
@@ -24,16 +24,58 @@ def prepNewSubpop():
     subpopulationFile = 'null')
     return temp
     
+def getSubpopText(subpop):
+    pos = 0
+    limit = 1
+    isList = False
+    if isinstance(subpop,list):
+        subpops = subpop
+        limit = len(subpop)
+        isList = True
+    while pos < limit:
+        if isList:
+            subpop = subpops[pos]
+    text = makeIfFound(subpop['subpopulationID'],"SubpopulationId = ")
+    text += makeIfFound(subpop['subpopulationName'],"SubpopulationName = ")
+    text += makeIfFound(subpop['subpopulationFile'],"SubpopulationFile = ") + '\n'
+    print "Subpop(s) block\n", text
+    return text
+    
 def prepNewAction():
     temp = dict(actionID = 'null',
+    actionDescription = 'null',
     actionDelay = 'null',
     actionDuration = 'null',
     actionConsumption = 'null',
     actionType = 'null',
-    actionDescription = 'null',
+    actionEfficacy = 'null',
     actionEfficacyIn = 'null',
     actionEfficacyOut = 'null')
     return temp
+    
+def getActionText(action):
+    pos = 0
+    limit = 1
+    isList = False
+    if isinstance(action,list):
+        actions = action
+        limit = len(action)
+        isList = True
+    while pos < limit:
+        if isList:
+            action = actions[pos]
+        text = makeIfFound(action['actionID'],"ActionId = ")
+        text += makeIfFound(action['actionDescription'],"ActionDescription = ")
+        text += makeIfFound(action['actionDelay'],"ActionDelay = ")
+        text += makeIfFound(action['actionDuration'],"ActionDuration = ")
+        text += makeIfFound(action['actionConsumption'],"ActionConsumption = ")
+        text += makeIfFound(action['actionType'],"ActionType = ")
+        text += makeIfFound(action['actionEfficacy'],"ActionEfficacy = ")
+        text += makeIfFound(action['actionEfficacyIn'],"ActionEfficacyIn = ")
+        text += makeIfFound(action['actionEfficacyOut'],"ActionEfficacyOut = ") + '\n'
+        pos += 1
+    print "Action(s) block\n",text
+    return text
 
 def prepNewIntervention():
     temp = dict(interventionID = 'null',
@@ -47,7 +89,49 @@ def prepNewIntervention():
     conditionThresholdValue = 'null',
     conditionThresholdSubpopulation = 'null',
     action = 'null')
+    print temp
     return temp
+    
+def getInterventionText(interv):
+    pos = 0
+    limit = 1
+    isList = False
+    if isinstance(interv,list):
+        intervs = interv
+        limit = len(interv)
+        isList = True
+    while pos < limit:
+        if isList:
+            interv = intervs[pos]
+        text = makeIfFound(interv['interventionID'],"InterventionId = ")
+        text += makeIfFound(interv['interventionType'],"InterventionType = ")
+        text += makeIfFound(interv['conditionState'],"ConditionState = ")
+        text += makeIfFound(interv['conditionDate'],"ConditionDate = ")
+        text += makeIfFound(interv['conditionTotal'],"ConditionTotal = ")
+        text += makeIfFound(interv['conditionMemberShip'],"ConditionMemberShip = ")
+        text += makeIfFound(interv['conditionMutex'],"ConditionMutex = ")
+        text += makeIfFound(interv['conditionCompliance'],"ConditionCompliance = ")
+        text += makeIfFound(interv['conditionThresholdValue'],"ConditionThresholdValue = ")
+        text += makeIfFound(interv['conditionThresholdSubpopulation'],"ConditionThresholdSubpopulation = ") + '\n'
+        pos += 1
+    print "Intervention(s) block\n",text
+    return text
+    
+def getTotalText(total):
+    text = "TotalId = 9100\n"
+    text += "TotalName = Vaccine Supply\n"
+    text += "Total Amount = " + str(total['vaccination']) + '\n\n'
+    text += "TotalId = 9101\n"
+    text += "TotalName = Antiviral Supply\n"
+    text += "Total Amount = " + str(total['antiviral']) + '\n\n'
+    return text
+
+# GENERATE FINAL OUTPUT    
+            
+def getOutputNew(subpop, total, action, interv):
+    return getSubpopText(subpop) + getTotalText(total) + getActionText(action) + getInterventionText(interv)
+    
+    
     
 #PREPS SCRIPT OUTPUT IF BLOCK HAS CONTENTS
 
@@ -65,12 +149,22 @@ def getSubpopID(subpops,name):
     pos = 0
     print "Checking subpops for name", name
     while pos < len(subpops):
-        if subpops[pos]['subpopulationName'] == name:
+        if subpops[pos]['subpopulationName'] == name or subpops[pos]['subpopulationFile'] == name:
             ID = subpops[pos]['subpopulationID'] 
             print name, "found at ID", ID
             return ID
         pos += 1
     print "Subopulation", name, "not in subpops list"
+    return 'null'
+    
+def getActionType(actions,action):
+    pos = 0
+    print "Checking actions for action", action
+    while pos < len(actions):
+        if actions[pos]['actionID'] == action:
+            return actions[pos]['actionType']
+        pos += 1
+    print "Action", action, "not in actions list"
     return 'null'
  
 # APPENDS SUBPOP IF NOT YET PRESENT      
@@ -168,16 +262,35 @@ def prepNewAV(avScript, diagParams, outName, directory, subpopDirectory, totalsN
     
     pos = 0
     length = len(avScript)
-    while pos < length:
+    """while pos < length:
         if str(pos+9300) in mutex:
             intervNew[pos]['conditionMutex'] = ";".join(mutex)
         else:
             intervNew[pos]['conditionMutex'] = str(mutStart+pos)
-        pos += 1
+        pos += 1"""
     
     print "Antiviral treatment scripting complete"
     return {'configV':str(configV),'actions':actionNew,'interventions':intervNew,'subpops':subPopNew}
 
+#RETURNS ENUMERATION AS PERCENTAGES RATHER THAN COUNTS FOR NEW FORMAT
+
+def countEnum(enumerator,size):
+    pos1 = 1
+    print
+    workEnum =  enumerator[:]
+    total = 0
+    limit =  len(workEnum)    
+    while pos1 < limit+1:
+        temp = float(workEnum[pos1])
+        if temp > 1:
+            workEnum[pos1] = float(temp/size)
+            print "Count", temp, "of population size", size, "converted to", workEnum[pos1], "percent for new format enumeration" 
+        else:
+            workEnum[pos1] = int(workEnum[pos1])
+        total += workEnum[pos1]*size
+        pos1 += 2
+    return {'enum':workEnum,"total":total} 
+    
     
 ###OLD EPIFAST FORMAT COMMANDS
 
@@ -520,8 +633,8 @@ def main(arg1, arg2, arg3, arg4, polyScript, filteredIDs):
             path = arg2
             if os.path.exists(path):
                 shutil.rmtree(path)
-#DEBUG            os.makedirs(path)
-#DEBUG            os.makedirs(path + "/output")
+            os.makedirs(path)
+            os.makedirs(path + "/output")
         else:
             isPoly = False
         loadType = "intervention script"
@@ -647,6 +760,8 @@ Enter 'local' to use current working directory or 'explicit' for a direct link""
 # FLUSH INTERVENTION FILE & COPY POLYRUN BASEFILE IF NEEDED
     
     writePath = path + outName + 'Intervention'
+    if useNew:
+        writePath += 'New'
     if useBase:
         shutil.copy2(baseFile, writePath)
         outFile = open(writePath)
@@ -658,7 +773,10 @@ Enter 'local' to use current working directory or 'explicit' for a direct link""
         outFile.write("\n\n# ----- End of Appended Intervention File -----\n\n")
     else:
         outFile = open(writePath, 'w')
-    outFile.write("# ----- RollVac.Py Autogenerated Intervention File -----\n\n")
+    if useNew:
+        outFile.write("# ----- RollVac.Py Autogenerated Intervention File New Version-----\n\n")
+    else:
+        outFile.write("# ----- RollVac.Py Autogenerated Intervention File Old Version-----\n\n")
     outFile.close()
 
         
@@ -756,6 +874,10 @@ action number and subpopulation directory appended"""
                         target = 3
                         meth =  "cs"
                         iCode = 4000
+                    elif method == "Sequestion":
+                        target = 4
+                        meth =  "sq"
+                        iCode = 6000
                     if (len(temp) != target):
                         print "Error:",  len(temp), "parameters found,", target, "expected for intervention type", method, "\n"
                     elif target == 0:
@@ -846,6 +968,10 @@ action number and subpopulation directory appended"""
                 target = 6
                 meth = "cs"
                 iCode = 4000
+            elif method == "Sequestion":
+                target = 7
+                meth = "sq"
+                iCode = 6000
             else:
                 print "Error:", method, "method not recognized\n"
                 quit()
@@ -855,6 +981,7 @@ action number and subpopulation directory appended"""
             
             
             interv = " ".join(temp[3:target])
+            intervNew = temp[3:target]
             pos += 1
     
         suffix = str(subnum) + meth
@@ -863,32 +990,42 @@ action number and subpopulation directory appended"""
 # ALL MODE CHOPPING EXECUTION
 
         print population
-        
-        pos2 = 0
-        limit = len(filteredIDs)
-        found = False
-        while pos2 < limit:
-            if population in filteredIDs[pos2]['directory']:
-                found = True
-                runIDs = filteredIDs[pos2]['ids']
-                break
-            pos2 += 1
-        
-        if not found:
-            filteredIDs.append(filterIDs(population))
-            runIDs = filteredIDs[-1]['ids']
-        
-        
-        if enum:
-            populationSize = chopper.popSize(population)
-            enumList = cleanEnum(percentEnum(enumList,populationSize))
-            holder = chopper.main(population,'e'," ".join(map(str, enumList)),suffix, path,runIDs)
-            returnSize = holder['count']
-            enumList = holder['enum']
-            length = chopper.getEnumSize(enumList)
+        if not useNew:
+            pos2 = 0
+            limit = len(filteredIDs)
+            found = False
+            while pos2 < limit:
+                if population in filteredIDs[pos2]['directory']:
+                    found = True
+                    runIDs = filteredIDs[pos2]['ids']
+                    break
+                pos2 += 1
+            
+            if not found:
+                filteredIDs.append(filterIDs(population))
+                runIDs = filteredIDs[-1]['ids']
+            
+            if enum:
+                populationSize = chopper.popSize(population)
+                enumList = cleanEnum(percentEnum(enumList,populationSize))
+                holder = chopper.main(population,'e'," ".join(map(str, enumList)),suffix, path,runIDs)
+                returnSize = holder['count']
+                enumList = holder['enum']
+                length = chopper.getEnumSize(enumList)
+            else:
+                holder = chopper.main(population,'b',str(length),suffix, path, runIDs)
+                returnSize = holder['count']
         else:
-            holder = chopper.main(population,'b',str(length),suffix, path, runIDs)
-            returnSize = holder['count']
+            addSubpop(subpopsNew, population.split('/')[-1], population, 9000+ len(subpopsNew))
+
+            if enum:
+                populationSize = chopper.popSize(population)
+                temp = countEnum(enumList,populationSize)
+                enumList = chopper.trimEnum(cleanEnum(temp['enum']))
+                length = chopper.getEnumSize(enumList)
+                returnSize = min(temp['total'],populationSize)
+            else:
+                populationSize = returnSize = chopper.popSize(population)
 
 
 # NON TREATMENT BASED INTERVENTION TRACKING            
@@ -908,55 +1045,138 @@ action number and subpopulation directory appended"""
 # WRITING INTERVENTION FILE (AV TREATMENT & DIAG HANDLED SEPERATELY)
 
         writePath = path + outName + 'Intervention'
-        outFile = open(writePath, 'a+b')
-        
+               
         pos2 = 0
-        
         popName = population.split('/')[-1]
         
-        if enum:
-            while pos2 < len(enumList):
-                subPopName = popName + 'd' + str(pos2/2) + 'i' + suffix
-                if ".txt" in subPopName:
-                    subPopName = subPopName.replace('.txt','') + '.txt'
-                triggerOut = "* Trigger " + str(trigger+iCode) + " Date " + str(enumList[pos2]) + "\n" 
-                if useExplicit:
-                    tempPath = path + "/subpops/" + subPopName
-                else:
-                    tempPath = "subpops/" + subPopName
-                intervOut = "* Action " + str(trigger+iCode) + " " + interv + " " + tempPath + "\n"
-                intervOut =  intervOut.replace('//','/')
-                print triggerOut, intervOut.replace('\n','')
-                outFile.write(triggerOut)
-                outFile.write(intervOut)
-                trigger += 1
-                pos2 += 2
+        if not useNew:
+            outFile = open(writePath, 'a+b')
+            if enum:
+                while pos2 < len(enumList):
+                    subPopName = popName + 'd' + str(pos2/2) + 'i' + suffix
+                    if ".txt" in subPopName:
+                        subPopName = subPopName.replace('.txt','') + '.txt'
+                    triggerOut = "* Trigger " + str(trigger+iCode) + " Date " + str(enumList[pos2]) + "\n" 
+                    if useExplicit:
+                        tempPath = path + "/subpops/" + subPopName
+                    else:
+                        tempPath = "subpops/" + subPopName
+                    intervOut = "* Action " + str(trigger+iCode) + " " + interv + " " + tempPath + "\n"
+                    intervOut =  intervOut.replace('//','/')
+                    print triggerOut, intervOut.replace('\n','')
+                    outFile.write(triggerOut)
+                    outFile.write(intervOut)
+                    trigger += 1
+                    pos2 += 2
+                
+            else:
+                while pos2 < length:
+                    subPopName = popName + 'd' + str(pos2) + 'i' + suffix
+                    if ".txt" in subPopName:
+                        subPopName = subPopName.replace('.txt','') + '.txt'
+                    triggerOut = "* Trigger " + str(trigger+iCode) + " Date " + str(day+pos2) + "\n" 
+                    if useExplicit:
+                        tempPath = path + "/subpops/" + subPopName
+                    else:
+                        tempPath = "subpops/" + subPopName
+                    intervOut = "* Action " + str(trigger+iCode) + " " + interv + " " + tempPath + "\n"
+                    intervOut =  intervOut.replace('//','/')
+                    print triggerOut, intervOut.replace('\n','')
+                    outFile.write(triggerOut)
+                    outFile.write(intervOut)
+                    trigger += 1
+                    pos2 += 1
             
+            outFile.close()
+            print
         else:
-            while pos2 < length:
-                subPopName = popName + 'd' + str(pos2) + 'i' + suffix
-                if ".txt" in subPopName:
-                    subPopName = subPopName.replace('.txt','') + '.txt'
-                triggerOut = "* Trigger " + str(trigger+iCode) + " Date " + str(day+pos2) + "\n" 
-                if useExplicit:
-                    tempPath = path + "/subpops/" + subPopName
-                else:
-                    tempPath = "subpops/" + subPopName
-                intervOut = "* Action " + str(trigger+iCode) + " " + interv + " " + tempPath + "\n"
-                intervOut =  intervOut.replace('//','/')
-                print triggerOut, intervOut.replace('\n','')
-                outFile.write(triggerOut)
-                outFile.write(intervOut)
-                trigger += 1
-                pos2 += 1
-        
-        outFile.close()
-        print
+            writePath += 'New'
+            tempAction = prepNewAction()
+            tempInterv = {prepNewIntervention()}*len(enumList/2)
+            tempAction['actionID'] = actionID = str(trigger + iCode)
+            tempAction['actionDescription'] = tempAction['actionType'] = method
+            tempAction['actionDelay'] = '0'
+            tempAction['actionDuration'] = intervNew[0]
+            conditionTotal = -1
+            if method == "Vaccination":
+                tempAction['actionEfficacy'] = intervNew[2]
+                conditionTotal = '9100'
+            elif method == "Antiviral":
+                tempAction['actionEfficacyIn'] = intervNew[2]
+                tempAction['actionEfficacyOut'] = intervNew[3]
+                conditionTotal = '9101'
+            if enum:    
+                while pos2 < len(enumList):
+                    tempInterv[pos2/2]['interventionID'] = str(9300 + len(interventionsNew) + pos/2)
+                    tempInterv[pos2/2]['interventionType'] = "Offline"
+                    if conditionTotal != -1:
+                        tempInterv[pos2/2]['conditionTotal'] = conditionTotal
+                    tempInterv[pos2/2]['conditionDate'] = str(enumList[pos2]) + '~' + str(enumList[pos2])
+                    tempInterv[pos2/2]['conditionMembership'] = getSubpopID(subpopsNew,popName)
+                    tempInterv[pos2/2]['conditionCompliance'] = str(intervNew[1] * enumList[pos2+1])
+                    tempInterv[pos2/2]['action'] = actionID
+                    pos2 += 2
+            else:
+                while pos2 < length:
+                    tempInterv[pos2]['interventionID'] = str(9300 + len(interventionsNew) + pos/2)
+                    tempInterv[pos2]['interventionType'] = "Offline"
+                    if conditionTotal != -1:
+                        tempInterv[pos2]['conditionTotal'] = conditionTotal
+                    tempInterv[pos2]['conditionDate'] = str(day+pos2) + '~' + str(day+pos2)
+                    tempInterv[pos2]['conditionMembership'] = getSubpopID(subpopsNew,popName)
+                    tempInterv[pos2]['conditionCompliance'] = str(intervNew[1] / length)
+                    tempInterv[pos2]['action'] = actionID
+                    pos2 +=1
+                    subPopName = popName + 'd' + str(pos2) + 'i' + suffix
+                    if ".txt" in subPopName:
+                        subPopName = subPopName.replace('.txt','') + '.txt'
+                    triggerOut = "* Trigger " + str(trigger+iCode) + " Date " + str(day+pos2) + "\n" 
+            actionsNew += tempAction
+            intervNew += tempInterv
 
 
-# APPENDING NON TREATMENT INTERVENTION TOTALS               
+# AUTOGENERATE NEW FORMAT MUTEXES           
                                               
+    if useNew:
+        vMutex = avMutex = sdMutex = cwMutex = csMutex = sqMutex = []
+        pos = 0
+        while pos < length(actionsNew):
+            if actionsNew[pos]['actionDescription'] == "Vaccination":
+                vMutex.append(str(pos))
+            elif actionsNew[pos]['actionDescription'] == "Antiviral":
+                avMutex.append(str(pos))
+            elif actionsNew[pos]['actionDescription'] == "SocialDistancing":
+                sdMutex.append(str(pos))
+            elif actionsNew[pos]['actionDescription'] == "CloseWork":
+                cwMutex.append(str(pos))
+            elif actionsNew[pos]['actionDescription'] == "CloseSchools":
+                csMutex.append(str(pos))
+            elif actionsNew[pos]['actionDescription'] == "Sequestion":
+                sqMutex.append(str(pos))
+            pos+=1
+        pos = 0
+        while pos < length(interventionsNew):
+            temp = getActionType(actionsNew,interventionsNew[pos]['action'])
+            if temp == "Vaccination":
+                interventionsNew[pos]['conditionMutex'] = ';'.join(vMutex)
+            elif temp == "Antiviral":
+                interventionsNew[pos]['conditionMutex'] = ';'.join(avMutex)
+            elif temp == "SocialDistancing":
+                interventionsNew[pos]['conditionMutex'] = ';'.join(sdMutex)
+            elif temp == "CloseWork":
+                interventionsNew[pos]['conditionMutex'] = ';'.join(cwMutex)
+            elif temp == "CloseSchools":
+                interventionsNew[pos]['conditionMutex'] = ';'.join(csMutex)
+            elif temp == "Sequestion":
+                interventionsNew[pos]['conditionMutex'] = ';'.join(sqMutex)
+            pos+=1
+
+            
+# APPENDING NON TREATMENT INTERVENTION TOTALS    
+   
     outFile = open(path + outName+'Intervention', 'a+b')
+    if useNew:
+        outFile.write(getOutputNew(subpopsNew, totalsNew, actionsNew, interventionsNew))
     outFile.write("""\n#----- End of Generated Intervention File -----\n\n# RollVac.Py Pre Compliance Intervention Totals- calculated per output,
 does not account for over-application to a given set of IDs. 
 Please apply only one of each type per sub pop, using enumerated
