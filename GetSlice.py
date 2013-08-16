@@ -744,7 +744,7 @@ def main():
                 attackOut.close()
 	        statsOut.close()
                 pos += 1
-            print "Finished generation of cell summaries & detail stats, starting mass chart generation"
+            """print "Finished generation of cell summaries & detail stats, starting mass chart generation"
             uniqueLimit = len(uniqueInterventions)
             cells =  qsubLimit/uniqueLimit
             print "%s unique interventions found with %s antiviral & vaccine effectiveness cells per graph" % (str(uniqueLimit),str(cells))
@@ -759,7 +759,7 @@ def main():
 	               prepped = prepSingle(params,qsubList,splitList,'ate','ve',uniqueInterventions[pos],uniqueIndex[pos])
 	           print uniqueInterventions, uniqueLimit
 	           writeTSVcells(directoryOut+'/Vacc_Vs_Av_Charts',prepped['runList'],prepped['refMatrix'],prepped['valMatrix'],prepped['xTitles'],prepped['yTitles'],uniqueInterventions[pos].replace(' ',''))
-	        pos += 1
+	        pos += 1"""
 	        
         
     print "Finished analyses, quitting now"
