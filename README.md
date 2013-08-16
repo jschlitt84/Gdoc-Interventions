@@ -1,3 +1,5 @@
+Latest online version available at: https://docs.google.com/document/d/1KcoTbXxpfuBleB7h6sWpX2GEsRjFcIIdyy5yUYvna3Q/
+
 GDoc Interventions, a collaborative approach to Epifast experiment scripting
 User Guide by James Schlitt
 Written 8/6/2013 for the Network Dynamics and Simulation Science Laboratory
