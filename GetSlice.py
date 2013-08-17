@@ -748,7 +748,7 @@ def main():
         if runAll:
             temp = ''
             if useSubpop:
-                temp = subpopDir.split('/')[-1] + '_'
+                temp = subpopDir.split('/')[-1].replace('.txt','') + '_'
             studyPrefix = prepDir(directoryOut + '/' + studyName) + temp
             VAVPrefix = prepDir(studyPrefix + 'Vacc_Vs_Av_Charts') 
             meansPrefix = prepDir(studyPrefix + 'Individual_Mean_Stats')
