@@ -322,12 +322,14 @@ def checkLines(fileName, subpopLoaded, useSubpop):
 	           del trimmed[pos]
 	           filtered += 1
 	           length -= 1
+	    if (pos+filtered)%100 == 0:
+                    print "Filtering", pos+filtered, "out of", length0, "entries"
 	else:
         	trimmed[pos] = map(int,trimmed[pos].split(' '))
         	days =  max(days, trimmed[pos][2])
         	pos += 1
-                if (pos+filtered)%100 == 0:
-                    print "Filtering", pos+filtered, "out of", length0, "entries"
+
+
     
     print "%s entries remaining of %s, %s commented out and %s filtered via subpop membership" % (str(length), str(length0),str(comments),str(filtered))
     quit()
