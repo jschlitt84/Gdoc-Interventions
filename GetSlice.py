@@ -297,7 +297,7 @@ def writeAll(directory,title,data):
         pos1 += 1
     chartsOut.close()
 
-def checkLines(fileName, subpopset, subpopLoaded, useSubpop):
+def checkLines(fileName, subpopLoaded, useSubpop):
     wholeThing = open(fileName)
     content = wholeThing.readlines()
     params = content[0].split(' ')    
