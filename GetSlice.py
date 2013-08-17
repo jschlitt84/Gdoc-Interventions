@@ -330,7 +330,7 @@ def checkLines(fileName, subpopLoaded, useSubpop):
         	trimmed[pos] = map(int,trimmed[pos].split(' '))
         	days =  max(days, trimmed[pos][2])
         	pos += 1
-        if (pos+filtered)%1000 == 0:
+        if (pos+filtered)%25000 == 0:
                     print "Filtering", pos+filtered, "out of", length0, "entries"
     
     print "%s entries remaining of %s, %s commented out and %s filtered via subpop membership" % (str(length), str(length0),str(comments),str(filtered))
@@ -763,12 +763,12 @@ def main():
             
             
             pos = 0
-            #qsubLimit = len(qsubList)
+            qsubLimit = len(qsubList)
             #uniqueInterventions = []
             #uniqueIndex = []
             
-            #while pos < qsubLimit:
-            while pos < 1:
+            while pos < qsubLimit:
+            #while pos < 1:
                 data = checkLines(qsubList[pos]+'/'+target, subpopLoaded, useSubpop)
                 qsubTemp = qsubList[pos].replace(directoryIn,'')
                 #filteredName = removeDescriptor(qsubTemp,['ve','ate','ape']).replace('/',' ')
