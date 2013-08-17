@@ -309,13 +309,14 @@ def checkLines(fileName, subpopLoaded, useSubpop):
     days = 0
     comments = 0
     filtered = 0
+    print "Preparing to filter population, size:", length0
     while pos < length:
 	if '#' in trimmed[pos]:
 		print "Ignoring comment:", trimmed[pos]
 		del trimmed[pos]
 		comments += 1
 		length -= 1
-	if useSubpop:
+	elif useSubpop:
 	    temp = trimmed[pos].split()[0]
 	    if temp not in subpopLoaded:
 	           del trimmed[pos]
@@ -325,8 +326,8 @@ def checkLines(fileName, subpopLoaded, useSubpop):
         	trimmed[pos] = map(int,trimmed[pos].split(' '))
         	days =  max(days, trimmed[pos][2])
         	pos += 1
-        if (pos+filtered)%250 == 0:
-            print "Filtering", pos+filtered, "out of", length0, "entries"
+                if (pos+filtered)%100 == 0:
+                    print "Filtering", pos+filtered, "out of", length0, "entries"
     
     print "%s entries remaining of %s, %s commented out and %s filtered via subpop membership" % (str(length), str(length0),str(comments),str(filtered))
     quit()
