@@ -8,11 +8,31 @@ except:
     print "*** OrderedDict not found in collections, using drop in version ***"
 
 
+#From Rollvac, loads IDS as set for fast search
+def filterIDs(directory):   
+    print "Initiating one time ID load/ filter to memory"
+    popfile = open(directory)
+    #ids = []   
+    ids = set()              
+    line = 0
+    while True:
+            testline = popfile.readline()
+            if len(testline) == 0:
+                break
+            if not testline.startswith("#"):
+                #ids.append(testline)
+                ids.add(testline)
+                line += 1
+                
+    idstemp =  sorted(list(ids))      
+    print str(line), "entries with IDS\n", int(idstemp[0]), "through", int(idstemp[line-1]), "loaded,\npreparing to chop\n"
+    
+    return ids
+
 #Returns first instance of substring in list of strings or false if not found
 
 def checkList(text, textList):
     pos = 0
-    double = False
     index = -1
     while pos < len(textList):
         if text in textList[pos]:
@@ -69,7 +89,7 @@ def filterDict(paramDict,isKeys,hide):
     
     
 def getSpreadSheet(data, line, hide, justGetKeys):
-    paramDict = OrderedDict((('ve',-1),('v',-1),('vti',-1),('vtd',-1),('sd',-1),('sdti',-1),('sdtd',-1),('sdl',-1),('cw',-1),('cwti',-1),('cwtd',-1),('cwl',-1),('cs',-1),('csti',-1),('cstd',-1),('csl',-1),('ate',-1),('at',-1),('atdr',-1),('atti',-1),('attd',-1),('atl',-1),('ape',-1),('ap',-1),('apti',-1),('aptd',-1),('aptl',-1),('sq',-1),('sqg',-1),('sqtd',-1),('sql',-1),('other','')))
+    paramDict = OrderedDict((('ve',-1),('v',-1),('vti',-1),('vtd',-1),('sd',-1),('sdti',-1),('sdtd',-1),('sdl',-1),('cw',-1),('cwti',-1),('cwtd',-1),('cwl',-1),('cs',-1),('csti',-1),('cstd',-1),('csl',-1),('ate',-1),('at',-1),('atdr',-1),('atti',-1),('attd',-1),('atl',-1),('ape',-1),('ap',-1),('apti',-1),('aptd',-1),('apl',-1),('sq',-1),('sqg',-1),('sqtd',-1),('sql',-1),('other','')))
     dataDict = OrderedDict((('attackRate',0),('peakDay',0),('peakNumber',0),('isEpidemic',0),('leftBound',0),('rightBound',0),('secondaryMaxima','')))
     if justGetKeys:
         return "directory, iteration, " + filterDict(paramDict, True, hide) + ', ' + filterDict(dataDict, True, hide) + '\n'
@@ -90,7 +110,7 @@ def getSpreadSheet(data, line, hide, justGetKeys):
                     words.append(tempString)
                     numbers.append(line[pos])
                 else:
-                    extra += tempString + '+'
+                    extra += tempString + '_'
                     tempString = ''
             else:
                 words.append(tempString)
@@ -277,7 +297,7 @@ def writeAll(directory,title,data):
         pos1 += 1
     chartsOut.close()
 
-def checkLines(fileName):
+def checkLines(fileName, subpopset, subpopLoaded, useSubpop):
     wholeThing = open(fileName)
     content = wholeThing.readlines()
     params = content[0].split(' ')    
@@ -292,6 +312,11 @@ def checkLines(fileName):
 		print "Ignoring comment:", trimmed[pos]
 		del trimmed[pos]
 		length -= 1
+	if useSubpop:
+	    temp = int(trimmed[pos].split()[0])
+	    if temp not in subpopLoaded:
+	           print "ID", trimmed[pos], "not in target subpop, ignoring."
+	           del trimmed[pos]
 	else:
         	trimmed[pos] = map(int,trimmed[pos].split(' '))
         	days =  max(days, trimmed[pos][2])
@@ -444,7 +469,7 @@ def prepDir(directory):
         directory += '/'
     return directory
         
-def prepSingle(params,qsubList,splitList,passedX,passedY,passedC,lineIndex):
+def prepSingle(params,qsubList,splitList,passedX,passedY,passedC,lineIndex, subpopLoaded, useSubpop):
     print splitList
     directoryIn = prepDir(params[0])
     directoryOut = prepDir(params[1])
@@ -603,7 +628,7 @@ def prepSingle(params,qsubList,splitList,passedX,passedY,passedC,lineIndex):
             refMatrix[xPos][yPos] = pos1
             testMatrix[xPos][yPos] = xPos
             dirMatrix[xPos][yPos] = directoryIn + qsubList[pos1].replace(directoryIn,'') + '/' + target
-            temp = checkLines(dirMatrix[xPos][yPos])
+            temp = checkLines(dirMatrix[xPos][yPos], subpopLoaded, useSubpop)
             valMatrix[xPos][yPos] = temp['epiMean']          
             print pos1
             print qsubList[pos1]
@@ -663,6 +688,16 @@ def main():
         print params
         directoryIn = prepDir(params[0])
         directoryOut = prepDir(params[1])
+        subpopDir = params[5]
+        useSubpop = len(subpopDir) > 1
+        subpopLoaded = []
+        if useSubpop:
+            try:
+                print "Attempting analysis by subpop directory, loading file"
+                subpopLoaded = filterIDs(subpopDir)
+            except:
+                print "Subpop load failed, quiting now."
+                quit()
         studyName = params[2]
         qsubDir = params[3]
         target = params[4]
@@ -698,7 +733,10 @@ def main():
             writeToFiles(prepped['directoryOut'],prepped['runList'],prepped['refMatrix'],prepped['valMatrix'],prepped['xTitles'],prepped['yTitles'],prepped['studyName'])
         
         if runAll:
-            studyPrefix = prepDir(directoryOut + '/' + studyName)
+            temp = ''
+            if useSubpop:
+                temp = subpopDir.split('/')[-1] + '_'
+            studyPrefix = prepDir(directoryOut + '/' + studyName) + temp
             VAVPrefix = prepDir(studyPrefix + 'Vacc_Vs_Av_Charts') 
             meansPrefix = prepDir(studyPrefix + 'Individual_Mean_Stats')
             print studyPrefix
@@ -712,19 +750,19 @@ def main():
             
             
             pos = 0
-            qsubLimit = len(qsubList)
-            uniqueInterventions = []
-            uniqueIndex = []
+            #qsubLimit = len(qsubList)
+            #uniqueInterventions = []
+            #uniqueIndex = []
             
-            while pos < qsubLimit:
-            #while pos < 1:
-                data = checkLines(qsubList[pos]+'/'+target)
+            #DEBUG while pos < qsubLimit:
+            while pos < 1:
+                data = checkLines(qsubList[pos]+'/'+target, subpopLoaded, useSubpop)
                 qsubTemp = qsubList[pos].replace(directoryIn,'')
-                filteredName = removeDescriptor(qsubTemp,['ve','ate','ape']).replace('/',' ')
+                #filteredName = removeDescriptor(qsubTemp,['ve','ate','ape']).replace('/',' ')
                 qsubTemp = qsubTemp.replace('/','_')
-                if filteredName not in uniqueInterventions:
-                    uniqueInterventions.append(filteredName)
-                    uniqueIndex.append(pos)
+                #if filteredName not in uniqueInterventions:
+                  #  uniqueInterventions.append(filteredName)
+                  #  uniqueIndex.append(pos)"""
                 if pos == 0:
                     attackOut = open(studyPrefix + 'AttackList.txt','w')
                     attackOut.write("# Attack Rate List\n")
@@ -734,15 +772,16 @@ def main():
                     statsOut.close()
                 attackOut = open(studyPrefix + 'AttackList.txt','a+b')            
                 statsOut = open(studyPrefix + 'DetailStats.csv','a+b')
-                qsubLine = meansPrefix + '/' + qsubTemp
-                meansOut = open(qsubLine + 'Means.tsv','w')
+                #qsubLine = meansPrefix + '/' + qsubTemp
+                #meansOut = open(qsubLine + 'Means.tsv','w')
                 writeAll(qsubList[pos]+'/', studyName, data)
                 writeAll(meansPrefix, qsubTemp, data)           
                 attackOut.write(qsubList[pos].replace(directoryIn,'') + ' ' + str(data['epiMean']) + '\n')
                 statsOut.write(getSpreadSheet(data, qsubList[pos].replace(directoryIn,''),hideThese, False))
-                meansOut.write(curveToTSV(data['meanCurve']))
+                #meansOut.write(curveToTSV(data['meanCurve']))
                 attackOut.close()
 	        statsOut.close()
+	        #meansOut.close()
                 pos += 1
             """print "Finished generation of cell summaries & detail stats, starting mass chart generation"
             uniqueLimit = len(uniqueInterventions)
