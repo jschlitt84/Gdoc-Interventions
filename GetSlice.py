@@ -21,11 +21,11 @@ def filterIDs(directory):
                 break
             if not testline.startswith("#"):
                 #ids.append(testline)
-                ids.add(testline)
+                ids.add(testline.strip())
                 line += 1
                 
     idstemp =  sorted(list(ids))      
-    print str(line), "entries with IDS\n", int(idstemp[0]), "through", int(idstemp[line-1]), "loaded,\npreparing to chop\n"
+    print str(line), "entries with IDS\n", int(idstemp[0]), "through", int(idstemp[line-1]), "loaded,\npreparing to analyze\n"
     
     return ids
 
@@ -305,22 +305,29 @@ def checkLines(fileName, subpopLoaded, useSubpop):
     iterations = int(params[3])
     trimmed = content[popSize+2:]
     pos = 0
-    length =  len(trimmed)
+    length = length0 =  len(trimmed)
     days = 0
+    comments = 0
+    filtered = 0
     while pos < length:
 	if '#' in trimmed[pos]:
 		print "Ignoring comment:", trimmed[pos]
 		del trimmed[pos]
+		comments += 1
 		length -= 1
 	if useSubpop:
-	    temp = int(trimmed[pos].split()[0])
+	    temp = trimmed[pos].split()[0]
 	    if temp not in subpopLoaded:
-	           print "ID", trimmed[pos], "not in target subpop, ignoring."
 	           del trimmed[pos]
+	           filtered += 1
+	           length -= 1
 	else:
         	trimmed[pos] = map(int,trimmed[pos].split(' '))
         	days =  max(days, trimmed[pos][2])
         	pos += 1
+    
+    print "%s entries remaining of %s, %s commented out and %s filtered via subpop membership" % (str(length), str(length0),str(comments),str(filtered))
+    quit()
     limit =  len(trimmed)
     
     pos = 0
