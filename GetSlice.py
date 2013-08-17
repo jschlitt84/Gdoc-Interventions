@@ -322,6 +322,10 @@ def checkLines(fileName, subpopLoaded, useSubpop):
 	           del trimmed[pos]
 	           filtered += 1
 	           length -= 1
+	    else:
+        	trimmed[pos] = map(int,trimmed[pos].split(' '))
+        	days =  max(days, trimmed[pos][2])
+        	pos += 1
 	else:
         	trimmed[pos] = map(int,trimmed[pos].split(' '))
         	days =  max(days, trimmed[pos][2])
