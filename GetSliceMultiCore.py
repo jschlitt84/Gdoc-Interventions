@@ -1,7 +1,8 @@
 import gDocsImport
 import sys, os
-import multiprocessing
-from Queue import *
+#import multiprocessing
+from multiprocessing import process, Queue, cpu_count
+#from Queue import *
 
 from math import ceil
 try:
@@ -352,18 +353,19 @@ def checkLines(fileName, subpopLoaded, useSubpop, multiThreaded):
     if not multiThreaded:
         cores = 1
     else:
-        cores = multiprocessing.cpu_count()
+        #cores = multiprocessing.cpu_count()
+        cores = cpu_count()
     out_q = Queue()
     block =  int(ceil(len(trimmed)/float(cores)))
     processes = []
     
     for i in range(cores):
-        p = multiprocessing.process(target = sortEFO6, args = (trimmed[block*i:block*(i+1)], subpopLoaded, useSubpop, "null", i))
-        procesesses.append(p)
+        p = process(target = sortEFO6, args = (trimmed[block*i:block*(i+1)], subpopLoaded, useSubpop, out_q, i))
+        processes.append(p)
         p.start() 
     
     merged = {}
-    for i in range(nprocs):
+    for i in range(cores):
         merged.update(out_q.get())
     
     for p in processes:
