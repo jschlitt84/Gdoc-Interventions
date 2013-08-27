@@ -304,7 +304,7 @@ def writeAll(directory,title,data):
     
 #Worker function for EFO6 sorting & parallelization
     
-def sortEFO6(trimmed, subpopLoaded, useSubpop, out_q, core):
+"""def sortEFO6(trimmed, subpopLoaded, useSubpop, out_q, core):
     length = length0 =  len(trimmed)
     days = comments = filtered = pos = 0
     print "Core", core, "preparing to filter population, size:", length0
@@ -336,12 +336,47 @@ def sortEFO6(trimmed, subpopLoaded, useSubpop, out_q, core):
     outdict['comments'] = comments
     outdict['filtered'] = filtered
     print "Core", core, "task complete"
-    out_q.put(outdict)
+    out_q.put(outdict)"""
         
 
 #Main Stat Generation Function
 
 def checkLines(fileName, subpopLoaded, useSubpop, multiThreaded):
+    
+    def sortEFO6(trimmed, subpopLoaded, useSubpop, out_q, core):
+        length = length0 =  len(trimmed)
+        days = comments = filtered = pos = 0
+        print "Core", core, "preparing to filter population, size:", length0
+        outdict = {}
+        while pos < length:
+            if '#' in trimmed[pos]:
+  		print "Ignoring comment:", trimmed[pos]
+  		del trimmed[pos]
+  		comments += 1
+    	  	length -= 1
+            elif useSubpop:
+    	       temp = trimmed[pos].split()[0]
+    	       if temp not in subpopLoaded:
+    	           del trimmed[pos]
+    	           filtered += 1
+    	           length -= 1
+    	       else:
+        	   outdict[pos] = trimmed[pos] = map(int,trimmed[pos].split(' '))
+        	   days =  max(days, trimmed[pos][2])
+    	       pos += 1
+    	      
+            else:
+    	       trimmed[pos] = map(int,trimmed[pos].split(' '))
+    	       days =  max(days, trimmed[pos][2])
+    	       pos += 1
+            if (pos+filtered)%25000 == 0:
+                print "Filtering", pos+filtered, "out of", length0, "entries"
+        outdict['days'] = days
+        outdict['comments'] = comments
+        outdict['filtered'] = filtered
+        print "Core", core, "task complete"
+        out_q.put(outdict)
+        
     wholeThing = open(fileName)
     content = wholeThing.readlines()
     params = content[0].split(' ')    
