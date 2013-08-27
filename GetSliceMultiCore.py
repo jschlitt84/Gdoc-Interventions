@@ -1,7 +1,7 @@
 import gDocsImport
 import sys, os
 #import multiprocessing
-from multiprocessing import process, Queue, cpu_count
+from multiprocessing import Process, Queue, cpu_count
 #from Queue import *
 
 from math import ceil
@@ -394,7 +394,7 @@ def checkLines(fileName, subpopLoaded, useSubpop, multiThreaded):
     
     for i in range(cores):
         print "****i",i
-        p = process(target = sortEFO6, args = (trimmed[block*i:block*(i+1)], subpopLoaded, useSubpop, out_q, i))
+        p = Process(target = sortEFO6, args = (trimmed[block*i:block*(i+1)], subpopLoaded, useSubpop, out_q, i))
         processes.append(p)
         p.start() 
     
