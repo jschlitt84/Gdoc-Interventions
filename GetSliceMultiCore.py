@@ -1,6 +1,6 @@
 import gDocsImport
 import sys, os
-from multiprocessing import *
+import multiprocessing
 from math import ceil
 try:
     from collections import OrderedDict
@@ -350,13 +350,13 @@ def checkLines(fileName, subpopLoaded, useSubpop, multiThreaded):
     if not multiThreaded:
         cores = 1
     else:
-        cores = cpu_count()
+        cores = multiprocessing.cpu_count()
     out_q = Queue()
     block =  int(ceil(len(trimmed)/float(cores)))
     processes = []
     
     for i in range(cores):
-        p = process(target = sortEFO6, args = (trimmed[block*i:block*(i+1)], subPopLoaded, useSubpop, out_q, i))
+        p = multiprocessing.process(target = sortEFO6, args = (trimmed[block*i:block*(i+1)], subPopLoaded, useSubpop, out_q, i))
         procesesses.append(p)
         p.start() 
     
