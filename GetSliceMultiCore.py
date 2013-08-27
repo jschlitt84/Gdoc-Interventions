@@ -525,7 +525,7 @@ def prepDir(directory):
         directory += '/'
     return directory
         
-def prepSingle(params,qsubList,splitList,passedX,passedY,passedC,lineIndex, subpopLoaded, useSubpop):
+def prepSingle(params,qsubList,splitList,passedX,passedY,passedC,lineIndex, subpopLoaded, useSubpop, multiCore):
     print splitList
     directoryIn = prepDir(params[0])
     directoryOut = prepDir(params[1])
@@ -684,7 +684,7 @@ def prepSingle(params,qsubList,splitList,passedX,passedY,passedC,lineIndex, subp
             refMatrix[xPos][yPos] = pos1
             testMatrix[xPos][yPos] = xPos
             dirMatrix[xPos][yPos] = directoryIn + qsubList[pos1].replace(directoryIn,'') + '/' + target
-            temp = checkLines(dirMatrix[xPos][yPos], subpopLoaded, useSubpop)
+            temp = checkLines(dirMatrix[xPos][yPos], subpopLoaded, useSubpop, multiCore)
             valMatrix[xPos][yPos] = temp['epiMean']          
             print pos1
             print qsubList[pos1]
@@ -745,6 +745,7 @@ def main():
         directoryIn = prepDir(params[0])
         directoryOut = prepDir(params[1])
         subpopDir = params[5]
+        multiCore = params[14].lower()[0] == 'y'
         useSubpop = len(subpopDir) > 1
         subpopLoaded = []
         if useSubpop:
@@ -785,7 +786,7 @@ def main():
 		limit -= 1
     
         if not runAll:
-            prepped = prepSingle(params,qsubList,splitList,'','','','')
+            prepped = prepSingle(params,qsubList,splitList,'','','','', multiCore)
             writeToFiles(prepped['directoryOut'],prepped['runList'],prepped['refMatrix'],prepped['valMatrix'],prepped['xTitles'],prepped['yTitles'],prepped['studyName'])
         
         if runAll:
@@ -812,7 +813,7 @@ def main():
             
             while pos < qsubLimit:
             #while pos < 1:
-                data = checkLines(qsubList[pos]+'/'+target, subpopLoaded, useSubpop)
+                data = checkLines(qsubList[pos]+'/'+target, subpopLoaded, useSubpop, multiCore)
                 qsubTemp = qsubList[pos].replace(directoryIn,'')
                 #filteredName = removeDescriptor(qsubTemp,['ve','ate','ape']).replace('/',' ')
                 qsubTemp = qsubTemp.replace('/','_')
