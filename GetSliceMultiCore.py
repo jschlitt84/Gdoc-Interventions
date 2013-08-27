@@ -1,6 +1,8 @@
 import gDocsImport
 import sys, os
 import multiprocessing
+import Queue
+
 from math import ceil
 try:
     from collections import OrderedDict
@@ -351,7 +353,7 @@ def checkLines(fileName, subpopLoaded, useSubpop, multiThreaded):
         cores = 1
     else:
         cores = multiprocessing.cpu_count()
-    out_q = Queue()
+    out_q = queue()
     block =  int(ceil(len(trimmed)/float(cores)))
     processes = []
     
