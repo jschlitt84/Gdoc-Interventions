@@ -304,7 +304,7 @@ def writeAll(directory,title,data):
     
 #Worker function for EFO6 sorting & parallelization
     
-"""def sortEFO6(trimmed, subpopLoaded, useSubpop, out_q, core):
+def sortEFO6(trimmed, subpopLoaded, useSubpop, out_q, core):
     length = length0 =  len(trimmed)
     days = comments = filtered = pos = 0
     print "Core", core, "preparing to filter population, size:", length0
@@ -336,14 +336,14 @@ def writeAll(directory,title,data):
     outdict['comments'] = comments
     outdict['filtered'] = filtered
     print "Core", core, "task complete"
-    out_q.put(outdict)"""
+    out_q.put(outdict)
         
 
 #Main Stat Generation Function
 
 def checkLines(fileName, subpopLoaded, useSubpop, multiThreaded):
     
-    def sortEFO6(trimmed, subpopLoaded, useSubpop, out_q, core):
+   """ def sortEFO6(trimmed, subpopLoaded, useSubpop, out_q, core):
         length = length0 =  len(trimmed)
         days = comments = filtered = pos = 0
         print "Core", core, "preparing to filter population, size:", length0
@@ -375,7 +375,7 @@ def checkLines(fileName, subpopLoaded, useSubpop, multiThreaded):
         outdict['comments'] = comments
         outdict['filtered'] = filtered
         print "Core", core, "task complete"
-        out_q.put(outdict)
+        out_q.put(outdict)"""
         
     wholeThing = open(fileName)
     content = wholeThing.readlines()
@@ -395,6 +395,7 @@ def checkLines(fileName, subpopLoaded, useSubpop, multiThreaded):
     processes = []
     
     for i in range(cores):
+        print "****i",i
         p = process(target = sortEFO6, args = (trimmed[block*i:block*(i+1)], subpopLoaded, useSubpop, out_q, i))
         processes.append(p)
         p.start() 
