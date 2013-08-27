@@ -1,7 +1,7 @@
 import gDocsImport
 import sys, os
 import multiprocessing
-import Queue
+from Queue import *
 
 from math import ceil
 try:
