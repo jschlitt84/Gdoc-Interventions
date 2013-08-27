@@ -347,7 +347,7 @@ def checkLines(fileName, subpopLoaded, useSubpop, multiThreaded):
     trimmed = content[popSize+2:]
     days = comments = filtered = pos = 0
     
-    if not multithreaded:
+    if not multiThreaded:
         cores = 1
     else:
         cores = multiprocessing.cpu_count()
