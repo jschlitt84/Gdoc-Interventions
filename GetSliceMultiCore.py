@@ -338,11 +338,6 @@ def sortEFO6(trimmed, subpopLoaded, useSubpop, out_q, core):
     print "Core", core, "task complete"
     out_q.put(outdict)
         
-
-#Main Stat Generation Function
-
-def checkLines(fileName, subpopLoaded, useSubpop, multiThreaded):
-    
    """ def sortEFO6(trimmed, subpopLoaded, useSubpop, out_q, core):
         length = length0 =  len(trimmed)
         days = comments = filtered = pos = 0
@@ -377,6 +372,9 @@ def checkLines(fileName, subpopLoaded, useSubpop, multiThreaded):
         print "Core", core, "task complete"
         out_q.put(outdict)"""
         
+#Main Stat Generation Function
+
+def checkLines(fileName, subpopLoaded, useSubpop, multiThreaded):
     wholeThing = open(fileName)
     content = wholeThing.readlines()
     params = content[0].split(' ')    
