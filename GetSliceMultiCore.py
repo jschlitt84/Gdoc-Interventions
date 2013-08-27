@@ -356,7 +356,7 @@ def checkLines(fileName, subpopLoaded, useSubpop, multiThreaded):
     processes = []
     
     for i in range(cores):
-        p = multiprocessing.process(target = sortEFO6, args = (trimmed[block*i:block*(i+1)], subPopLoaded, useSubpop, out_q, i))
+        p = process(target = sortEFO6, args = (trimmed[block*i:block*(i+1)], subPopLoaded, useSubpop, out_q, i))
         procesesses.append(p)
         p.start() 
     
