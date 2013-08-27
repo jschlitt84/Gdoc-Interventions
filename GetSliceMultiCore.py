@@ -338,7 +338,7 @@ def sortEFO6(trimmed, subpopLoaded, useSubpop, out_q, core):
     print "Core", core, "task complete"
     out_q.put(outdict)
         
-   """ def sortEFO6(trimmed, subpopLoaded, useSubpop, out_q, core):
+""" def sortEFO6(trimmed, subpopLoaded, useSubpop, out_q, core):
         length = length0 =  len(trimmed)
         days = comments = filtered = pos = 0
         print "Core", core, "preparing to filter population, size:", length0
