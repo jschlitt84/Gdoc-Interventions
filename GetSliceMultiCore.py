@@ -350,7 +350,7 @@ def checkLines(fileName, subpopLoaded, useSubpop, multiThreaded):
     if not multiThreaded:
         cores = 1
     else:
-        cores = multiprocessing.cpu_count()
+        cores = cpu_count()
     out_q = Queue()
     block =  int(ceil(len(trimmed)/float(cores)))
     processes = []
