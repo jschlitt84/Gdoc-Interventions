@@ -373,6 +373,7 @@ def checkLines(fileName, subpopLoaded, useSubpop, multiThreaded):
         p.join()
         
     for key, entry in merged.iteritems():
+        print entry
         days =  max(days, entry[2])
         
     comments = merged['comments']
