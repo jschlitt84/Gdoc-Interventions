@@ -310,35 +310,33 @@ def sortEFO6(trimmed, subpopLoaded, useSubpop, out_q, core):
     print "Core", core, "preparing to filter population, size:", length0
     outdict = {}
     length = 3
+    disjoint = 0
     while pos < length:
+        adjusted = pos - disjoint
         if '#' in trimmed[pos]:
 		print "Ignoring comment:", trimmed[pos]
-		del trimmed[pos]
-		comments += 1
-	  	length -= 1
+		disjoint += 1
         elif useSubpop:
 	   temp = trimmed[pos].split()[0]
 	   if temp not in subpopLoaded:
-	           del trimmed[pos]
-	           filtered += 1
-	           length -= 1
+	           disjoint +=1
 	   else:
-    	       outdict[pos] = trimmed[pos] = map(int,trimmed[pos].split(' '))
-    	       days =  max(days, trimmed[pos][2])
-    	       pos += 1
-    	      
+    	       outdict[adjusted] = map(int,trimmed[pos].split(' '))
+    	       days =  max(days, trimmed[pos][2])	      
         else:
-    	   trimmed[pos] = map(int,trimmed[pos].split(' '))
+    	   outdict[adjusted] = map(int,trimmed[pos].split(' '))
     	   days =  max(days, trimmed[pos][2])
-    	   pos += 1
+    	
+    	pos += 1
         if (pos+filtered)%25000 == 0:
             print "Core", core, "filtering", pos+filtered, "out of", length0, "entries"
-    trimmed['days'] = days
-    trimmed['comments'] = comments
-    trimmed['filtered'] = filtered
+    
+    outdict['days'] = days
+    outdict['comments'] = comments
+    outdict['filtered'] = filtered
     print "Core", core, "task complete"
-    print trimmed
-    out_q.put(trimmed)
+    print outdict
+    out_q.put(outdict)
         
 #Main Stat Generation Function
 
@@ -372,12 +370,12 @@ def checkLines(fileName, subpopLoaded, useSubpop, multiThreaded):
     for p in processes:
         p.join()
         
-    days = merged['days']
+    """days = merged['days']
     comments = merged['comments']
     filtered = merged['filtered']
     del merged['days']
     del merged['comments']
-    del merged['filtered']
+    del merged['filtered']"""
     
     trimmed = merged
         
