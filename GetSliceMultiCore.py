@@ -374,7 +374,6 @@ def checkLines(fileName, subpopLoaded, useSubpop, multiThreaded):
         
     comments = merged['comments']
     filtered = merged['filtered']
-    del merged['days']
     del merged['comments']
     del merged['filtered']
     
