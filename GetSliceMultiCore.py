@@ -375,7 +375,7 @@ def checkLines(fileName, subpopLoaded, useSubpop, multiThreaded):
         p.join()
         
     print days, iterations
-    days = merged['days']
+    days = int(merged['days'])
     comments = merged['comments']
     filtered = merged['filtered']
     del merged['days']
