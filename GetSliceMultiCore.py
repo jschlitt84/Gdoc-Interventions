@@ -352,7 +352,7 @@ def checkLines(fileName, subpopLoaded, useSubpop, multiThreaded):
     days = comments = filtered = pos = 0
     
     #debug var
-    trimmed = trimmed[:2000]
+    #trimmed = trimmed[:2000]
     
     if not multiThreaded:
         cores = 1
@@ -376,7 +376,6 @@ def checkLines(fileName, subpopLoaded, useSubpop, multiThreaded):
     length = len(merged)
     toDelete = []
     for key, entry in merged.iteritems():
-        print "ENTRY:",entry
         if isinstance(key, basestring):
             if "comments" in key:
                 comments += entry
@@ -398,7 +397,7 @@ def checkLines(fileName, subpopLoaded, useSubpop, multiThreaded):
 	print "entry", entry
 	iterXDay[entry[1]][entry[2]] += 1
     
-    print iterXDay
+    print "ITEXDAY:", iterXDay
     pos = 0
     attackRates = []
     ignore = [False]*iterations
