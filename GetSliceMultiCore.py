@@ -376,12 +376,13 @@ def checkLines(fileName, subpopLoaded, useSubpop, multiThreaded):
     length = len(merged)
     for key, entry in merged.iteritems():
         print "ENTRY:",entry
-        if "comments" in key:
-            comments += entry
-            del merged[key]
-        elif "filtered" in key:
-            filtered += entry
-            del merged[key]
+        if isinstance(key, basestring):
+            if "comments" in key:
+                comments += entry
+                del merged[key]
+            elif "filtered" in key:
+                filtered += entry
+                del merged[key]
         else:
             days =  max(days, entry[2])
                     
