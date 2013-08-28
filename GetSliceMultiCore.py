@@ -333,12 +333,12 @@ def sortEFO6(trimmed, subpopLoaded, useSubpop, out_q, core):
     	   pos += 1
         if (pos+filtered)%25000 == 0:
             print "Core", core, "filtering", pos+filtered, "out of", length0, "entries"
-    outdict['days'] = days
-    outdict['comments'] = comments
-    outdict['filtered'] = filtered
+    trimmed['days'] = days
+    trimmed['comments'] = comments
+    trimmed['filtered'] = filtered
     print "Core", core, "task complete"
-    print outdict
-    out_q.put(outdict)
+    print trimmed
+    out_q.put(trimmed)
         
 #Main Stat Generation Function
 
