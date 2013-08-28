@@ -309,7 +309,7 @@ def sortEFO6(trimmed, subpopLoaded, useSubpop, out_q, core):
     days = comments = filtered = pos = 0
     print "Core", core, "preparing to filter population, size:", length0
     outdict = {}
-    length = 100
+    length = 3
     while pos < length:
         if '#' in trimmed[pos]:
 		print "Ignoring comment:", trimmed[pos]
@@ -337,6 +337,7 @@ def sortEFO6(trimmed, subpopLoaded, useSubpop, out_q, core):
     outdict['comments'] = comments
     outdict['filtered'] = filtered
     print "Core", core, "task complete"
+    print outdict
     out_q.put(outdict)
         
 #Main Stat Generation Function
