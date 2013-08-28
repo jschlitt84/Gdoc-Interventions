@@ -304,7 +304,7 @@ def writeAll(directory,title,data):
     
 #Worker function for EFO6 sorting & parallelization
     
-def sortEFO6(trimmed, subpopLoaded, useSubpop, out_q, core):
+def sortEFO6(trimmed, subpopLoaded, useSubpop, out_q, core, startkey):
     length = length0 =  len(trimmed)
     days = comments = filtered = pos = 0
     print "Core", core, "preparing to filter population, size:", length0
@@ -313,7 +313,7 @@ def sortEFO6(trimmed, subpopLoaded, useSubpop, out_q, core):
     #debug vars
     useSubpop = False
     
-    disjoint = 0
+    disjoint = startkey
     while pos < length:
         adjusted = pos - disjoint
         if '#' in trimmed[pos]:
@@ -365,7 +365,7 @@ def checkLines(fileName, subpopLoaded, useSubpop, multiThreaded):
     processes = []
     
     for i in range(cores):
-        p = Process(target = sortEFO6, args = (trimmed[block*i:block*(i+1)], subpopLoaded, useSubpop, out_q, i))
+        p = Process(target = sortEFO6, args = (trimmed[block*i:block*(i+1)], subpopLoaded, useSubpop, out_q, i, block*i))
         processes.append(p)
         p.start() 
     
@@ -385,7 +385,6 @@ def checkLines(fileName, subpopLoaded, useSubpop, multiThreaded):
     del merged['filtered']
     print "D,I:", days, iterations
     
-    print "trimmed", trimmed
     print "merged", merged
     trimmed = merged
 
