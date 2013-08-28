@@ -365,10 +365,11 @@ def checkLines(fileName, subpopLoaded, useSubpop, multiThreaded):
         processes.append(p)
         p.start() 
     
+    trimmed = None
     merged = {}
+    
     for i in range(cores):
         merged.update(out_q.get())
-    
     for p in processes:
         p.join()
         
@@ -384,7 +385,8 @@ def checkLines(fileName, subpopLoaded, useSubpop, multiThreaded):
     print "D,I:", days, iterations
     
     print "merged", merged
-    trimmed = merged
+    
+    length = len(merged)
 
     print "%s entries remaining of %s, %s commented out and %s filtered via subpop membership" % (str(length), str(length0),str(comments),str(filtered))
     
