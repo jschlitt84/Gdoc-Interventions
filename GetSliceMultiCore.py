@@ -372,15 +372,16 @@ def checkLines(fileName, subpopLoaded, useSubpop, multiThreaded):
     for p in processes:
         p.join()
         
-    for key, entry in merged.iteritems():
-        print "ENTRY:",entry
-        days =  max(days, entry[2])
-        
     comments = merged['comments']
     filtered = merged['filtered']
     del merged['days']
     del merged['comments']
     del merged['filtered']
+    
+    for key, entry in merged.iteritems():
+        print "ENTRY:",entry
+        days =  max(days, entry[2])
+        
     print "D,I:", days, iterations
     
     print "merged", merged
