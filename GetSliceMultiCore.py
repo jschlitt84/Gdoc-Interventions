@@ -309,6 +309,7 @@ def sortEFO6(trimmed, subpopLoaded, useSubpop, out_q, core):
     days = comments = filtered = pos = 0
     print "Core", core, "preparing to filter population, size:", length0
     outdict = {}
+    length = 100
     while pos < length:
         if '#' in trimmed[pos]:
 		print "Ignoring comment:", trimmed[pos]
@@ -331,46 +332,12 @@ def sortEFO6(trimmed, subpopLoaded, useSubpop, out_q, core):
     	   days =  max(days, trimmed[pos][2])
     	   pos += 1
         if (pos+filtered)%25000 == 0:
-            print "Filtering", pos+filtered, "out of", length0, "entries"
+            print "Core", core, "filtering", pos+filtered, "out of", length0, "entries"
     outdict['days'] = days
     outdict['comments'] = comments
     outdict['filtered'] = filtered
     print "Core", core, "task complete"
     out_q.put(outdict)
-        
-""" def sortEFO6(trimmed, subpopLoaded, useSubpop, out_q, core):
-        length = length0 =  len(trimmed)
-        days = comments = filtered = pos = 0
-        print "Core", core, "preparing to filter population, size:", length0
-        outdict = {}
-        while pos < length:
-            if '#' in trimmed[pos]:
-  		print "Ignoring comment:", trimmed[pos]
-  		del trimmed[pos]
-  		comments += 1
-    	  	length -= 1
-            elif useSubpop:
-    	       temp = trimmed[pos].split()[0]
-    	       if temp not in subpopLoaded:
-    	           del trimmed[pos]
-    	           filtered += 1
-    	           length -= 1
-    	       else:
-        	   outdict[pos] = trimmed[pos] = map(int,trimmed[pos].split(' '))
-        	   days =  max(days, trimmed[pos][2])
-    	       pos += 1
-    	      
-            else:
-    	       trimmed[pos] = map(int,trimmed[pos].split(' '))
-    	       days =  max(days, trimmed[pos][2])
-    	       pos += 1
-            if (pos+filtered)%25000 == 0:
-                print "Filtering", pos+filtered, "out of", length0, "entries"
-        outdict['days'] = days
-        outdict['comments'] = comments
-        outdict['filtered'] = filtered
-        print "Core", core, "task complete"
-        out_q.put(outdict)"""
         
 #Main Stat Generation Function
 
@@ -393,7 +360,6 @@ def checkLines(fileName, subpopLoaded, useSubpop, multiThreaded):
     processes = []
     
     for i in range(cores):
-        print "****i",i
         p = Process(target = sortEFO6, args = (trimmed[block*i:block*(i+1)], subpopLoaded, useSubpop, out_q, i))
         processes.append(p)
         p.start() 
@@ -419,7 +385,7 @@ def checkLines(fileName, subpopLoaded, useSubpop, multiThreaded):
     pos = 0
     iterXDay = [[0 for pos1 in range(days+1)] for pos2 in range(iterations)]
     while pos < limit:
-	#print trimmed[pos]
+	print trimmed[pos]
 	iterXDay[trimmed[pos][1]][trimmed[pos][2]] += 1
         pos += 1
     
