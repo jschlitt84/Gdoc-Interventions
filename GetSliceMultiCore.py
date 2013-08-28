@@ -374,14 +374,14 @@ def checkLines(fileName, subpopLoaded, useSubpop, multiThreaded):
     for p in processes:
         p.join()
         
-    print days, iterations
+    print "D,I:", days, iterations
     days = int(merged['days'])
     comments = merged['comments']
     filtered = merged['filtered']
     del merged['days']
     del merged['comments']
     del merged['filtered']
-    print days, iterations
+    print "D,I:", days, iterations
     
     trimmed = merged
         
@@ -392,7 +392,7 @@ def checkLines(fileName, subpopLoaded, useSubpop, multiThreaded):
     pos = 0
     iterXDay = [[0 for pos1 in range(days+1)] for pos2 in range(iterations)]
     for entry in trimmed:
-	print entry
+	print "entry", entry
 	iterXDay[entry[1]][entry[2]] += 1
     
     print iterXDay
