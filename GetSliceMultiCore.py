@@ -392,7 +392,7 @@ def checkLines(fileName, subpopLoaded, useSubpop, multiThreaded):
     
     pos = 0
     iterXDay = [[0 for pos1 in range(days+1)] for pos2 in range(iterations)]
-    for entry, value in merged.iteritems():
+    for key, entry in merged.iteritems():
         print merged[0]
         print merged[1]
 	print "entry", entry
