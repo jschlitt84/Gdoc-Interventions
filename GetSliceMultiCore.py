@@ -311,7 +311,6 @@ def sortEFO6(trimmed, subpopLoaded, useSubpop, out_q, core):
     outdict = {}
     
     #debug vars
-    length = 10
     useSubpop = False
     
     disjoint = 0
@@ -352,6 +351,9 @@ def checkLines(fileName, subpopLoaded, useSubpop, multiThreaded):
     iterations = int(params[3])
     trimmed = content[popSize+2:]
     days = comments = filtered = pos = 0
+    
+    #debug var
+    trimmed = trimmed[:80]
     
     if not multiThreaded:
         cores = 1
