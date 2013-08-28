@@ -304,7 +304,7 @@ def writeAll(directory,title,data):
     
 #Worker function for EFO6 sorting & parallelization
     
-def sortEFO6(trimmed, subpopLoaded, useSubpop, out_q, core, startkey):
+def sortEFO6(trimmed, subpopLoaded, useSubpop, out_q, core, disjoint):
     length = length0 =  len(trimmed)
     days = comments = filtered = pos = 0
     print "Core", core, "preparing to filter population, size:", length0
@@ -313,16 +313,15 @@ def sortEFO6(trimmed, subpopLoaded, useSubpop, out_q, core, startkey):
     #debug vars
     useSubpop = False
     
-    disjoint = startkey
     while pos < length:
-        adjusted = pos - disjoint
+        adjusted = pos + disjoint
         if '#' in trimmed[pos]:
 		print "Ignoring comment:", trimmed[pos]
-		disjoint += 1
+		disjoint -= 1
         elif useSubpop:
 	   temp = trimmed[pos].split()[0]
 	   if temp not in subpopLoaded:
-	           disjoint +=1
+	           disjoint -=1
 	   else:
     	       outdict[adjusted] = map(int,trimmed[pos].split(' '))
     	       days =  max(days, trimmed[pos][2])	      
