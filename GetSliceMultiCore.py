@@ -374,17 +374,21 @@ def checkLines(fileName, subpopLoaded, useSubpop, multiThreaded):
         p.join()
         
     length = len(merged)
+    toDelete = []
     for key, entry in merged.iteritems():
         print "ENTRY:",entry
         if isinstance(key, basestring):
             if "comments" in key:
                 comments += entry
-                del merged[key]
+                toDelete.append(key)
             elif "filtered" in key:
                 filtered += entry
-                del merged[key]
+                toDelete.append(key)
         else:
             days =  max(days, entry[2])
+            
+    for key in toDelete:
+        del merged[key]
                     
     print "%s entries remaining of %s, %s commented out, and %s filtered via subpop membership" % (str(length), str(length0),str(comments),str(filtered))
     
