@@ -311,7 +311,7 @@ def sortEFO6(trimmed, subpopLoaded, useSubpop, out_q, core):
     outdict = {}
     
     #debug vars
-    length = 100
+    length = 10
     useSubpop = False
     
     disjoint = 0
@@ -383,9 +383,10 @@ def checkLines(fileName, subpopLoaded, useSubpop, multiThreaded):
     del merged['filtered']
     print "D,I:", days, iterations
     
+    print "trimmed", trimmed
+    print "merged", merged
     trimmed = merged
-        
-    print days, iterations
+
     #print "%s entries remaining of %s, %s commented out and %s filtered via subpop membership" % (str(length), str(length0),str(comments),str(filtered))
     limit =  len(trimmed)
     
