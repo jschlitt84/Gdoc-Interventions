@@ -318,6 +318,7 @@ def sortEFO6(trimmed, subpopLoaded, useSubpop, out_q, core, disjoint):
         if '#' in trimmed[pos]:
 		print "Ignoring comment:", trimmed[pos]
 		disjoint -= 1
+		comments += 1
         elif useSubpop:
 	   temp = trimmed[pos].split()[0]
 	   if temp not in subpopLoaded:
@@ -331,6 +332,7 @@ def sortEFO6(trimmed, subpopLoaded, useSubpop, out_q, core, disjoint):
         if (pos+filtered)%25000 == 0:
             print "Core", core, "filtering", pos+filtered, "out of", length0, "entries"
     
+    filtered = length - comments - len(outdict)
     outdict['comments'] = comments
     outdict['filtered'] = filtered
     print "Core", core, "task complete"
