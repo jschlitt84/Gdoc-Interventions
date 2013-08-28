@@ -311,7 +311,7 @@ def sortEFO6(trimmed, subpopLoaded, useSubpop, out_q, core, disjoint):
     outdict = {}
     
     #debug vars
-    useSubpop = False
+    #useSubpop = False
     
     while pos < length:
         adjusted = pos + disjoint
@@ -373,6 +373,8 @@ def checkLines(fileName, subpopLoaded, useSubpop, multiThreaded):
     for p in processes:
         p.join()
         
+    print "subproccesses complete, merging results"
+        
     length = len(merged)
     toDelete = []
     for key, entry in merged.iteritems():
@@ -394,7 +396,7 @@ def checkLines(fileName, subpopLoaded, useSubpop, multiThreaded):
     pos = 0
     iterXDay = [[0 for pos1 in range(days+1)] for pos2 in range(iterations)]
     for key, entry in merged.iteritems():
-	print "entry", entry
+	#print "entry", entry
 	iterXDay[entry[1]][entry[2]] += 1
     
     #print "ITEXDAY:", iterXDay
