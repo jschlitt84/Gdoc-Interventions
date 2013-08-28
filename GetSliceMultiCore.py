@@ -378,6 +378,8 @@ def checkLines(fileName, subpopLoaded, useSubpop, multiThreaded):
     del merged['days']
     del merged['comments']
     del merged['filtered']
+    
+    trimmed = merged
         
     print days, comments, filtered
     #print "%s entries remaining of %s, %s commented out and %s filtered via subpop membership" % (str(length), str(length0),str(comments),str(filtered))
