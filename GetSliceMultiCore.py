@@ -309,9 +309,11 @@ def sortEFO6(trimmed, subpopLoaded, useSubpop, out_q, core):
     days = comments = filtered = pos = 0
     print "Core", core, "preparing to filter population, size:", length0
     outdict = {}
+    
     #debug vars
     length = 100
     useSubpop = False
+    
     disjoint = 0
     while pos < length:
         adjusted = pos - disjoint
@@ -372,16 +374,18 @@ def checkLines(fileName, subpopLoaded, useSubpop, multiThreaded):
     for p in processes:
         p.join()
         
+    print days, iterations
     days = merged['days']
     comments = merged['comments']
     filtered = merged['filtered']
     del merged['days']
     del merged['comments']
     del merged['filtered']
+    print days, iterations
     
     trimmed = merged
         
-    print days, comments, filtered
+    print days, iterations
     #print "%s entries remaining of %s, %s commented out and %s filtered via subpop membership" % (str(length), str(length0),str(comments),str(filtered))
     limit =  len(trimmed)
     
