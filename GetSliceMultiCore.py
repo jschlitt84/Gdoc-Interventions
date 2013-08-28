@@ -311,7 +311,7 @@ def sortEFO6(trimmed, subpopLoaded, useSubpop, out_q, core, disjoint):
     outdict = {}
     
     #debug vars
-    #useSubpop = False
+    useSubpop = False
     
     while pos < length:
         adjusted = pos + disjoint
@@ -333,8 +333,8 @@ def sortEFO6(trimmed, subpopLoaded, useSubpop, out_q, core, disjoint):
             print "Core", core, "filtering", pos+filtered, "out of", length0, "entries"
     
     filtered = length - comments - len(outdict)
-    outdict['comments'] = comments
-    outdict['filtered'] = filtered
+    outdict['comments'+str(core)] = comments
+    outdict['filtered'+str(core)] = filtered
     print "Core", core, "task complete"
     print outdict
     out_q.put(outdict)
@@ -373,15 +373,19 @@ def checkLines(fileName, subpopLoaded, useSubpop, multiThreaded):
     for p in processes:
         p.join()
         
-    comments = merged['comments']
-    filtered = merged['filtered']
-    del merged['comments']
-    del merged['filtered']
     length = len(merged)
     for key, entry in merged.iteritems():
         print "ENTRY:",entry
-        days =  max(days, entry[2])
-    print "%s entries remaining of %s, %s commented out and %s filtered via subpop membership" % (str(length), str(length0),str(comments),str(filtered))
+        if "comments" in key:
+            comments += entry
+            del merged[key]
+        elif "filtered" in key:
+            filtered += entry
+            del merged[key]
+        else:
+            days =  max(days, entry[2])
+                    
+    print "%s entries remaining of %s, %s commented out, and %s filtered via subpop membership" % (str(length), str(length0),str(comments),str(filtered))
     
     pos = 0
     iterXDay = [[0 for pos1 in range(days+1)] for pos2 in range(iterations)]
