@@ -311,7 +311,7 @@ def sortEFO6(trimmed, subpopLoaded, useSubpop, out_q, core, disjoint):
     outdict = {}
     
     #debug vars
-    useSubpop = False
+    #useSubpop = False
     
     while pos < length:
         adjusted = pos + disjoint
@@ -350,12 +350,11 @@ def checkLines(fileName, subpopLoaded, useSubpop, multiThreaded):
     days = comments = filtered = pos = 0
     
     #debug var
-    trimmed = trimmed[:80]
+    trimmed = trimmed[:2000]
     
     if not multiThreaded:
         cores = 1
     else:
-        #cores = multiprocessing.cpu_count()
         cores = cpu_count()
     out_q = Queue()
     block =  int(ceil(len(trimmed)/float(cores)))
@@ -365,10 +364,8 @@ def checkLines(fileName, subpopLoaded, useSubpop, multiThreaded):
         p = Process(target = sortEFO6, args = (trimmed[block*i:block*(i+1)], subpopLoaded, useSubpop, out_q, i, block*i))
         processes.append(p)
         p.start() 
-    
     trimmed = None
     merged = {}
-    
     for i in range(cores):
         merged.update(out_q.get())
     for p in processes:
@@ -378,17 +375,10 @@ def checkLines(fileName, subpopLoaded, useSubpop, multiThreaded):
     filtered = merged['filtered']
     del merged['comments']
     del merged['filtered']
-    
+    length = len(merged)
     for key, entry in merged.iteritems():
         print "ENTRY:",entry
         days =  max(days, entry[2])
-        
-    print "D,I:", days, iterations
-    
-    print "merged", merged
-    
-    length = len(merged)
-
     print "%s entries remaining of %s, %s commented out and %s filtered via subpop membership" % (str(length), str(length0),str(comments),str(filtered))
     
     pos = 0
