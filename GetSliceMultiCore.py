@@ -309,7 +309,7 @@ def sortEFO6(trimmed, subpopLoaded, useSubpop, out_q, core):
     days = comments = filtered = pos = 0
     print "Core", core, "preparing to filter population, size:", length0
     outdict = {}
-    length = 3
+    length = 100
     disjoint = 0
     while pos < length:
         adjusted = pos - disjoint
