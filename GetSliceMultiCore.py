@@ -336,7 +336,7 @@ def sortEFO6(trimmed, subpopLoaded, useSubpop, out_q, core, disjoint):
     outdict['comments'+str(core)] = comments
     outdict['filtered'+str(core)] = filtered
     print "Core", core, "task complete"
-    print outdict
+    #print outdict
     out_q.put(outdict)
         
 #Main Stat Generation Function
@@ -397,7 +397,7 @@ def checkLines(fileName, subpopLoaded, useSubpop, multiThreaded):
 	print "entry", entry
 	iterXDay[entry[1]][entry[2]] += 1
     
-    print "ITEXDAY:", iterXDay
+    #print "ITEXDAY:", iterXDay
     pos = 0
     attackRates = []
     ignore = [False]*iterations
