@@ -346,6 +346,7 @@ def checkLines(fileName, subpopLoaded, useSubpop, multiThreaded):
     popSize = int(params[1])
     iterations = int(params[3])
     trimmed = content[popSize+2:]
+    length0 = len(trimmed)
     days = comments = filtered = pos = 0
     
     #debug var
