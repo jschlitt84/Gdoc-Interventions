@@ -336,7 +336,7 @@ def sortEFO6(trimmed, subpopLoaded, useSubpop, out_q, core, iterations, disjoint
         days =  max(days, entry[2])
         
     iterXDay = [[0 for pos1 in range(days+1)] for pos2 in range(iterations)]
-    for key, entry in merged.iteritems():
+    for key, entry in content.iteritems():
 	iterXDay[entry[1]][entry[2]] += 1
     
     print "Core", core, "task complete"
