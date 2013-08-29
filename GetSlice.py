@@ -328,7 +328,7 @@ def sortEFO6(trimmed, subpopLoaded, useSubpop, out_q, core, iterations, disjoint
     	  content[adjusted] = map(int,trimmed[pos].split(' '))
     	
     	pos += 1
-        if (pos+filtered)%25000 == 0:
+        if (pos+filtered)%50000 == 0:
             print "Core", core, "filtering", pos+filtered, "out of", length0, "entries"
     
     print "Core", core, "filtering complete, beginning sort by day"
@@ -358,8 +358,8 @@ def checkLines(fileName, subpopLoaded, useSubpop, multiThreaded):
     iterations = int(params[3])
     trimmed = content[popSize+2:]
     length0 = len(trimmed)
-    comments = filtered = pos = 0
-    days = []
+    days =comments = filtered = pos = 0
+    lengths = []
     
     #debug var
     #trimmed = trimmed[:2000]
@@ -384,20 +384,19 @@ def checkLines(fileName, subpopLoaded, useSubpop, multiThreaded):
         p.join()
     
     for i in range(cores):
-        days.append(merged["days" + str(i)])
+        lengths.append(merged["days" + str(i)])
         comments += merged["comments" + str(i)]
         filtered += merged["filtered" + str(i)]
-    length = max(days) 
-    print "%s entries remaining of %s, %s commented out, and %s filtered via subpop membership" % (str(length), str(length0),str(comments),str(filtered))
+    days = max(lengths)
+    #print "%s entries remaining of %s entries: %s entries commented out, %s filtered via subpop membership" % (str(filtered),str(length0),str(comments),str(filtered))
    
     print "Subproccesses complete, merging results" 
-    iterXDay = [[0 for pos1 in range(length+1)] for pos2 in range(iterations)]
-    for i in range(length):
+    iterXDay = [[0 for pos1 in range(days+1)] for pos2 in range(iterations)]
+    for i in range(days):
         for j in range(iterations):
             summed = 0
             for k in range(cores):
-                if k < days[k]:
-                    print "day, iter, core", i,j,k
+                if i <= lengths[k]:
                     summed += merged['byDay' + str(k)][j][i]
             iterXDay[j][i] += summed
             
@@ -440,7 +439,7 @@ def checkLines(fileName, subpopLoaded, useSubpop, multiThreaded):
     
     pos1 = 0
     meanCurve = []
-    while pos1 <= days:
+    while pos1 < days:
         pos2 = temp = 0
         while pos2 < iterations:
             if not ignore[pos2]:
