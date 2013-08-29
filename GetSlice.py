@@ -391,7 +391,7 @@ def checkLines(fileName, subpopLoaded, useSubpop, multiThreaded):
     print "%s entries remaining of %s, %s commented out, and %s filtered via subpop membership" % (str(length), str(length0),str(comments),str(filtered))
    
     print "Subproccesses complete, merging results" 
-    iterXDay = [[0 for pos1 in range(days+1)] for pos2 in range(iterations)]
+    iterXDay = [[0 for pos1 in range(length+1)] for pos2 in range(iterations)]
     for i in range(length):
         for j in range(iterations):
             summed = 0
