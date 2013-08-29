@@ -397,7 +397,7 @@ def checkLines(fileName, subpopLoaded, useSubpop, multiThreaded):
             summed = 0
             for k in range(cores):
                 if k < days[k]:
-                    sum += merged['byDay' + str(k)][j][i]
+                    summed += merged['byDay' + str(k)][j][i]
             iterXDay[j][i] += summed
             
     print "Results merge complete, beginning analysis"
