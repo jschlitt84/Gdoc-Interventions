@@ -1,5 +1,8 @@
 import gDocsImport
 import sys, os
+from multiprocessing import Process, Queue, cpu_count
+
+from math import ceil
 try:
     from collections import OrderedDict
     print "*** Python 2.7+, loading OrderedDict from Collections ***"
@@ -296,54 +299,110 @@ def writeAll(directory,title,data):
         chartsOut.write(str(data['meanCurve'][pos1]) + '\n')
         pos1 += 1
     chartsOut.close()
+    
+#Worker function for EFO6 sorting & parallelization
+    
+def sortEFO6(trimmed, subpopLoaded, useSubpop, out_q, core, iterations, disjoint):
+    length = length0 =  len(trimmed)
+    days = comments = filtered = pos = 0
+    print "Core", core, "preparing to filter population, size:", length0
+    outdict = {}
+    content = {}
+    
+    #debug vars
+    #useSubpop = False
+    
+    while pos < length:
+        adjusted = pos + disjoint
+        if '#' in trimmed[pos]:
+		print "Ignoring comment:", trimmed[pos]
+		disjoint -= 1
+		comments += 1
+        elif useSubpop:
+	   temp = trimmed[pos].split()[0]
+	   if temp not in subpopLoaded:
+	           disjoint -=1
+	   else:
+    	       content[adjusted] = map(int,trimmed[pos].split(' '))	      
+        else:
+    	  content[adjusted] = map(int,trimmed[pos].split(' '))
+    	
+    	pos += 1
+        if (pos+filtered)%25000 == 0:
+            print "Core", core, "filtering", pos+filtered, "out of", length0, "entries"
+    
+    print "Core", core, "filtering complete, beginning sort by day"
+    for key, entry in content.iteritems():
+        days =  max(days, entry[2])
+        
+    iterXDay = [[0 for pos1 in range(days+1)] for pos2 in range(iterations)]
+    for key, entry in merged.iteritems():
+	iterXDay[entry[1]][entry[2]] += 1
+    
+    print "Core", core, "task complete"
+    
+    filtered = length - comments - len(outdict)
+    outdict['comments'+str(core)] = comments
+    outdict['filtered'+str(core)] = filtered
+    outdict['byDay' + str(core)] = iterXDay
+    outdict['days' + str(core)] = days
+    out_q.put(outdict)
+        
+#Main Stat Generation Function
 
-def checkLines(fileName, subpopLoaded, useSubpop):
+def checkLines(fileName, subpopLoaded, useSubpop, multiThreaded):
     wholeThing = open(fileName)
     content = wholeThing.readlines()
     params = content[0].split(' ')    
     popSize = int(params[1])
     iterations = int(params[3])
     trimmed = content[popSize+2:]
-    pos = 0
-    length = length0 =  len(trimmed)
-    days = 0
-    comments = 0
-    filtered = 0
-    print "Preparing to filter population, size:", length0
-    while pos < length:
-	if '#' in trimmed[pos]:
-		print "Ignoring comment:", trimmed[pos]
-		del trimmed[pos]
-		comments += 1
-		length -= 1
-	elif useSubpop:
-	    temp = trimmed[pos].split()[0]
-	    if temp not in subpopLoaded:
-	           del trimmed[pos]
-	           filtered += 1
-	           length -= 1
-	    else:
-        	trimmed[pos] = map(int,trimmed[pos].split(' '))
-        	days =  max(days, trimmed[pos][2])
-        	pos += 1
-	else:
-        	trimmed[pos] = map(int,trimmed[pos].split(' '))
-        	days =  max(days, trimmed[pos][2])
-        	pos += 1
-        if (pos+filtered)%25000 == 0:
-                    print "Filtering", pos+filtered, "out of", length0, "entries"
+    length0 = len(trimmed)
+    comments = filtered = pos = 0
+    days = []
     
-    print "%s entries remaining of %s, %s commented out and %s filtered via subpop membership" % (str(length), str(length0),str(comments),str(filtered))
-    limit =  len(trimmed)
+    #debug var
+    #trimmed = trimmed[:2000]
     
-    pos = 0
+    if not multiThreaded:
+        cores = 1
+    else:
+        cores = cpu_count()
+    out_q = Queue()
+    block =  int(ceil(len(trimmed)/float(cores)))
+    processes = []
+    
+    for i in range(cores):
+        p = Process(target = sortEFO6, args = (trimmed[block*i:block*(i+1)], subpopLoaded, useSubpop, out_q, i, iterations, block*i))
+        processes.append(p)
+        p.start() 
+    trimmed = None
+    merged = {}
+    for i in range(cores):
+        merged.update(out_q.get())
+    for p in processes:
+        p.join()
+    
+    for i in range(cores):
+        days.append(merged["days" + str(i)])
+        comments += merged["comments" + str(i)]
+        filtered += merged["filtered" + str(i)]
+    length = max(days) 
+    print "%s entries remaining of %s, %s commented out, and %s filtered via subpop membership" % (str(length), str(length0),str(comments),str(filtered))
+   
+    print "Subproccesses complete, merging results" 
     iterXDay = [[0 for pos1 in range(days+1)] for pos2 in range(iterations)]
-    while pos < limit:
-	#print trimmed[pos]
-	iterXDay[trimmed[pos][1]][trimmed[pos][2]] += 1
-        pos += 1
+    for i in range(length):
+        for j in range(iterations):
+            summed = 0
+            for k in range(cores):
+                if k < days[k]:
+                    sum += merged['byDay' + str(k)][i][j]
+            iterXDay[entry[1]][entry[2]] += summed
+            
+    print "Results merge complete, beginning analysis"
     
-    print iterXDay
+    #print "ITEXDAY:", iterXDay
     pos = 0
     attackRates = []
     ignore = [False]*iterations
@@ -482,7 +541,7 @@ def prepDir(directory):
         directory += '/'
     return directory
         
-def prepSingle(params,qsubList,splitList,passedX,passedY,passedC,lineIndex, subpopLoaded, useSubpop):
+def prepSingle(params,qsubList,splitList,passedX,passedY,passedC,lineIndex, subpopLoaded, useSubpop, multiCore):
     print splitList
     directoryIn = prepDir(params[0])
     directoryOut = prepDir(params[1])
@@ -641,7 +700,7 @@ def prepSingle(params,qsubList,splitList,passedX,passedY,passedC,lineIndex, subp
             refMatrix[xPos][yPos] = pos1
             testMatrix[xPos][yPos] = xPos
             dirMatrix[xPos][yPos] = directoryIn + qsubList[pos1].replace(directoryIn,'') + '/' + target
-            temp = checkLines(dirMatrix[xPos][yPos], subpopLoaded, useSubpop)
+            temp = checkLines(dirMatrix[xPos][yPos], subpopLoaded, useSubpop, multiCore)
             valMatrix[xPos][yPos] = temp['epiMean']          
             print pos1
             print qsubList[pos1]
@@ -702,6 +761,7 @@ def main():
         directoryIn = prepDir(params[0])
         directoryOut = prepDir(params[1])
         subpopDir = params[5]
+        multiCore = params[14].lower()[0] == 'y'
         useSubpop = len(subpopDir) > 1
         subpopLoaded = []
         if useSubpop:
@@ -742,7 +802,7 @@ def main():
 		limit -= 1
     
         if not runAll:
-            prepped = prepSingle(params,qsubList,splitList,'','','','')
+            prepped = prepSingle(params,qsubList,splitList,'','','','', multiCore)
             writeToFiles(prepped['directoryOut'],prepped['runList'],prepped['refMatrix'],prepped['valMatrix'],prepped['xTitles'],prepped['yTitles'],prepped['studyName'])
         
         if runAll:
@@ -769,7 +829,7 @@ def main():
             
             while pos < qsubLimit:
             #while pos < 1:
-                data = checkLines(qsubList[pos]+'/'+target, subpopLoaded, useSubpop)
+                data = checkLines(qsubList[pos]+'/'+target, subpopLoaded, useSubpop, multiCore)
                 qsubTemp = qsubList[pos].replace(directoryIn,'')
                 #filteredName = removeDescriptor(qsubTemp,['ve','ate','ape']).replace('/',' ')
                 qsubTemp = qsubTemp.replace('/','_')
