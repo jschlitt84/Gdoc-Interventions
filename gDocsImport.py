@@ -131,9 +131,10 @@ def getPos (start, stop, script):
     if not foundStart:
         print "Error, start string '", start, "' not found, defaulting to pos 0"
         startPos = 1
-    if not foundStop:
+    elif not foundStop:
         print "Error, stop string '", stop, "' not found, defaulting to pos", length
         stopPos = length
+
     return {'start':startPos,'stop':stopPos}
  
        
@@ -176,8 +177,13 @@ def loadNClean(isPrivate,publicData, start, end, cleanType):
     length = len(script)
     
     if length < start:
-        print "Error, no values found"
-        quit
+        print "\n*** Warning: no values found for loaded block ***\n"
+        return "null"
+        #quit
+    
+    print "************"
+    print "DEBUG START", start
+    print "DEBUG STOP", end
             
     script = script[start:length+1]
     length -= start
