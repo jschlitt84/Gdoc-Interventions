@@ -516,8 +516,8 @@ def checkLines(fileName, subpopLoaded, useSubpop, multiThreaded):
 		leftMin = min(leftSlice)
                 rightMin = min(rightSlice)
                 if localPeak>(leftMin+rightMin)*0.5*localSNR:
+		    secondaryMaxima[pos1] += str(localMaxima+pos2) + ' '
 		    pos2 += localMaxima
-                    secondaryMaxima[pos1] += str(localMaxima+pos2) + ' '
                     print "Secondary Maxima found in iteration %s on day %s" % (str(pos1),str(pos2+localMaxima))   
             	else:
 			pos2 += 1
