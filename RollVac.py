@@ -642,6 +642,10 @@ def main(arg1, arg2, arg3, arg4, polyScript, filteredIDs):
         script = gDocsImport.getScript(sys.argv[2], sys.argv[3], sys.argv[4], startWord, stopWord, loadType, isPoly, polyScript)
         params = gDocsImport.getLine(sys.argv[2], sys.argv[3], sys.argv[4],paramsStart, isPoly, polyScript)
         
+        print script
+        print len(script)
+        quit()
+        
         explicitDirectory= params[2]
         if len(explicitDirectory) > 0:
             useExplicit  = True
