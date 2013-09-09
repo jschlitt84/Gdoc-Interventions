@@ -670,7 +670,7 @@ def main(arg1, arg2, arg3, arg4, polyScript, filteredIDs):
 
         diag = params[1]
         diagnosis = isYes(diag, "diagnosis")
-        useNew = isYes(params[7], "new style")
+        newStyle = isYes(params[7], "new style")
         
         
         if not diagnosis:
@@ -680,13 +680,13 @@ def main(arg1, arg2, arg3, arg4, polyScript, filteredIDs):
             avScript = gDocsImport.getScript(sys.argv[2], sys.argv[3], sys.argv[4], avStart, 0, loadType, isPoly, polyScript)
             diagParams = gDocsImport.getLine(sys.argv[2], sys.argv[3], sys.argv[4], stopWord, isPoly, polyScript)
             sys.argv[3] = "null"               
-            if not useNew:
+            if not newStyle:
                 avTreatments = writeAvScript(avScript, diagParams, outName, path, subpopDirectory)
                 
 # PREP NEW FORMAT DICTS
  
             else:
-                print "***Using New Intervention Script Format***"
+                useNew = True
                 temp = prepNewAV(avScript, diagParams, outName, path, subpopDirectory, totalsNew)
                 subpopsNew += temp['subpops']
                 actionsNew += temp['actions']
