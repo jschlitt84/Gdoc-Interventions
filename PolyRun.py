@@ -361,10 +361,10 @@ def main():
                 
 # SUPPORT ADDED FOR MULTIPLE DIRECTORIES/ RUN         
                 
-        folder = "polyrun"
+        folder = params[2] + '/' + params[0]
         params = gDocsImport.getLine('null', 'null','null', paramsStart, True, rollScript)
-        if len(params[0]) > 0:
-            folder = params[2] + '/' + params[0]
+        #if len(params[0]) > 0:
+         #   folder = params[2] + '/' + params[0]
         directory = appendSuffix(folder,directorySuffix) 
         print "***\n",params[0], params
         print folder
