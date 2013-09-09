@@ -365,7 +365,10 @@ def main():
         params = gDocsImport.getLine('null', 'null','null', paramsStart, True, rollScript)
         if len(params[0]) > 0:
             folder = params[2] + '/' + params[0]
-        directory = appendSuffix(folder,directorySuffix)      
+        directory = appendSuffix(folder,directorySuffix) 
+        print "***\n",params[0], params
+        print folder
+        quit    
 
 # OUT DIRECTORY GENERATED VIA SUFFIX MATRIX
                                 
