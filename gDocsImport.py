@@ -182,11 +182,7 @@ def loadNClean(isPrivate,publicData, start, end, cleanType):
     elif start == end:
         print "\n*** Warning: block is empty ***\n"
         return "null"
-    
-    #print "************"
-    #print "DEBUG START", start
-    #print "DEBUG STOP", end
-            
+                
     script = script[start:length+1]
     length -= start
     end -= start

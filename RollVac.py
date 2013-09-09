@@ -584,7 +584,6 @@ def main(arg1, arg2, arg3, arg4, polyScript, filteredIDs):
     actionsNew = []
     totalsNew =  {'vaccination':1000000000,'antiviral':1000000000}
     interventionsNew = []
-    emptyblock = False
     
 
 # UNIX PASSED ARGUMENTS DECISION TREE  
@@ -787,14 +786,14 @@ Enter 'local' to use current working directory or 'explicit' for a direct link""
         
 # GENERATING OUTPUT FILE LOOP
        
-    while not done:
+    while not done and emptyblock == False:
     
         subnum += 1
         enum = False
     
 
 # USER CONTROLLED CHOPPING  
-        meth = ""   
+            
         if arg == "user":
             
             while True:
@@ -905,9 +904,8 @@ action number and subpopulation directory appended"""
   
                                                                               
 #  LOCAL SCRIPT/ GDOC CONTROLLED CHOPPING                                                                                                                                                                                           
-        
                                                                                                                                                                                                 
-        elif not emptyblock:
+        else:
             if pos == len(script):
                 done = True
                 break
@@ -996,7 +994,7 @@ action number and subpopulation directory appended"""
 # ALL MODE CHOPPING EXECUTION
 
         print population
-        if not useNew and not emptyblock:
+        if not useNew:
             pos2 = 0
             limit = len(filteredIDs)
             found = False
@@ -1021,7 +1019,7 @@ action number and subpopulation directory appended"""
             else:
                 holder = chopper.main(population,'b',str(length),suffix, path, runIDs)
                 returnSize = holder['count']
-        elif not emptyblock:
+        else:
             addSubpop(subpopsNew, population.split('/')[-1], population, 9000+ len(subpopsNew))
 
             if enum:
@@ -1055,7 +1053,7 @@ action number and subpopulation directory appended"""
         pos2 = 0
         popName = population.split('/')[-1]
         
-        if not useNew and not emptyblock:
+        if not useNew:
             outFile = open(writePath, 'a+b')
             if enum:
                 while pos2 < len(enumList):
@@ -1095,7 +1093,7 @@ action number and subpopulation directory appended"""
             
             outFile.close()
             print
-        elif not emptyblock:
+        else:
             writePath += 'New'
             tempAction = prepNewAction()
             tempInterv = [prepNewIntervention()]*len(enumList/2)
@@ -1143,7 +1141,7 @@ action number and subpopulation directory appended"""
 
 # AUTOGENERATE NEW FORMAT MUTEXES           
                                               
-    if useNew and not emptyblock:
+    if useNew:
         vMutex = avMutex = sdMutex = cwMutex = csMutex = sqMutex = []
         pos = 0
         while pos < length(actionsNew):
