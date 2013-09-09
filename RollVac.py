@@ -12,7 +12,7 @@ varFolders = False
 paramsStart = "Study Name Prefix (optional),Diagnosis Based"
 avStart = "Condition Threshold Subpopulation,Condition Date"
 startWord = "Subpopulation,Day/'enum',Length of Spread"
-stopWord = "Diagnosis Model Version,Antiviral Model Version"
+stopWord = "Diagnosis Model Version,Antiviral Model Version,"
 
 ####NEW EPIFAST FORMAT COMMANDS
 
