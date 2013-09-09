@@ -584,6 +584,7 @@ def main(arg1, arg2, arg3, arg4, polyScript, filteredIDs):
     actionsNew = []
     totalsNew =  {'vaccination':1000000000,'antiviral':1000000000}
     interventionsNew = []
+    emptyblock = False
     
 
 # UNIX PASSED ARGUMENTS DECISION TREE  
@@ -642,6 +643,8 @@ def main(arg1, arg2, arg3, arg4, polyScript, filteredIDs):
         script = gDocsImport.getScript(sys.argv[2], sys.argv[3], sys.argv[4], startWord, stopWord, loadType, isPoly, polyScript)
         params = gDocsImport.getLine(sys.argv[2], sys.argv[3], sys.argv[4],paramsStart, isPoly, polyScript)
         
+        emptyblock = script == 'null'
+
         print "********",script
         print len(script)
         
@@ -903,7 +906,7 @@ action number and subpopulation directory appended"""
                                                                               
 #  LOCAL SCRIPT/ GDOC CONTROLLED CHOPPING                                                                                                                                                                                           
                                                                                                                                                                                                 
-        else:
+        elif not emptyblock:
             if pos == len(script):
                 done = True
                 break
@@ -992,7 +995,7 @@ action number and subpopulation directory appended"""
 # ALL MODE CHOPPING EXECUTION
 
         print population
-        if not useNew:
+        if not useNew and not emptyblock:
             pos2 = 0
             limit = len(filteredIDs)
             found = False
@@ -1017,7 +1020,7 @@ action number and subpopulation directory appended"""
             else:
                 holder = chopper.main(population,'b',str(length),suffix, path, runIDs)
                 returnSize = holder['count']
-        else:
+        elif not emptyblock:
             addSubpop(subpopsNew, population.split('/')[-1], population, 9000+ len(subpopsNew))
 
             if enum:
@@ -1051,7 +1054,7 @@ action number and subpopulation directory appended"""
         pos2 = 0
         popName = population.split('/')[-1]
         
-        if not useNew:
+        if not useNew and not emptyblock:
             outFile = open(writePath, 'a+b')
             if enum:
                 while pos2 < len(enumList):
@@ -1091,7 +1094,7 @@ action number and subpopulation directory appended"""
             
             outFile.close()
             print
-        else:
+        elif not emptyblock:
             writePath += 'New'
             tempAction = prepNewAction()
             tempInterv = [prepNewIntervention()]*len(enumList/2)
@@ -1139,7 +1142,7 @@ action number and subpopulation directory appended"""
 
 # AUTOGENERATE NEW FORMAT MUTEXES           
                                               
-    if useNew:
+    if useNew and not emptyblock:
         vMutex = avMutex = sdMutex = cwMutex = csMutex = sqMutex = []
         pos = 0
         while pos < length(actionsNew):

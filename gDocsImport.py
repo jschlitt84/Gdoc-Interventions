@@ -177,13 +177,15 @@ def loadNClean(isPrivate,publicData, start, end, cleanType):
     length = len(script)
     
     if length < start:
-        print "\n*** Warning: no values found for loaded block ***\n"
+        print "Error: no values found, invalid block index"
+        quit()
+    elif start == end:
+        print "\n*** Warning: block is empty ***\n"
         return "null"
-        #quit
     
-    print "************"
-    print "DEBUG START", start
-    print "DEBUG STOP", end
+    #print "************"
+    #print "DEBUG START", start
+    #print "DEBUG STOP", end
             
     script = script[start:length+1]
     length -= start
