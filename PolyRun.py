@@ -3,7 +3,7 @@ import os
 import shutil
 import gDocsImport
 import RollVac
-import subprocess
+#import subprocess
 from time import sleep
     
 
@@ -361,10 +361,7 @@ def main():
                 
 # SUPPORT ADDED FOR MULTIPLE DIRECTORIES/ RUN         
                 
-        #folder = "polyrun"
         params = gDocsImport.getLine('null', 'null','null', paramsStart, True, rollScript)
-        #if len(params[0]) > 0:
-         #   folder = params[2] + '/' + params[0]
         folder = params[2] + '/' + params[0]
         directory = appendSuffix(folder,directorySuffix) 
         print "***\n",params[0], params
