@@ -399,9 +399,6 @@ def main():
             
  #       fileString = ';'.join(fileList)
  #       homeString = ';'.join(homeList)
-        
-        if not os.path.exists(directory):
-            os.makedirs(directory)
                
         filteredIDs = RollVac.main('poly', directory, 'null', 'null', rollScript, filteredIDs)
         sleep(0.05)
