@@ -1092,7 +1092,7 @@ action number and subpopulation directory appended"""
         else:
             writePath += 'New'
             tempAction = prepNewAction()
-            tempInterv = {prepNewIntervention()}*len(enumList/2)
+            tempInterv = [prepNewIntervention()]*len(enumList/2)
             tempAction['actionID'] = actionID = str(trigger + iCode)
             tempAction['actionDescription'] = tempAction['actionType'] = method
             tempAction['actionDelay'] = '0'
