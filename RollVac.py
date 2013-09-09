@@ -643,9 +643,6 @@ def main(arg1, arg2, arg3, arg4, polyScript, filteredIDs):
         params = gDocsImport.getLine(sys.argv[2], sys.argv[3], sys.argv[4],paramsStart, isPoly, polyScript)
         
         emptyblock = script == 'null'
-
-        print "********",script
-        print len(script)
         
         explicitDirectory= params[2]
         if len(explicitDirectory) > 0:
