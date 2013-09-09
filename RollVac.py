@@ -794,7 +794,7 @@ Enter 'local' to use current working directory or 'explicit' for a direct link""
     
 
 # USER CONTROLLED CHOPPING  
-            
+        meth = ""   
         if arg == "user":
             
             while True:
@@ -905,6 +905,7 @@ action number and subpopulation directory appended"""
   
                                                                               
 #  LOCAL SCRIPT/ GDOC CONTROLLED CHOPPING                                                                                                                                                                                           
+        
                                                                                                                                                                                                 
         elif not emptyblock:
             if pos == len(script):
