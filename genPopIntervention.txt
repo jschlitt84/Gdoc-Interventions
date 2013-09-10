@@ -1,2 +1,2 @@
-* Trigger 999 Date 130
+* Trigger 999 Date 50
 * Action 999 SchoolClosure 300 0.9 
