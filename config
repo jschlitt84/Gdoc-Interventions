@@ -1,6 +1,6 @@
 ContactGraphFileFormat = EFIG6Bb
 ContactGraphFile = /vbi/protopop/USPopv2/regions/seattle_military_corrected/socialnet/EFIG6Bb
-SimulationDuration = 300
+SimulationDuration = 200
 Transmissibility = 4.2E-5
 IncubationPeriodFormat = DISTRIBUTION
 IncubationPeriodFile = /home/NDSSL/study/DTRA_AVstudy/input/Incubation.Period.Distribution
