@@ -406,6 +406,7 @@ def checkLines(fileName, subpopLoaded, useSubpop, multiThreaded):
     pos = 0
     attackRates = []
     ignore = [False]*iterations
+    empty = [False]*iterations
     ignored = 0
     maxDay = []
     maxNumber = []
@@ -428,6 +429,9 @@ def checkLines(fileName, subpopLoaded, useSubpop, multiThreaded):
             ignore[pos] =  True
             ignored += 1
             print "Iteration",pos,"did not reach epidemic status"
+	    if attackRates[pos] == 0:
+		print "No infections found"
+		empty[pos] = True
         else:
             epiAttack += attackRates[pos]
         pos += 1
@@ -490,8 +494,16 @@ def checkLines(fileName, subpopLoaded, useSubpop, multiThreaded):
                 rightBounds.append(pos2)
                 break
             pos2 -= 1
-        lengths.append(rightBounds[pos1]-leftBounds[pos1])
-        sliceWidth = int(lengths[pos1]*searchWidth)
+        print "****", pos1, pos2
+	print rightBounds
+	print leftBounds
+	try:	
+		lengths.append(rightBounds[pos1]-leftBounds[pos1])
+        except:
+		print iterXDay
+		print meanCurve
+		quit()
+	sliceWidth = int(lengths[pos1]*searchWidth)
         pos2 = leftBounds[pos1]
         while pos2 + sliceWidth < rightBounds[pos1]:
             if isMean:
