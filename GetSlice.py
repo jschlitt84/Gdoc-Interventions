@@ -484,7 +484,7 @@ def checkLines(fileName, subpopLoaded, useSubpop, multiThreaded):
                 if temp > outside:
                     leftBounds.append(pos2)
                     print "left bound:",pos2
-  		break
+                break
                 pos2 += 1
             pos2 = days-1
             temp = 0
@@ -495,20 +495,20 @@ def checkLines(fileName, subpopLoaded, useSubpop, multiThreaded):
                 else:
                     temp += iterXDay[pos1][pos2]
                 if temp > outside:
-  		print "right bound:",pos2
+                    print "right bound:",pos2
                     rightBounds.append(pos2)
                     break
                 pos2 -= 1
-           print "****", pos1, pos2
-	   print rightBounds
-	   print leftBounds
-	   try:	
+            print "****", pos1, pos2
+            print rightBounds
+            print leftBounds
+            try:	
 		lengths.append(rightBounds[pos1]-leftBounds[pos1])
-           except:
+            except:
 		print iterXDay
 		print meanCurve
 		quit()
-	   sliceWidth = int(lengths[pos1]*searchWidth)
+            sliceWidth = int(lengths[pos1]*searchWidth)
             pos2 = leftBounds[pos1]
             while pos2 + sliceWidth < rightBounds[pos1]:
                 if isMean:
@@ -520,8 +520,8 @@ def checkLines(fileName, subpopLoaded, useSubpop, multiThreaded):
                 else:
                     tempSlice = iterXDay[pos1][pos2:min(pos2+sliceWidth+1,days)]
                 localPeak = max(tempSlice)
-           	    print tempSlice, localPeak
-                    localMaxima = tempSlice.index(localPeak)
+           	print tempSlice, localPeak
+                localMaxima = tempSlice.index(localPeak)
             
            	if localMaxima == 0:
 		      pos2 += 1
@@ -536,9 +536,9 @@ def checkLines(fileName, subpopLoaded, useSubpop, multiThreaded):
                         secondaryMaxima[pos1] += str(localMaxima+pos2) + ' '
                         pos2 += localMaxima
                         print "Secondary Maxima found in iteration %s on day %s" % (str(pos1),str(pos2+localMaxima))   
-            	   else:
+                    else:
 			pos2 += 1
-	       else:
+                else:
                     pos2 += 1
             pos1 += 1
     
