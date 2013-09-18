@@ -450,7 +450,10 @@ def checkLines(fileName, subpopLoaded, useSubpop, multiThreaded):
                 temp += iterXDay[pos2][pos1]
             pos2 += 1
   	pos1 += 1    
-        meanCurve.append(temp/(iterations-ignored))
+        meanCurve.append(round(float(temp)/(iterations-ignored)))
+    
+    if sum(meanCurve) == 0:
+        empty[iterations] = True    
         
     epiNumber = max(meanCurve)
     epiPeak =  meanCurve.index(epiNumber)
@@ -501,17 +504,12 @@ def checkLines(fileName, subpopLoaded, useSubpop, multiThreaded):
                     rightBounds.append(pos2)
                     break
                 pos2 -= 1
-                
-            print "****", pos1, pos2
-            print rightBounds
-            print leftBounds
-            
-            
+                                        
             try:	
 		lengths.append(rightBounds[pos1]-leftBounds[pos1])
             except:
-		print iterXDay
-		print meanCurve
+                print "Error: out of bounds analysis on iteration", pos1
+		print "Please review attack rate by day by iteration for unusual output:\n", iterXDay
 		quit()
 		
             sliceWidth = int(lengths[pos1]*searchWidth)
