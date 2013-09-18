@@ -486,7 +486,7 @@ def checkLines(fileName, subpopLoaded, useSubpop, multiThreaded):
                 if temp > outside:
                     leftBounds.append(pos2)
                     print "left bound:",pos2
-                break
+                    break
                 pos2 += 1
             pos2 = days-1
             temp = 0
