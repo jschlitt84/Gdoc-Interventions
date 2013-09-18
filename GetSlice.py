@@ -464,78 +464,83 @@ def checkLines(fileName, subpopLoaded, useSubpop, multiThreaded):
     peakToLocal = 10
     localSNR = 2
     pos1 = 0
+            
     while pos1 < iterations + 1:
-        isMean = pos1 == iterations
-        pos2 = temp = 0
-        if isMean:
-            outside = (1-curveWidth)*epiMean*0.5
+        if empty[pos1]:
+            leftBounds.append(-1)
+            rightBounds.append(-1)
         else:
-            outside = (1-curveWidth)*attackRates[pos1]*0.5
-        while pos2 < days:
+            isMean = pos1 == iterations
+            pos2 = temp = 0
             if isMean:
-                temp += meanCurve[pos2]
+                outside = (1-curveWidth)*epiMean*0.5
             else:
-                temp += iterXDay[pos1][pos2]
-            if temp > outside:
-                leftBounds.append(pos2)
-                print "left bound:",pos2
-		break
-            pos2 += 1
-        pos2 = days-1
-        temp = 0
+                outside = (1-curveWidth)*attackRates[pos1]*0.5
+            while pos2 < days:
+                if isMean:
+                    temp += meanCurve[pos2]
+                else:
+                    temp += iterXDay[pos1][pos2]
+                if temp > outside:
+                    leftBounds.append(pos2)
+                    print "left bound:",pos2
+  		break
+                pos2 += 1
+            pos2 = days-1
+            temp = 0
 
-        while pos2 > 0:
-            if isMean:
-                temp += meanCurve[pos2]
-            else:
-                temp += iterXDay[pos1][pos2]
-            if temp > outside:
-		print "right bound:",pos2
-                rightBounds.append(pos2)
-                break
-            pos2 -= 1
-        print "****", pos1, pos2
-	print rightBounds
-	print leftBounds
-	try:	
+            while pos2 > 0:
+                if isMean:
+                    temp += meanCurve[pos2]
+                else:
+                    temp += iterXDay[pos1][pos2]
+                if temp > outside:
+  		print "right bound:",pos2
+                    rightBounds.append(pos2)
+                    break
+                pos2 -= 1
+           print "****", pos1, pos2
+	   print rightBounds
+	   print leftBounds
+	   try:	
 		lengths.append(rightBounds[pos1]-leftBounds[pos1])
-        except:
+           except:
 		print iterXDay
 		print meanCurve
 		quit()
-	sliceWidth = int(lengths[pos1]*searchWidth)
-        pos2 = leftBounds[pos1]
-        while pos2 + sliceWidth < rightBounds[pos1]:
-            if isMean:
-                tempMax =  epiNumber
-            else:
-                tempMax = maxNumber[pos1]
-            if isMean:
-                tempSlice = meanCurve[pos2:min(pos2+sliceWidth+1,days)]
-            else:
-                tempSlice = iterXDay[pos1][pos2:min(pos2+sliceWidth+1,days)]
-            localPeak = max(tempSlice)
-	    print tempSlice, localPeak
-            localMaxima = tempSlice.index(localPeak)
+	   sliceWidth = int(lengths[pos1]*searchWidth)
+            pos2 = leftBounds[pos1]
+            while pos2 + sliceWidth < rightBounds[pos1]:
+                if isMean:
+                    tempMax =  epiNumber
+                else:
+                    tempMax = maxNumber[pos1]
+                if isMean:
+                    tempSlice = meanCurve[pos2:min(pos2+sliceWidth+1,days)]
+                else:
+                    tempSlice = iterXDay[pos1][pos2:min(pos2+sliceWidth+1,days)]
+                localPeak = max(tempSlice)
+           	    print tempSlice, localPeak
+                    localMaxima = tempSlice.index(localPeak)
             
-	    if localMaxima == 0:
-		pos2 += 1
-            elif localMaxima > sliceWidth/2:
-                pos2 += localMaxima - sliceWidth/2
-            elif localPeak*peakToLocal >= tempMax and localPeak != tempMax and str(localMaxima + pos2) not in secondaryMaxima[pos1]:
-                leftSlice = tempSlice[0:localMaxima]
-                rightSlice = tempSlice[localMaxima:len(tempSlice)+1]
-		leftMin = min(leftSlice)
-                rightMin = min(rightSlice)
-                if localPeak>(leftMin+rightMin)*0.5*localSNR:
-		    secondaryMaxima[pos1] += str(localMaxima+pos2) + ' '
-		    pos2 += localMaxima
-                    print "Secondary Maxima found in iteration %s on day %s" % (str(pos1),str(pos2+localMaxima))   
-            	else:
+           	if localMaxima == 0:
+		      pos2 += 1
+                elif localMaxima > sliceWidth/2:
+                    pos2 += localMaxima - sliceWidth/2
+                elif localPeak*peakToLocal >= tempMax and localPeak != tempMax and str(localMaxima + pos2) not in secondaryMaxima[pos1]:
+                    leftSlice = tempSlice[0:localMaxima]
+                    rightSlice = tempSlice[localMaxima:len(tempSlice)+1]
+                    leftMin = min(leftSlice)
+                    rightMin = min(rightSlice)
+                    if localPeak>(leftMin+rightMin)*0.5*localSNR:
+                        secondaryMaxima[pos1] += str(localMaxima+pos2) + ' '
+                        pos2 += localMaxima
+                        print "Secondary Maxima found in iteration %s on day %s" % (str(pos1),str(pos2+localMaxima))   
+            	   else:
 			pos2 += 1
-	    else:
-                pos2 += 1
-        pos1 += 1
+	       else:
+                    pos2 += 1
+            pos1 += 1
     
     epiLeft = leftBounds[-1]
     epiRight = rightBounds[-1]    
