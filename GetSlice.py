@@ -429,9 +429,9 @@ def checkLines(fileName, subpopLoaded, useSubpop, multiThreaded):
             ignore[pos] =  True
             ignored += 1
             print "Iteration",pos,"did not reach epidemic status"
-	    if attackRates[pos] == 0:
-		print "No infections found"
-		empty[pos] = True
+	if attackRates[pos] == 0:
+	   print "Iteration",pos,"no infections found"
+	   empty[pos] = True
         else:
             epiAttack += attackRates[pos]
         pos += 1
