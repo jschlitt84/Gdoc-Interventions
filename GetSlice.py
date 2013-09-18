@@ -469,6 +469,7 @@ def checkLines(fileName, subpopLoaded, useSubpop, multiThreaded):
         if empty[pos1]:
             leftBounds.append(-1)
             rightBounds.append(-1)
+            lengths.append(-1)
             pos1 += 1
         else:
             isMean = pos1 == iterations
@@ -500,15 +501,19 @@ def checkLines(fileName, subpopLoaded, useSubpop, multiThreaded):
                     rightBounds.append(pos2)
                     break
                 pos2 -= 1
+                
             print "****", pos1, pos2
             print rightBounds
             print leftBounds
+            
+            
             try:	
 		lengths.append(rightBounds[pos1]-leftBounds[pos1])
             except:
 		print iterXDay
 		print meanCurve
 		quit()
+		
             sliceWidth = int(lengths[pos1]*searchWidth)
             pos2 = leftBounds[pos1]
             while pos2 + sliceWidth < rightBounds[pos1]:
