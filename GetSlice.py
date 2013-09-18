@@ -469,6 +469,7 @@ def checkLines(fileName, subpopLoaded, useSubpop, multiThreaded):
         if empty[pos1]:
             leftBounds.append(-1)
             rightBounds.append(-1)
+            pos1 += 1
         else:
             isMean = pos1 == iterations
             pos2 = temp = 0
