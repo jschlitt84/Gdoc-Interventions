@@ -406,7 +406,7 @@ def checkLines(fileName, subpopLoaded, useSubpop, multiThreaded):
     pos = 0
     attackRates = []
     ignore = [False]*iterations
-    empty = [False]*iterations
+    empty = [False]*(iterations+1)
     ignored = 0
     maxDay = []
     maxNumber = []
