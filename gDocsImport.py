@@ -256,9 +256,7 @@ def loadNClean(isPrivate,publicData, start, end, cleanType):
         while pos < len(script):
             listScript.append(script[pos].split(","))
             pos += 1
-        print "****", listScript
         listScript  = [item for item in listScript if len(filter(bool,item)) != 0]
-        print "****", listScript
         if listScript:
             return listScript
         else:
