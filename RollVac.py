@@ -302,8 +302,8 @@ def appendRaw(script):
     print "Appending script:"
     
     for line in script:
-        if line[0] == '"' and line[-1] == '"':
-            line = line.replace('"','')
+        #if line[0] == '"' and line[-1] == '"':
+        line = line.replace('"','')
         text += line+'\n'
         print line
         
