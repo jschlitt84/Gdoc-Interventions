@@ -302,11 +302,7 @@ def main():
             varSets.append(temp[0]) 
             suffixes.append(temp[1])
         pos += 1  
-    
-    if totalVars == 0:
-        print "Error: nothing found, check if for empty sheet or out of place '#'/'#IGNORE' entries"
-        quit()   
-        
+            
     varList.sort()
     length = len(varSets)
     varMatrix = [[] for x in xrange(totalVars)]
@@ -424,9 +420,14 @@ def main():
 
 # POLYRUN MULTIDIMENSIONAL LOOP ITERATOR
 
-        pos = 0
-        
+        if totalVars == 0:
+            print "No PolyRun iteration operators found, running in singular mode."
+            done = True
+            break
+            
+        pos = 0 
         justRolled = False
+ 
         while runTracker[pos] == ends[pos] and pos < totalVars - 1:
             justRolled = True
             runTracker[pos] = 0
