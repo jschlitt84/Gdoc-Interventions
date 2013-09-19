@@ -11,6 +11,7 @@ import gDocsImport
 varFolders = False
 paramsStart = "Study Name Prefix (optional),Diagnosis Based"
 avStart = "Condition Threshold Subpopulation,Condition Date"
+avStop = "Raw Epifast Script Appender"
 startWord = "Subpopulation,Day/'enum',Length of Spread"
 stopWord = "Diagnosis Model Version,Antiviral Model Version,"
 
@@ -291,8 +292,24 @@ def countEnum(enumerator,size):
         pos1 += 2
     return {'enum':workEnum,"total":total} 
     
+#APPEND RAW EPISCRIPT
+
+def appendRaw(script):
+    if len(script) == 0:
+        print "No script(s) to append"
+        return 'null'
+    text = '\n# ----- Begin PolyRun Appended Raw Epifast Script -----\n'
+    print "Appending script:"
+    
+    for line in script:
+        text += line+'\n'
+        print line
+        
+    return text + '# ----- End Appended Epi Script -----\n'
+    
     
 ###OLD EPIFAST FORMAT COMMANDS
+
 
 # ONE TIME LID LOAD & FILTER FROM FILE
 
@@ -568,6 +585,7 @@ def main(arg1, arg2, arg3, arg4, polyScript, filteredIDs):
     explicitDirectory = ""
     subpopDirectory = ""
     useBase = False
+    useRaw =  False
     baseFile = "" 
     pos = 0
     iCode = 0
@@ -674,12 +692,20 @@ def main(arg1, arg2, arg3, arg4, polyScript, filteredIDs):
         diagnosis = isYes(diag, "diagnosis")
         useNew = isYes(params[7], "new style")
         
+        try:
+            appendScript =  gDocsImport.getScript(sys.argv[2], sys.argv[3], sys.argv[4], avStop, 0, loadType, isPoly, polyScript)
+            appendScript = appendRaw(appendScript)
+            useRaw = appendScript != 'null'
+            
+            print "Raw script footer loaded succesfully,", len(appendScript), "lines to append"
+        except:
+            print "Error, raw script footer not loaded"
         
         if not diagnosis:
             sys.argv[3] = "null"
         else:
             loadType = "default"
-            avScript = gDocsImport.getScript(sys.argv[2], sys.argv[3], sys.argv[4], avStart, 0, loadType, isPoly, polyScript)
+            avScript = gDocsImport.getScript(sys.argv[2], sys.argv[3], sys.argv[4], avStart, avStop, loadType, isPoly, polyScript)
             diagParams = gDocsImport.getLine(sys.argv[2], sys.argv[3], sys.argv[4], stopWord, isPoly, polyScript)
             sys.argv[3] = "null"               
             if not useNew:
@@ -1178,6 +1204,8 @@ action number and subpopulation directory appended"""
     outFile = open(path + outName+'Intervention', 'a+b')
     if useNew:
         outFile.write(getOutputNew(subpopsNew, totalsNew, actionsNew, interventionsNew))
+    if useRaw:
+        outFile.write(appendScript)
     outFile.write("""\n#----- End of Generated Intervention File -----\n\n# RollVac.Py Pre Compliance Intervention Totals- calculated per output,
 does not account for over-application to a given set of IDs. 
 Please apply only one of each type per sub pop, using enumerated
