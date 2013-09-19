@@ -29,11 +29,12 @@ def flushDirectories(directoryList):
             flushDirectory = "polyrun"
         print "Flushing directory %s: %s" % (pos, flushDirectory)
         if os.path.exists(flushDirectory):
-            print "*** Warning, preparing to flush path:", flushDirectory, " - continue? (yes/no/num) ***"
-            print "-Choosing num will suffix the output directories with a number"
+            print "*** Warning, preparing to flush path:", flushDirectory, " - continue? (yes/no/num/quit) ***"
+            print "-num will suffix the output directories with a number"
+            print "-no will output over the prior directory without cleanup"
             while True:
                 response = str(raw_input(":")).lower()
-                if response == "n" or response == "no" or response == "y" or response == "yes" or response == "num":
+                if response == "n" or response == "no" or response == "y" or response == "yes" or response == "num" or response == "quit":
                     answer = RollVac.isYes(response, "null")
                     break
                 else:
@@ -41,6 +42,9 @@ def flushDirectories(directoryList):
             if answer == True:
                 shutil.rmtree(flushDirectory)
                 print " cleared succesfully"             
+            elif response == 'quit':
+                print "Quitting now....\n\n"
+                quit()
             elif response == 'num':
                 copyNum = 2
                 if os.path.exists(flushDirectory):
