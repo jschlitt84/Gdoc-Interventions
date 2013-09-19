@@ -710,7 +710,7 @@ def main(arg1, arg2, arg3, arg4, polyScript, filteredIDs):
             sys.argv[3] = "null"               
             
             if not useNew:
-                if len(avScript) == 0 or len(diagParams) == 0:
+                if avScript == 'null' or diagParams == 'null':
                     print "No AV-Script found"
                     avTreatments = []
                 else:
@@ -721,7 +721,7 @@ def main(arg1, arg2, arg3, arg4, polyScript, filteredIDs):
 # PREP NEW FORMAT DICTS
  
             else:
-                if len(avScript) == 0 or len(diagParams) == 0:
+                f avScript == 'null' or diagParams == 'null':
                     print "No AV-Script found"
                     avTreatments = 0
                 else:
