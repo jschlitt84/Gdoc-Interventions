@@ -302,8 +302,11 @@ def main():
             varSets.append(temp[0]) 
             suffixes.append(temp[1])
         pos += 1  
-    pos1 = 0
-
+    
+    if totalVars == 0:
+        print "Error: nothing found, check if for empty sheet or out of place '#'/'#IGNORE' entries"
+        quit()   
+        
     varList.sort()
     length = len(varSets)
     varMatrix = [[] for x in xrange(totalVars)]
@@ -313,7 +316,7 @@ def main():
     
 # CREATES MATRICES OF SUFFIXES, VARIABLE ID, AND LIST POSITION FOR ITERATION  
     
-    pos2 = 0                 
+    pos2 = pos1 = 0                 
     while pos2 < totalVars:
         pos1 = 0
         while pos1 < length:
@@ -424,7 +427,6 @@ def main():
         pos = 0
         
         justRolled = False
-        print "*******", totalVars
         while runTracker[pos] == ends[pos] and pos < totalVars - 1:
             justRolled = True
             runTracker[pos] = 0
