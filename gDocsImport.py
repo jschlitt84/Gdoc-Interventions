@@ -136,7 +136,10 @@ def getPos (start, stop, script):
         stopPos = length
 
     return {'start':startPos,'stop':stopPos}
- 
+
+"""def isEmpty(script) :
+    script  = [item for item in script if len(filter(bool,item)) != 0]
+    return len(script) == 0"""
        
 # LOADS DATA FROM PUBLIC LIST OR PRIVATE TEMP FILE, PARSES BY CLEANTYPE & RETURNS LIST OF NUMERIC VALUES OR STRINGS  
     
@@ -148,11 +151,9 @@ def loadNClean(isPrivate,publicData, start, end, cleanType):
         os.remove("googtemp.csv")
     else:
         script = publicData
-#    print publicData
-#    quit()
+    
     pos = 0
     length = len(script)
-    
     while pos < length:
         if "#" in script[pos] and "#IGNORE" not in script[pos] or len(script[pos].replace(",",''))<1:
             del script[pos]
@@ -238,13 +239,13 @@ def loadNClean(isPrivate,publicData, start, end, cleanType):
        
 # CLEANS UP WHITESPACE AT END OF ENTRIES
 
-    while pos < len(script):
+#    while pos < len(script):
 #        while " \n" in script[pos] or "  " in script[pos]:
 #            script[pos] = script[pos].replace(' \n','\n')
 #            script[pos] = script[pos].replace('  ',' ')
-        print script[pos].replace('\n','')
-        pos += 1
-    print
+#        print script[pos].replace('\n','')
+#       pos += 1
+#    print
     
     
 # RETURNS CSV LIST OF LISTS OF STRING VALUES
@@ -255,6 +256,9 @@ def loadNClean(isPrivate,publicData, start, end, cleanType):
         while pos < len(script):
             listScript.append(script[pos].split(","))
             pos += 1
+        print "****", listScript
+        listScript  = [item for item in listScript if len(filter(bool,item)) != 0]
+        print "****", listScript
         return listScript
         
         
