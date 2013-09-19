@@ -714,6 +714,7 @@ def main(arg1, arg2, arg3, arg4, polyScript, filteredIDs):
                     print "No AV-Script found"
                     avTreatments = []
                 else:
+                    print "****", avScript
                     avTreatments = writeAvScript(avScript, diagParams, outName, path, subpopDirectory)
                 
                 
