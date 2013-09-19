@@ -298,14 +298,14 @@ def appendRaw(script):
     if len(script) == 0:
         print "No script(s) to append"
         return 'null'
-    text = '\n# ----- Begin PolyRun Appended Raw Epifast Script -----\n'
+    text = '\n# ----- Begin PolyRun Appended Raw Epifast Script -----\n\n'
     print "Appending script:"
     
     for line in script:
         text += line+'\n'
         print line
         
-    return text + '# ----- End Appended Epi Script -----\n'
+    return text + '\n# ----- End Appended Epi Script -----\n'
     
     
 ###OLD EPIFAST FORMAT COMMANDS
@@ -697,7 +697,7 @@ def main(arg1, arg2, arg3, arg4, polyScript, filteredIDs):
             appendScript = appendRaw(appendScript)
             useRaw = appendScript != 'null'
             if useRaw:
-                print "Raw script footer loaded succesfully,", appendScript.count('\n') - 3, "lines to append"
+                print "\nRaw script footer loaded succesfully,", appendScript.count('\n') - 3, "lines to append"
         except:
             print "Error, raw script footer not loaded"
         
@@ -710,7 +710,7 @@ def main(arg1, arg2, arg3, arg4, polyScript, filteredIDs):
             sys.argv[3] = "null"               
             
             if not useNew:
-                if avScript == 'null' or diagParams == 'null':
+                if avScript == 'null':
                     print "No AV-Script found"
                     avTreatments = 0
                 else:
@@ -720,7 +720,7 @@ def main(arg1, arg2, arg3, arg4, polyScript, filteredIDs):
 # PREP NEW FORMAT DICTS
  
             else:
-                if avScript == 'null' or diagParams == 'null':
+                if avScript == 'null':
                     print "No AV-Script found"
                     avTreatments = 0
                 else:
