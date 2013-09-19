@@ -697,7 +697,7 @@ def main(arg1, arg2, arg3, arg4, polyScript, filteredIDs):
             appendScript = appendRaw(appendScript)
             useRaw = appendScript != 'null'
             
-            print "Raw script footer loaded succesfully,", len(appendScript), "lines to append"
+            print "Raw script footer loaded succesfully,", appendScript.count('\n') - 3, "lines to append"
         except:
             print "Error, raw script footer not loaded"
         

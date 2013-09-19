@@ -159,7 +159,7 @@ def findNReplace(fileString, replaceScript, directory, iteration, home, explicit
                             if "https://" not in line:
                                 line =  line.replace("//","/")
                             contents[pos2] = line + '\n'
-                            print contents[pos2]
+                            print line
                     pos3 +=1
                 pos2 += 1
                 
