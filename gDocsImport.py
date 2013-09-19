@@ -259,7 +259,10 @@ def loadNClean(isPrivate,publicData, start, end, cleanType):
         print "****", listScript
         listScript  = [item for item in listScript if len(filter(bool,item)) != 0]
         print "****", listScript
-        return listScript
+        if listScript:
+            return listScript
+        else:
+            return 'null'
         
         
 # RETURNS CSV LIST OF STRING VALUES
