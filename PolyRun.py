@@ -293,7 +293,16 @@ def main():
     
     print "Searching list for experimentally iterated variables"
     
-    while pos < length:
+    for item in script:
+        temp = getPoly(item)
+        if temp[0] != 'null':
+            if temp[0] not in varSets:
+                totalVars += 1
+                varList.append(temp[0])
+            varSets.append(temp[0]) 
+            suffixes.append(temp[1])    
+    
+    """ while pos < length:
         temp = getPoly(script[pos])
         if temp[0] != 'null':
             if temp[0] not in varSets:
@@ -301,7 +310,7 @@ def main():
                 varList.append(temp[0])
             varSets.append(temp[0]) 
             suffixes.append(temp[1])
-        pos += 1  
+        pos += 1  """
             
     varList.sort()
     length = len(varSets)
