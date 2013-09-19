@@ -696,8 +696,8 @@ def main(arg1, arg2, arg3, arg4, polyScript, filteredIDs):
             appendScript =  gDocsImport.getScript(sys.argv[2], sys.argv[3], sys.argv[4], avStop, 0, loadType, isPoly, polyScript)
             appendScript = appendRaw(appendScript)
             useRaw = appendScript != 'null'
-            
-            print "Raw script footer loaded succesfully,", appendScript.count('\n') - 3, "lines to append"
+            if useRaw:
+                print "Raw script footer loaded succesfully,", appendScript.count('\n') - 3, "lines to append"
         except:
             print "Error, raw script footer not loaded"
         
