@@ -712,7 +712,7 @@ def main(arg1, arg2, arg3, arg4, polyScript, filteredIDs):
             if not useNew:
                 if avScript == 'null' or diagParams == 'null':
                     print "No AV-Script found"
-                    avTreatments = []
+                    avTreatments = 0
                 else:
                     avTreatments = writeAvScript(avScript, diagParams, outName, path, subpopDirectory)
                 
@@ -1214,32 +1214,42 @@ action number and subpopulation directory appended"""
     outFile = open(path + outName+'Intervention', 'a+b')
     if useNew:
         outFile.write(getOutputNew(subpopsNew, totalsNew, actionsNew, interventionsNew))
-    if useRaw:
-        outFile.write(appendScript)
-    outFile.write("""\n#----- End of Generated Intervention File -----\n\n# RollVac.Py Pre Compliance Intervention Totals- calculated per output,
+    sumIntervs = vacTotal + avTotal + socialTotal + workTotal + schoolTotal + avTreatments
+    if sumIntervs == 0:
+        if useRaw:
+            print "No scripted interventions found, using iterated manual script"
+            outFile.write(appendScript)
+        else:
+            print "No scripted interventions or raw script found"
+    else:
+        if useRaw:
+            print "Appending manually iterated script"
+            outFile.write(appendScript)
+    
+        outFile.write("""\n#----- End of Generated Intervention File -----\n\n# RollVac.Py Pre Compliance Intervention Totals- calculated per output,
 does not account for over-application to a given set of IDs. 
 Please apply only one of each type per sub pop, using enumerated
-interventions for complex interventions.""")
-    outFile.write("\n# Vaccination: " + str(vacTotal))
-    outFile.write("\n# Antiviral Prophylaxis: " + str(avTotal))
-    outFile.write("\n# Social Distancing: " + str(socialTotal))
-    outFile.write("\n# Close Work: " + str(workTotal))
-    outFile.write("\n# Close Schools: " + str(schoolTotal))
-    outFile.write("\n# AV Treatment Programs: " + str(avTreatments))
-    outFile.close()
-    print """RollVac.Py Pre Compliance Intervention Totals- calculated per output,
+    interventions for complex interventions.""")
+        outFile.write("\n# Vaccination: " + str(vacTotal))
+        outFile.write("\n# Antiviral Prophylaxis: " + str(avTotal))
+        outFile.write("\n# Social Distancing: " + str(socialTotal))
+        outFile.write("\n# Close Work: " + str(workTotal))
+        outFile.write("\n# Close Schools: " + str(schoolTotal))
+        outFile.write("\n# AV Treatment Programs: " + str(avTreatments))
+        outFile.close()
+        print """RollVac.Py Pre Compliance Intervention Totals- calculated per output,
 does not account for over-application to a given set of IDs. 
 Please apply only one of each type per sub pop, using enumerated 
 interventions for complex interventions."""
-    print "\nVaccination: " + str(vacTotal)
-    print "Antiviral Prophylaxis: " + str(avTotal)
-    print "Social Distancing: " + str(socialTotal)
-    print "Close Work: " + str(workTotal)
-    print "Close Schools:" + str(schoolTotal)
-    print "AV Treatment Programs: " + str(avTreatments)
-    print
-    if toFilterIDs:
-        return filteredIDs
+        print "\nVaccination: " + str(vacTotal)
+        print "Antiviral Prophylaxis: " + str(avTotal)
+        print "Social Distancing: " + str(socialTotal)
+        print "Close Work: " + str(workTotal)
+        print "Close Schools:" + str(schoolTotal)
+        print "AV Treatment Programs: " + str(avTreatments)
+        print
+        if toFilterIDs:
+            return filteredIDs
     
 if __name__ == '__main__':    
     main(0,0,0,0,[],[])
