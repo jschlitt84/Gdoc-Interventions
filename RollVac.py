@@ -708,21 +708,31 @@ def main(arg1, arg2, arg3, arg4, polyScript, filteredIDs):
             avScript = gDocsImport.getScript(sys.argv[2], sys.argv[3], sys.argv[4], avStart, avStop, loadType, isPoly, polyScript)
             diagParams = gDocsImport.getLine(sys.argv[2], sys.argv[3], sys.argv[4], stopWord, isPoly, polyScript)
             sys.argv[3] = "null"               
+            
             if not useNew:
-                avTreatments = writeAvScript(avScript, diagParams, outName, path, subpopDirectory)
+                if len(avScript) == 0 or len(daigParams) == 0:
+                    print "No AV-Script found"
+                    avTreatments = []
+                else:
+                    avTreatments = writeAvScript(avScript, diagParams, outName, path, subpopDirectory)
+                
                 
 # PREP NEW FORMAT DICTS
  
             else:
-                temp = prepNewAV(avScript, diagParams, outName, path, subpopDirectory, totalsNew)
-                subpopsNew += temp['subpops']
-                actionsNew += temp['actions']
-                interventionsNew += temp['interventions']
-                print subpopsNew
-                print actionsNew
-                print interventionsNew
-                quit()
-                avTreatments = len(actionsNew)
+                if len(avScript) == 0 or len(daigParams) == 0:
+                    print "No AV-Script found"
+                    avTreatments = 0
+                else:
+                    temp = prepNewAV(avScript, diagParams, outName, path, subpopDirectory, totalsNew)
+                    subpopsNew += temp['subpops']
+                    actionsNew += temp['actions']
+                    interventionsNew += temp['interventions']
+                    print subpopsNew
+                    print actionsNew
+                    print interventionsNew
+                    quit()
+                    avTreatments = len(actionsNew)
         
     if arg != "user" and arg != "gDoc" and arg != "gdoc" and (not os.path.isfile(arg)):
         print arg
