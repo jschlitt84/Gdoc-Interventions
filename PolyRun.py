@@ -424,6 +424,7 @@ def main():
         pos = 0
         
         justRolled = False
+        print "*******", totalVars
         while runTracker[pos] == ends[pos] and pos < totalVars - 1:
             justRolled = True
             runTracker[pos] = 0
