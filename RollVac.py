@@ -1094,14 +1094,14 @@ action number and subpopulation directory appended"""
             tempAction['actionID'] = actionID = str(trigger + iCode)
             tempAction['actionDescription'] = tempAction['actionType'] = method
             tempAction['actionDelay'] = '0'
-            tempAction['actionDuration'] = intervNew[0]
+            tempAction['actionDuration'] = intervNew[1]
             conditionTotal = -1
             if method == "Vaccination":
-                tempAction['actionEfficacy'] = intervNew[2]
+                tempAction['actionEfficacy'] = intervNew[3]
                 conditionTotal = '9100'
             elif method == "Antiviral":
-                tempAction['actionEfficacyIn'] = intervNew[2]
-                tempAction['actionEfficacyOut'] = intervNew[3]
+                tempAction['actionEfficacyIn'] = intervNew[3]
+                tempAction['actionEfficacyOut'] = intervNew[4]
                 conditionTotal = '9101'
             if enum:    
                 tempInterv = [prepNewIntervention()]*len(enumList/2)
@@ -1112,7 +1112,7 @@ action number and subpopulation directory appended"""
                         tempInterv[pos2/2]['conditionTotal'] = conditionTotal
                     tempInterv[pos2/2]['conditionDate'] = str(enumList[pos2]) + '~' + str(enumList[pos2])
                     tempInterv[pos2/2]['conditionMembership'] = getSubpopID(subpopsNew,popName)
-                    tempInterv[pos2/2]['conditionCompliance'] = str(float(intervNew[1]) * enumList[pos2+1])
+                    tempInterv[pos2/2]['conditionCompliance'] = str(float(intervNew[2]) * enumList[pos2+1])
                     tempInterv[pos2/2]['action'] = actionID
                     pos2 += 2
             else:
@@ -1124,7 +1124,7 @@ action number and subpopulation directory appended"""
                         tempInterv[pos2]['conditionTotal'] = conditionTotal
                     tempInterv[pos2]['conditionDate'] = str(day+pos2) + '~' + str(day+pos2)
                     tempInterv[pos2]['conditionMembership'] = getSubpopID(subpopsNew,popName)
-                    tempInterv[pos2]['conditionCompliance'] = str(float(intervNew[1]) / length)
+                    tempInterv[pos2]['conditionCompliance'] = str(float(intervNew[2]) / length)
                     tempInterv[pos2]['action'] = actionID
                     pos2 +=1
                     subPopName = popName + 'd' + str(pos2) + 'i' + suffix
@@ -1139,9 +1139,9 @@ action number and subpopulation directory appended"""
                                               
     if useNew:
         vMutex = avMutex = sdMutex = cwMutex = csMutex = sqMutex = []
-        length = len(actionsNew)
-        print "Generating", length, "new format actions"
-        for pos in range(length):
+        limit = len(actionsNew)
+        print "Generating", limit, "new format actions"
+        for pos in range(limit):
             if actionsNew[pos]['actionDescription'] == "Vaccination":
                 vMutex.append(str(pos))
             elif actionsNew[pos]['actionDescription'] == "Antiviral":
@@ -1154,9 +1154,9 @@ action number and subpopulation directory appended"""
                 csMutex.append(str(pos))
             elif actionsNew[pos]['actionDescription'] == "Sequestion":
                 sqMutex.append(str(pos))
-        length = len(interventionsNew)
-        print "Generating", length, "new format interventions"
-        for pos in range(len(interventionsNew)):
+        limit = len(interventionsNew)
+        print "Generating", limit, "new format interventions"
+        for pos in range(limit):
             temp = getActionType(actionsNew,interventionsNew[pos]['action'])
             if temp == "Vaccination":
                 interventionsNew[pos]['conditionMutex'] = ';'.join(vMutex)
