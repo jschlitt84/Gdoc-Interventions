@@ -1124,6 +1124,7 @@ action number and subpopulation directory appended"""
                     if conditionTotal != -1:
                         tempInterv[pos2]['conditionTotal'] = conditionTotal
                     tempInterv[pos2]['conditionDate'] = str(day+pos2) + '~' + str(day+pos2)
+                    print "*****range: ", str(day+pos2) + '~' + str(day+pos2)
                     tempInterv[pos2]['conditionMembership'] = getSubpopID(subpopsNew,popName)
                     tempInterv[pos2]['conditionCompliance'] = str(float(intervNew[2]) / length)
                     tempInterv[pos2]['action'] = actionID
