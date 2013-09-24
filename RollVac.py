@@ -1106,7 +1106,7 @@ action number and subpopulation directory appended"""
             if enum:    
                 tempInterv = [prepNewIntervention()]*len(enumList/2)
                 while pos2 < len(enumList):
-                    tempInterv[pos2/2]['interventionID'] = str(9300 + len(interventionsNew) + pos/2)
+                    tempInterv[pos2/2]['interventionID'] = str(9300 + len(interventionsNew) + pos2/2)
                     tempInterv[pos2/2]['interventionType'] = "Offline"
                     if conditionTotal != -1:
                         tempInterv[pos2/2]['conditionTotal'] = conditionTotal
@@ -1118,7 +1118,8 @@ action number and subpopulation directory appended"""
             else:
                 tempInterv = [prepNewIntervention()]*length
                 for pos2 in range(length):
-                    tempInterv[pos2]['interventionID'] = str(9300 + len(interventionsNew) + pos/2)
+                    print "*****pos2: ", pos2
+                    tempInterv[pos2]['interventionID'] = str(9300 + len(interventionsNew) + pos2)
                     tempInterv[pos2]['interventionType'] = "Offline"
                     if conditionTotal != -1:
                         tempInterv[pos2]['conditionTotal'] = conditionTotal
@@ -1129,9 +1130,10 @@ action number and subpopulation directory appended"""
                     subPopName = popName + 'd' + str(pos2+1) + 'i' + suffix
                     if ".txt" in subPopName:
                         subPopName = subPopName.replace('.txt','') + '.txt'
-                    triggerOut = "* Trigger " + str(trigger+iCode) + " Date " + str(day+pos2) + "\n" 
             actionsNew.append(tempAction)
             interventionsNew += tempInterv
+            print interventionsNew
+            print tempInterv
 
 
 # AUTOGENERATE NEW FORMAT MUTEXES           
