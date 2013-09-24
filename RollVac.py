@@ -1104,9 +1104,9 @@ action number and subpopulation directory appended"""
                 tempAction['actionEfficacyOut'] = intervNew[4]
                 conditionTotal = '9101'
             if enum:    
-                temp = prepNewIntervention()
-                tempInterv = [temp]*len(enumList/2)
+                tempInterv = []
                 while pos2 < len(enumList):
+                    tempInterv.append(prepNewIntervention())
                     tempInterv[pos2/2]['interventionID'] = str(9300 + len(interventionsNew) + pos2/2)
                     tempInterv[pos2/2]['interventionType'] = "Offline"
                     if conditionTotal != -1:
@@ -1120,13 +1120,11 @@ action number and subpopulation directory appended"""
                 tempInterv = []
                 for pos2 in range(length):
                     tempInterv.append(prepNewIntervention())
-                    print "*****pos2: ", pos2
                     tempInterv[pos2]['interventionID'] = str(9300 + len(interventionsNew) + pos2)
                     tempInterv[pos2]['interventionType'] = "Offline"
                     if conditionTotal != -1:
                         tempInterv[pos2]['conditionTotal'] = conditionTotal
                     tempInterv[pos2]['conditionDate'] = str(day+pos2) + '~' + str(day+pos2)
-                    print "*****range: ", str(day+pos2) + '~' + str(day+pos2)
                     tempInterv[pos2]['conditionMembership'] = getSubpopID(subpopsNew,popName)
                     tempInterv[pos2]['conditionCompliance'] = str(float(intervNew[2]) / length)
                     tempInterv[pos2]['action'] = actionID
@@ -1136,8 +1134,6 @@ action number and subpopulation directory appended"""
                     print tempInterv[pos2]
             actionsNew.append(tempAction)
             interventionsNew += tempInterv
-            print interventionsNew
-            print tempInterv
 
 
 # AUTOGENERATE NEW FORMAT MUTEXES           
