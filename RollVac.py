@@ -26,20 +26,12 @@ def prepNewSubpop():
     return temp
     
 def getSubpopText(subpop):
-    pos = 0
-    limit = 1
-    isList = False
-    if isinstance(subpop,list):
-        subpops = subpop
-        limit = len(subpop)
-        isList = True
-    while pos < limit:
-        if isList:
-            subpop = subpops[pos]
-    text = makeIfFound(subpop['subpopulationID'],"SubpopulationId = ")
-    text += makeIfFound(subpop['subpopulationName'],"SubpopulationName = ")
-    text += makeIfFound(subpop['subpopulationFile'],"SubpopulationFile = ") + '\n'
-    print "Subpop(s) block\n", text
+    text = ''
+    for item in subpops:
+        text += makeIfFound(item['subpopulationID'],"SubpopulationId = ")
+        text += makeIfFound(item['subpopulationName'],"SubpopulationName = ")
+        text += makeIfFound(item['subpopulationFile'],"SubpopulationFile = ") + '\n'
+    print "Subpop(s) block:\n", text
     return text
     
 def prepNewAction():
@@ -55,27 +47,18 @@ def prepNewAction():
     return temp
     
 def getActionText(action):
-    pos = 0
-    limit = 1
-    isList = False
-    if isinstance(action,list):
-        actions = action
-        limit = len(action)
-        isList = True
-    while pos < limit:
-        if isList:
-            action = actions[pos]
-        text = makeIfFound(action['actionID'],"ActionId = ")
-        text += makeIfFound(action['actionDescription'],"ActionDescription = ")
-        text += makeIfFound(action['actionDelay'],"ActionDelay = ")
-        text += makeIfFound(action['actionDuration'],"ActionDuration = ")
-        text += makeIfFound(action['actionConsumption'],"ActionConsumption = ")
-        text += makeIfFound(action['actionType'],"ActionType = ")
-        text += makeIfFound(action['actionEfficacy'],"ActionEfficacy = ")
-        text += makeIfFound(action['actionEfficacyIn'],"ActionEfficacyIn = ")
-        text += makeIfFound(action['actionEfficacyOut'],"ActionEfficacyOut = ") + '\n'
-        pos += 1
-    print "Action(s) block\n",text
+    text = ''
+    for item in action:
+        text += makeIfFound(item['actionID'],"ActionId = ")
+        text += makeIfFound(item['actionDescription'],"ActionDescription = ")
+        text += makeIfFound(item['actionDelay'],"ActionDelay = ")
+        text += makeIfFound(item['actionDuration'],"ActionDuration = ")
+        text += makeIfFound(item['actionConsumption'],"ActionConsumption = ")
+        text += makeIfFound(item['actionType'],"ActionType = ")
+        text += makeIfFound(item['actionEfficacy'],"ActionEfficacy = ")
+        text += makeIfFound(item['actionEfficacyIn'],"ActionEfficacyIn = ")
+        text += makeIfFound(item['actionEfficacyOut'],"ActionEfficacyOut = ") + '\n'
+    print "Action(s) block:\n",text
     return text
 
 def prepNewIntervention():
@@ -94,28 +77,19 @@ def prepNewIntervention():
     return temp
     
 def getInterventionText(interv):
-    pos = 0
-    limit = 1
-    isList = False
-    if isinstance(interv,list):
-        intervs = interv
-        limit = len(interv)
-        isList = True
-    while pos < limit:
-        if isList:
-            interv = intervs[pos]
-        text = makeIfFound(interv['interventionID'],"InterventionId = ")
-        text += makeIfFound(interv['interventionType'],"InterventionType = ")
-        text += makeIfFound(interv['conditionState'],"ConditionState = ")
-        text += makeIfFound(interv['conditionDate'],"ConditionDate = ")
-        text += makeIfFound(interv['conditionTotal'],"ConditionTotal = ")
-        text += makeIfFound(interv['conditionMemberShip'],"ConditionMemberShip = ")
-        text += makeIfFound(interv['conditionMutex'],"ConditionMutex = ")
-        text += makeIfFound(interv['conditionCompliance'],"ConditionCompliance = ")
-        text += makeIfFound(interv['conditionThresholdValue'],"ConditionThresholdValue = ")
-        text += makeIfFound(interv['conditionThresholdSubpopulation'],"ConditionThresholdSubpopulation = ") + '\n'
-        pos += 1
-    print "Intervention(s) block\n",text
+    text = ''
+    for item in interv:
+        text += makeIfFound(item['interventionID'],"InterventionId = ")
+        text += makeIfFound(item['interventionType'],"InterventionType = ")
+        text += makeIfFound(item['conditionState'],"ConditionState = ")
+        text += makeIfFound(item['conditionDate'],"ConditionDate = ")
+        text += makeIfFound(item['conditionTotal'],"ConditionTotal = ")
+        text += makeIfFound(item['conditionMemberShip'],"ConditionMemberShip = ")
+        text += makeIfFound(item['conditionMutex'],"ConditionMutex = ")
+        text += makeIfFound(item['conditionCompliance'],"ConditionCompliance = ")
+        text += makeIfFound(item['conditionThresholdValue'],"ConditionThresholdValue = ")
+        text += makeIfFound(item['conditionThresholdSubpopulation'],"ConditionThresholdSubpopulation = ") + '\n'
+    print "Intervention(s) block:\n",text
     return text
     
 def getTotalText(total):
