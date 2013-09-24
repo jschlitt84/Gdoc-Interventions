@@ -1171,7 +1171,7 @@ action number and subpopulation directory appended"""
                     if ".txt" in subPopName:
                         subPopName = subPopName.replace('.txt','') + '.txt'
                     triggerOut = "* Trigger " + str(trigger+iCode) + " Date " + str(day+pos2) + "\n" 
-            actionsNew += tempAction
+            actionsNew.append(tempAction)
             intervNew += tempInterv
 
 
