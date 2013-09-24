@@ -5,25 +5,15 @@ import os
 # CHECKS THE SIZE OF A POPULATION, IGNORES DUPLICATE IDS
 
 def popSize(subPop):
-    line = pos1 = 0
-    tempList = []
+    ids = set()
     popfile = open(subPop)
     while True:
             testline = popfile.readline()
             if len(testline) == 0:
                 break
             if not testline.startswith("#"):
-                ID = testline
-                tempList.append(ID)
-                line += 1
-                
-    while pos1 < line-1:             
-        while (tempList[pos1] in tempList[pos1+1:line]):
-            del tempList[pos1]
-            line -= 1
-        pos1 += 1
-    return line
-    
+                ids.add(testline)
+    return len(ids)    
 
 # SUMS THE SIZE OF AN ENUMERATION LIST  
     

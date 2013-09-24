@@ -119,7 +119,6 @@ def makeIfFound(argument, markup):
 # FIND ID REFERENCE TO SUBPOP
 
 def getSubpopID(subpops,name):
-    pos = 0
     print "Checking subpops for name", name
     for item in subpops:
         if item['subpopulationName'] == name or item['subpopulationFile'] == name:
@@ -130,7 +129,6 @@ def getSubpopID(subpops,name):
     return 'null'
     
 def getActionType(actions,action):
-    pos = 0
     print "Checking actions for action", action
     for item in actions:
         if item['actionID'] == action:
@@ -284,7 +282,6 @@ def appendRaw(script):
 def filterIDs(directory):   
     print "Initiating one time ID load/ filter to memory"
     popfile = open(directory)
-    #ids = []   
     ids = set()              
     line = 0
     while True:
@@ -292,7 +289,6 @@ def filterIDs(directory):
             if len(testline) == 0:
                 break
             if not testline.startswith("#"):
-                #ids.append(testline)
                 ids.add(testline)
                 line += 1
                 
@@ -694,10 +690,9 @@ def main(arg1, arg2, arg3, arg4, polyScript, filteredIDs):
                     subpopsNew += temp['subpops']
                     actionsNew += temp['actions']
                     interventionsNew += temp['interventions']
-                    print subpopsNew
+                    """print subpopsNew
                     print actionsNew
-                    print interventionsNew
-                    #quit()
+                    print interventionsNew"""
                     avTreatments = len(actionsNew)
         
     if arg != "user" and arg != "gDoc" and arg != "gdoc" and (not os.path.isfile(arg)):
@@ -1179,7 +1174,7 @@ action number and subpopulation directory appended"""
             
 # APPENDING NON TREATMENT INTERVENTION TOTALS    
    
-    outFile = open(path + outName+'Intervention', 'a+b')
+    outFile = open(writePath, 'a+b')
     if useNew:
         outFile.write(getOutputNew(subpopsNew, totalsNew, actionsNew, interventionsNew))
     sumIntervs = vacTotal + avTotal + socialTotal + workTotal + schoolTotal + avTreatments
