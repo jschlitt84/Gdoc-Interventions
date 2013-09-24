@@ -732,7 +732,7 @@ def main(arg1, arg2, arg3, arg4, polyScript, filteredIDs):
                     print subpopsNew
                     print actionsNew
                     print interventionsNew
-                    quit()
+                    #quit()
                     avTreatments = len(actionsNew)
         
     if arg != "user" and arg != "gDoc" and arg != "gdoc" and (not os.path.isfile(arg)):
