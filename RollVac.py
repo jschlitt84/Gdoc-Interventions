@@ -1117,9 +1117,9 @@ action number and subpopulation directory appended"""
                     tempInterv[pos2/2]['action'] = actionID
                     pos2 += 2
             else:
-                temp = prepNewIntervention()
-                tempInterv = [temp]*length
+                tempInterv = []
                 for pos2 in range(length):
+                    tempInterv.append(prepNewIntervention())
                     print "*****pos2: ", pos2
                     tempInterv[pos2]['interventionID'] = str(9300 + len(interventionsNew) + pos2)
                     tempInterv[pos2]['interventionType'] = "Offline"
