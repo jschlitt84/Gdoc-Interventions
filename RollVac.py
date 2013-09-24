@@ -1131,6 +1131,7 @@ action number and subpopulation directory appended"""
                     subPopName = popName + 'd' + str(pos2+1) + 'i' + suffix
                     if ".txt" in subPopName:
                         subPopName = subPopName.replace('.txt','') + '.txt'
+                    print tempInterv[pos2]
             actionsNew.append(tempAction)
             interventionsNew += tempInterv
             print interventionsNew
