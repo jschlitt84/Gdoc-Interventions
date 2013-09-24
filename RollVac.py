@@ -84,7 +84,7 @@ def getInterventionText(interv):
         text += makeIfFound(item['conditionState'],"ConditionState = ")
         text += makeIfFound(item['conditionDate'],"ConditionDate = ")
         text += makeIfFound(item['conditionTotal'],"ConditionTotal = ")
-        text += makeIfFound(item['conditionMemberShip'],"ConditionMemberShip = ")
+        text += makeIfFound(item['conditionMembership'],"ConditionMemberShip = ")
         text += makeIfFound(item['conditionMutex'],"ConditionMutex = ")
         text += makeIfFound(item['conditionCompliance'],"ConditionCompliance = ")
         text += makeIfFound(item['conditionThresholdValue'],"ConditionThresholdValue = ")
