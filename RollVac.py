@@ -1199,7 +1199,7 @@ action number and subpopulation directory appended"""
                 sqMutex.append(str(pos))
             pos+=1
         pos = 0
-        while pos < length(interventionsNew):
+        while pos < len(interventionsNew):
             temp = getActionType(actionsNew,interventionsNew[pos]['action'])
             if temp == "Vaccination":
                 interventionsNew[pos]['conditionMutex'] = ';'.join(vMutex)
