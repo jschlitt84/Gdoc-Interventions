@@ -1119,7 +1119,6 @@ action number and subpopulation directory appended"""
                 tempInterv = [prepNewIntervention()]*length
                 print length
                 print tempInterv
-                quit()
                 while pos2 < length:
                     tempInterv[pos2]['interventionID'] = str(9300 + len(interventionsNew) + pos/2)
                     tempInterv[pos2]['interventionType'] = "Offline"
@@ -1136,6 +1135,8 @@ action number and subpopulation directory appended"""
                     triggerOut = "* Trigger " + str(trigger+iCode) + " Date " + str(day+pos2) + "\n" 
             actionsNew.append(tempAction)
             intervNew += tempInterv
+            print intervNew
+            quit()
 
 
 # AUTOGENERATE NEW FORMAT MUTEXES           
