@@ -1181,7 +1181,7 @@ action number and subpopulation directory appended"""
         vMutex = avMutex = sdMutex = cwMutex = csMutex = sqMutex = []
         pos = 0
         while pos < len(actionsNew):
-            print "DEBUG****", actionsNews
+            print "DEBUG****\n", actionsNew
             if actionsNew[pos]['actionDescription'] == "Vaccination":
                 vMutex.append(str(pos))
             elif actionsNew[pos]['actionDescription'] == "Antiviral":
