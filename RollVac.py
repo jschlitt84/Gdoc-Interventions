@@ -142,7 +142,7 @@ def addSubpop(subpops, name, directory, count):
     if getSubpopID(subpops,name) == 'null':
         tempSubpop = prepNewSubpop()
         tempSubpop['subpopulationName'] = name
-        tempSubpop['subpopulationFile'] = directory + name
+        tempSubpop['subpopulationFile'] = directory
         tempSubpop['subpopulationID'] = str(count)
         subpops.append(tempSubpop)
         print "Subpop", name, "added"
