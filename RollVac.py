@@ -1104,7 +1104,8 @@ action number and subpopulation directory appended"""
                 tempAction['actionEfficacyOut'] = intervNew[4]
                 conditionTotal = '9101'
             if enum:    
-                tempInterv = [prepNewIntervention()]*len(enumList/2)
+                temp = prepNewIntervention()
+                tempInterv = [temp]*len(enumList/2)
                 while pos2 < len(enumList):
                     tempInterv[pos2/2]['interventionID'] = str(9300 + len(interventionsNew) + pos2/2)
                     tempInterv[pos2/2]['interventionType'] = "Offline"
@@ -1116,7 +1117,8 @@ action number and subpopulation directory appended"""
                     tempInterv[pos2/2]['action'] = actionID
                     pos2 += 2
             else:
-                tempInterv = [prepNewIntervention()]*length
+                temp = prepNewIntervention()
+                tempInterv = [temp]*length
                 for pos2 in range(length):
                     print "*****pos2: ", pos2
                     tempInterv[pos2]['interventionID'] = str(9300 + len(interventionsNew) + pos2)
