@@ -73,7 +73,6 @@ def prepNewIntervention():
     conditionThresholdValue = 'null',
     conditionThresholdSubpopulation = 'null',
     action = 'null')
-    print temp
     return temp
     
 def getInterventionText(interv):
@@ -107,7 +106,6 @@ def getOutputNew(subpop, total, action, interv):
     return getSubpopText(subpop) + getTotalText(total) + getActionText(action) + getInterventionText(interv)
     
     
-    
 #PREPS SCRIPT OUTPUT IF BLOCK HAS CONTENTS
 
 def makeIfFound(argument, markup):
@@ -123,22 +121,20 @@ def makeIfFound(argument, markup):
 def getSubpopID(subpops,name):
     pos = 0
     print "Checking subpops for name", name
-    while pos < len(subpops):
-        if subpops[pos]['subpopulationName'] == name or subpops[pos]['subpopulationFile'] == name:
-            ID = subpops[pos]['subpopulationID'] 
+    for item in subpops:
+        if item['subpopulationName'] == name or item['subpopulationFile'] == name:
+            ID = item['subpopulationID'] 
             print name, "found at ID", ID
             return ID
-        pos += 1
     print "Subopulation", name, "not in subpops list"
     return 'null'
     
 def getActionType(actions,action):
     pos = 0
     print "Checking actions for action", action
-    while pos < len(actions):
-        if actions[pos]['actionID'] == action:
-            return actions[pos]['actionType']
-        pos += 1
+    for item in actions:
+        if item['actionID'] == action:
+            return item['actionType']
     print "Action", action, "not in actions list"
     return 'null'
  
@@ -192,11 +188,11 @@ def prepNewAV(avScript, diagParams, outName, directory, subpopDirectory, totalsN
             subCount += addSubpop(subPopNew,avScript[pos][4],tempDirectory,subCount)
     
     print "Converting AV script to new action & intervention format"
-    pos = 0
+
+    
     length = len(avScript)
     mutex = []
-    
-    while pos < length:
+    for pos in range(length):
         tempAction = prepNewAction()
         tempInterv = prepNewIntervention()
         tempAction['actionID'] = tempInterv['action'] = str(avCount+pos)
@@ -230,12 +226,11 @@ def prepNewAV(avScript, diagParams, outName, directory, subpopDirectory, totalsN
         
         actionNew.append(tempAction)
         intervNew.append(tempInterv)
-        
-        pos +=1
+
     
-    pos = 0
+    """pos = 0
     length = len(avScript)
-    """while pos < length:
+    while pos < length:
         if str(pos+9300) in mutex:
             intervNew[pos]['conditionMutex'] = ";".join(mutex)
         else:
@@ -338,31 +333,31 @@ def writeAvScript(avScript, diagParams, outName, directory, subpopDirectory):
     pos = 0
     length = len(avScript)
     
-    while pos < length:
+    for avLine in avScript:
         avFile.write("\n\n# -----------------------\n")
         avFile.write("\nInterventionId = " + str(pos+5000))
-        if len(avScript[pos][1]) != 0:
-            avFile.write("\nConditionDate = " + avScript[pos][1])
-        if len(avScript[pos][2]) != 0:
-            if percentFix(avScript[pos][2]) >= 1:
-                avFile.write("\nConditionThresholdValue = " + avScript[pos][2])
+        if len(avLine) != 0:
+            avFile.write("\nConditionDate = " + avLine[1])
+        if len(avLine[2]) != 0:
+            if percentFix(avLine[2]) >= 1:
+                avFile.write("\nConditionThresholdValue = " + avLine[2])
             else:
-                avFile.write("\nConditionThresholdFraction = " + str(percentFix(avScript[pos][2])))
-        if len(avScript[pos][0]) != 0:
-            avFile.write("\nConditionThresholdSubpopulation = " +tempDirectory + avScript[pos][0])
-        if isYes(avScript[pos][3], "Condition Diagnosis"):
+                avFile.write("\nConditionThresholdFraction = " + str(percentFix(avLine[2])))
+        if len(avLine[0]) != 0:
+            avFile.write("\nConditionThresholdSubpopulation = " +tempDirectory + avLine[0])
+        if isYes(avLine[3], "Condition Diagnosis"):
             avFile.write("\nConditionDiagnosis = Required")
-        if len(avScript[pos][4]) != 0:
-            avFile.write("\nConditionMembership = " + tempDirectory + avScript[pos][4])
-        if isYes(avScript[pos][5], "Condition Mutually Exclusive"):
+        if len(avLine[4]) != 0:
+            avFile.write("\nConditionMembership = " + tempDirectory + avLine[4])
+        if isYes(avLine[5], "Condition Mutually Exclusive"):
             avFile.write("\nConditionMutex = Required")
         
-        avFile.write("\n\nCompliance = " + avScript[pos][6])
-        avFile.write("\nDelay = " + avScript[pos][7])
-        avFile.write("\nDuration = " + avScript[pos][8])
-        avFile.write("\nUnitNumberEachDay = " + avScript[pos][9])
-        avFile.write("\nEfficacyIn = " + avScript[pos][10])
-        avFile.write("\nEfficacyOut = " + avScript[pos][11])
+        avFile.write("\n\nCompliance = " + avLine[6])
+        avFile.write("\nDelay = " + avLine[7])
+        avFile.write("\nDuration = " + avLine[8])
+        avFile.write("\nUnitNumberEachDay = " + avLine[9])
+        avFile.write("\nEfficacyIn = " + avLine[10])
+        avFile.write("\nEfficacyOut = " + avLine[11])
         
         pos +=1
     avFile.write("\n\n# ----- End of Generated Antiviral File ----")
@@ -443,14 +438,12 @@ def checkEnum(enumerator):
 def parseEnum(enumerator):
     enums = []
     cmds = enumerator.split()
-    pos = 0
     lim = len(cmds) 
-    while pos < lim:
+    for pos in range(lim):
         if pos%3 == 0:
             enums.append(int(cmds[pos]))
         if pos%3 == 1:
             enums.append(percentFix(cmds[pos]))
-        pos += 1
     print "Valid intervention enumeration recieved:", enums
     return enums
  
@@ -1151,11 +1144,9 @@ action number and subpopulation directory appended"""
                                               
     if useNew:
         vMutex = avMutex = sdMutex = cwMutex = csMutex = sqMutex = []
-        for pos in range(len(actionsNew)):
-            print "DEBUG****\n", actionsNew
-            print actionsNew[pos]
-            print pos
-            print actionsNew[pos]['actionDescription']
+        length = len(actionsNew)
+        print "Generating", length, "new format actions"
+        for pos in range(length):
             if actionsNew[pos]['actionDescription'] == "Vaccination":
                 vMutex.append(str(pos))
             elif actionsNew[pos]['actionDescription'] == "Antiviral":
@@ -1168,12 +1159,9 @@ action number and subpopulation directory appended"""
                 csMutex.append(str(pos))
             elif actionsNew[pos]['actionDescription'] == "Sequestion":
                 sqMutex.append(str(pos))
-            pos+=1
-        print "Interventions New", len(interventionsNew)
-        print interventionsNew
+        length = len(interventionsNew)
+        print "Generating", length, "new format interventions"
         for pos in range(len(interventionsNew)):
-            print "****\n", interventionsNew[pos]
-            print pos
             temp = getActionType(actionsNew,interventionsNew[pos]['action'])
             if temp == "Vaccination":
                 interventionsNew[pos]['conditionMutex'] = ';'.join(vMutex)
