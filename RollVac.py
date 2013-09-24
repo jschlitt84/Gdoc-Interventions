@@ -1179,8 +1179,7 @@ action number and subpopulation directory appended"""
                                               
     if useNew:
         vMutex = avMutex = sdMutex = cwMutex = csMutex = sqMutex = []
-        pos = 0
-        while pos < len(actionsNew):
+        for pos in range(len(actionsNew)):
             print "DEBUG****\n", actionsNew
             print actionsNew[pos]
             print pos
@@ -1198,8 +1197,11 @@ action number and subpopulation directory appended"""
             elif actionsNew[pos]['actionDescription'] == "Sequestion":
                 sqMutex.append(str(pos))
             pos+=1
-        pos = 0
-        while pos < len(interventionsNew):
+        print "Interventions New", len(interventionsNew)
+        print interventionsNew
+        for pos in range(len(interventionsNew)):
+            print "****\n", interventionsNew[pos]
+            print pos
             temp = getActionType(actionsNew,interventionsNew[pos]['action'])
             if temp == "Vaccination":
                 interventionsNew[pos]['conditionMutex'] = ';'.join(vMutex)
@@ -1213,7 +1215,6 @@ action number and subpopulation directory appended"""
                 interventionsNew[pos]['conditionMutex'] = ';'.join(csMutex)
             elif temp == "Sequestion":
                 interventionsNew[pos]['conditionMutex'] = ';'.join(sqMutex)
-            pos+=1
 
             
 # APPENDING NON TREATMENT INTERVENTION TOTALS    
