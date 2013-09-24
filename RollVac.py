@@ -184,14 +184,12 @@ def prepNewAV(avScript, diagParams, outName, directory, subpopDirectory, totalsN
     configV = diagParams[1]
     
     print "Prepping AV subpopulation list"
-    pos = 0
     length = len(avScript)
-    while pos < length:
+    for pos in range(length):
         if len(avScript[pos][0]) != 0:
             subCount += addSubpop(subPopNew,avScript[pos][0],tempDirectory,subCount)
         if len(avScript[pos][4]) != 0: 
             subCount += addSubpop(subPopNew,avScript[pos][4],tempDirectory,subCount)
-        pos += 1
     
     print "Converting AV script to new action & intervention format"
     pos = 0
