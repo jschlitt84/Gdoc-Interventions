@@ -1117,6 +1117,9 @@ action number and subpopulation directory appended"""
                     pos2 += 2
             else:
                 tempInterv = [prepNewIntervention()]*length
+                print length
+                print tempInterv
+                quit()
                 while pos2 < length:
                     tempInterv[pos2]['interventionID'] = str(9300 + len(interventionsNew) + pos/2)
                     tempInterv[pos2]['interventionType'] = "Offline"
