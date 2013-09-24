@@ -27,7 +27,7 @@ def prepNewSubpop():
     
 def getSubpopText(subpop):
     text = ''
-    for item in subpops:
+    for item in subpop:
         text += makeIfFound(item['subpopulationID'],"SubpopulationId = ")
         text += makeIfFound(item['subpopulationName'],"SubpopulationName = ")
         text += makeIfFound(item['subpopulationFile'],"SubpopulationFile = ") + '\n'
