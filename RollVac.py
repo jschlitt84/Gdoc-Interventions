@@ -1152,7 +1152,7 @@ action number and subpopulation directory appended"""
                         tempInterv[pos2/2]['conditionTotal'] = conditionTotal
                     tempInterv[pos2/2]['conditionDate'] = str(enumList[pos2]) + '~' + str(enumList[pos2])
                     tempInterv[pos2/2]['conditionMembership'] = getSubpopID(subpopsNew,popName)
-                    tempInterv[pos2/2]['conditionCompliance'] = str(intervNew[1] * enumList[pos2+1])
+                    tempInterv[pos2/2]['conditionCompliance'] = str(intervNew[1]['conditionCompliance'] * enumList[pos2+1])
                     tempInterv[pos2/2]['action'] = actionID
                     pos2 += 2
             else:
@@ -1164,7 +1164,7 @@ action number and subpopulation directory appended"""
                         tempInterv[pos2]['conditionTotal'] = conditionTotal
                     tempInterv[pos2]['conditionDate'] = str(day+pos2) + '~' + str(day+pos2)
                     tempInterv[pos2]['conditionMembership'] = getSubpopID(subpopsNew,popName)
-                    tempInterv[pos2]['conditionCompliance'] = str(intervNew[1] / length)
+                    tempInterv[pos2]['conditionCompliance'] = str(intervNew[1]['conditionCompliance'] / length)
                     tempInterv[pos2]['action'] = actionID
                     pos2 +=1
                     subPopName = popName + 'd' + str(pos2) + 'i' + suffix
