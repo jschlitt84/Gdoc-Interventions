@@ -1130,7 +1130,7 @@ action number and subpopulation directory appended"""
         else:
             writePath += 'New'
             tempAction = prepNewAction()
-            tempInterv = [prepNewIntervention()]*len(enumList/2)
+            #tempInterv = [prepNewIntervention()]*len(enumList/2)
             tempAction['actionID'] = actionID = str(trigger + iCode)
             tempAction['actionDescription'] = tempAction['actionType'] = method
             tempAction['actionDelay'] = '0'
@@ -1144,6 +1144,7 @@ action number and subpopulation directory appended"""
                 tempAction['actionEfficacyOut'] = intervNew[3]
                 conditionTotal = '9101'
             if enum:    
+                tempInterv = [prepNewIntervention()]*len(enumList/2)
                 while pos2 < len(enumList):
                     tempInterv[pos2/2]['interventionID'] = str(9300 + len(interventionsNew) + pos/2)
                     tempInterv[pos2/2]['interventionType'] = "Offline"
@@ -1155,6 +1156,7 @@ action number and subpopulation directory appended"""
                     tempInterv[pos2/2]['action'] = actionID
                     pos2 += 2
             else:
+                tempInterv = [prepNewIntervention()]*length
                 while pos2 < length:
                     tempInterv[pos2]['interventionID'] = str(9300 + len(interventionsNew) + pos/2)
                     tempInterv[pos2]['interventionType'] = "Offline"
