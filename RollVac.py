@@ -1119,7 +1119,7 @@ action number and subpopulation directory appended"""
                 tempInterv = [prepNewIntervention()]*length
                 print length
                 print tempInterv
-                while pos2 < length:
+                for pos2 in range(length):
                     tempInterv[pos2]['interventionID'] = str(9300 + len(interventionsNew) + pos/2)
                     tempInterv[pos2]['interventionType'] = "Offline"
                     if conditionTotal != -1:
@@ -1128,8 +1128,7 @@ action number and subpopulation directory appended"""
                     tempInterv[pos2]['conditionMembership'] = getSubpopID(subpopsNew,popName)
                     tempInterv[pos2]['conditionCompliance'] = str(float(intervNew[2]) / length)
                     tempInterv[pos2]['action'] = actionID
-                    pos2 +=1
-                    subPopName = popName + 'd' + str(pos2) + 'i' + suffix
+                    subPopName = popName + 'd' + str(pos2+1) + 'i' + suffix
                     if ".txt" in subPopName:
                         subPopName = subPopName.replace('.txt','') + '.txt'
                     triggerOut = "* Trigger " + str(trigger+iCode) + " Date " + str(day+pos2) + "\n" 
