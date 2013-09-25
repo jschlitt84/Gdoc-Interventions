@@ -529,8 +529,10 @@ def checkSize(reference,popSizes):
     print reference
     if reference not in popSizes.keys():
         popSizes[reference] = chopper.popSize(reference)
+        print chopper.popSize(reference)
         print "foo"
     print reference
+    quit()
     return popSizes[reference]
     
 # MAIN
