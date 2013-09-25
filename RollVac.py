@@ -560,6 +560,7 @@ def main(arg1, arg2, arg3, arg4, polyScript, filteredIDs):
     socialTotal = 0
     workTotal = 0
     schoolTotal = 0
+    sqTotal = 0
     avTreatments = 0
     toFilterIDs = len(filteredIDs) > 0
     useNew = False
@@ -1044,6 +1045,8 @@ action number and subpopulation directory appended"""
             workTotal += returnSize
         elif meth == "cs":
             schoolTotal += returnSize
+        elif meth == "sq":
+            sqTotal += returnSize
         
                 
 # WRITING INTERVENTION FILE (AV TREATMENT & DIAG HANDLED SEPERATELY)
@@ -1197,7 +1200,7 @@ action number and subpopulation directory appended"""
     outFile = open(writePath, 'a+b')
     if useNew:
         outFile.write(getOutputNew(subpopsNew, totalsNew, actionsNew, interventionsNew))
-    sumIntervs = vacTotal + avTotal + socialTotal + workTotal + schoolTotal + avTreatments
+    sumIntervs = vacTotal + avTotal + socialTotal + workTotal + schoolTotal + sqTotal + avTreatments
     if sumIntervs == 0:
         if useRaw:
             print "No scripted interventions found, using iterated manual script"
@@ -1218,6 +1221,8 @@ Please apply only one of each type per sub pop, using enumerated
         outFile.write("\n# Social Distancing: " + str(socialTotal))
         outFile.write("\n# Close Work: " + str(workTotal))
         outFile.write("\n# Close Schools: " + str(schoolTotal))
+        if useNew:
+            outFile.write("\n# Sequestered: " + str(sqTotal))
         outFile.write("\n# AV Treatment Programs: " + str(avTreatments))
         outFile.close()
         print """RollVac.Py Pre Compliance Intervention Totals- calculated per output,
@@ -1229,6 +1234,8 @@ interventions for complex interventions."""
         print "Social Distancing: " + str(socialTotal)
         print "Close Work: " + str(workTotal)
         print "Close Schools:" + str(schoolTotal)
+        if useNew:
+            print "Sequestered:" + str(sqTotal)   
         print "AV Treatment Programs: " + str(avTreatments)
         print
         if toFilterIDs:
