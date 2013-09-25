@@ -1143,7 +1143,9 @@ action number and subpopulation directory appended"""
 # AUTOGENERATE NEW FORMAT MUTEXES           
                                               
     if useNew:
-        vMutex = avMutex = sdMutex = cwMutex = csMutex = sqMutex = []
+        vMutex = []; avMutex = []
+        sdMutex = []; cwMutex = []
+        csMutex = []; sqMutex = []
         limit = len(actionsNew)
         print "Generating", limit, "new format actions"
         for pos in range(limit):
