@@ -42,6 +42,7 @@ def trimEnum(enumList, target):
                 used = True
             else:
                 newEnum.append(enumList[pos+1])
+
             pos += 2
     else:
         while total <= target and pos < limit:
