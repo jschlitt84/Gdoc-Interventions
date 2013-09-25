@@ -257,6 +257,7 @@ def main():
     suffixes = []
     directorySuffix = ""
     filteredIDs = [{"directory":'null','ids':[]}]
+    popSizes = dict()
 #    positions = []
 
 # PARSING COMMAND LINE ARGUMENTS FOR PUBLIC/ PRIVATE FILE ACCESS        
@@ -400,7 +401,7 @@ def main():
  #       fileString = ';'.join(fileList)
  #       homeString = ';'.join(homeList)
                
-        filteredIDs = RollVac.main('poly', directory, 'null', 'null', rollScript, filteredIDs)
+        filteredIDs = RollVac.main('poly', directory, 'null', 'null', rollScript, filteredIDs, popSizes)
         sleep(0.05)
         
         qsubs = open(homeDir + 'qsublist', 'a+b')

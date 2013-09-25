@@ -532,7 +532,7 @@ def checkSize(reference,popSizes):
     
 # MAIN
 
-def main(arg1, arg2, arg3, arg4, polyScript, filteredIDs):
+def main(arg1, arg2, arg3, arg4, polyScript, filteredIDs,popSizes):
         
 
     print arg1, arg2, arg3, arg4
@@ -1244,6 +1244,6 @@ interventions for complex interventions."""
             return filteredIDs
     
 if __name__ == '__main__':    
-    main(0,0,0,0,[],[])
+    main(0,0,0,0,[],[],[])
     print "Intervention scripting succesfully completed, exiting now.\n"
     quit
