@@ -195,7 +195,7 @@ def prepNewAV(avScript, diagParams, outName, directory, subpopDirectory, totalsN
         tempAction = prepNewAction()
         tempInterv = prepNewIntervention()
         tempAction['actionID'] = tempInterv['action'] = str(avCount+pos)
-        tempAction['actionType'] = tempAction['actionDescription'] = "Antiviral"
+        tempAction['actionType'] = tempAction['actionDescription'] = "Antiviral Treatment"
         tempInterv['interventionType'] = 'Offline'
         tempInterv['interventionID'] = str(mutStart+pos)
         tempInterv['conditionTotal'] = '9101'
@@ -1093,6 +1093,8 @@ action number and subpopulation directory appended"""
             tempAction = prepNewAction()
             #tempInterv = [prepNewIntervention()]*len(enumList/2)
             tempAction['actionID'] = actionID = str(trigger + iCode)
+            if method == 'Antiviral':
+                method += " Prophylaxis"
             tempAction['actionDescription'] = tempAction['actionType'] = method
             tempAction['actionDelay'] = '0'
             tempAction['actionDuration'] = intervNew[1]
@@ -1145,17 +1147,23 @@ action number and subpopulation directory appended"""
         print "Generating", limit, "new format actions"
         for pos in range(limit):
             if actionsNew[pos]['actionDescription'] == "Vaccination":
-                vMutex.append(str(pos))
+                if actionsNew[pos]['action'] not in vMutex:
+                    vMutex.append(actionsNew[pos]['action'])
             elif actionsNew[pos]['actionDescription'] == "Antiviral":
-                avMutex.append(str(pos))
+                if actionsNew[pos]['action'] not in avMutex:
+                    avMutex.append(actionsNew[pos]['action'])
             elif actionsNew[pos]['actionDescription'] == "SocialDistancing":
-                sdMutex.append(str(pos))
+                if actionsNew[pos]['action'] not in sdMutex:
+                    sdMutex.append(actionsNew[pos]['action'])
             elif actionsNew[pos]['actionDescription'] == "CloseWork":
-                cwMutex.append(str(pos))
+                if actionsNew[pos]['action'] not in cwMutex:
+                    cwMutex.append(actionsNew[pos]['action'])
             elif actionsNew[pos]['actionDescription'] == "CloseSchools":
-                csMutex.append(str(pos))
+                if actionsNew[pos]['action'] not in csMutex:
+                    csMutex.append(actionsNew[pos]['action'])
             elif actionsNew[pos]['actionDescription'] == "Sequestion":
-                sqMutex.append(str(pos))
+                if actionsNew[pos]['action'] not in sqMutex:
+                    sqMutex.append(actionsNew[pos]['action'])
         limit = len(interventionsNew)
         print "Generating", limit, "new format interventions"
         for pos in range(limit):
