@@ -526,14 +526,8 @@ def isYes(response, use):
                         
 # CHECK IF POPSIZE IS KNOWN, ELSE RETURN POPSIZE
 def checkSize(reference,popSizes):
-    print popSizes
-    print reference
     if reference not in popSizes.keys():
         popSizes[reference] = chopper.popSize(reference)
-        print chopper.popSize(reference)
-        print "foo"
-    print popSizes
-    quit()
     return popSizes[reference]
     
 # MAIN
@@ -1036,7 +1030,9 @@ action number and subpopulation directory appended"""
                 length = chopper.getEnumSize(enumList)
                 returnSize = int(min(temp['total'],populationSize))
             else:
+                print popSizes
                 populationSize = returnSize = checkSize(population,popSizes)
+                print popSizes
 
 
 # NON TREATMENT BASED INTERVENTION TRACKING            
