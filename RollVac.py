@@ -570,7 +570,6 @@ def main(arg1, arg2, arg3, arg4, polyScript, filteredIDs,popSizes):
     actionsNew = []
     totalsNew =  {'vaccination':1000000000,'antiviral':1000000000}
     interventionsNew = []
-    popSizes = dict()
     
 
 # UNIX PASSED ARGUMENTS DECISION TREE  
