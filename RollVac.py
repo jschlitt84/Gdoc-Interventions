@@ -43,7 +43,8 @@ def prepNewAction():
     actionType = 'null',
     actionEfficacy = 'null',
     actionEfficacyIn = 'null',
-    actionEfficacyOut = 'null')
+    actionEfficacyOut = 'null'
+    actionGroupSize = 'null')
     return temp
     
 def getActionText(action):
@@ -57,7 +58,8 @@ def getActionText(action):
         text += makeIfFound(item['actionType'],"ActionType = ")
         text += makeIfFound(item['actionEfficacy'],"ActionEfficacy = ")
         text += makeIfFound(item['actionEfficacyIn'],"ActionEfficacyIn = ")
-        text += makeIfFound(item['actionEfficacyOut'],"ActionEfficacyOut = ") + '\n'
+        text += makeIfFound(item['actionEfficacyOut'],"ActionEfficacyOut = ")
+        text += makeIfFound(item['actionGroupSize'],"ActionGroupSize = ") + '\n'
     print "Action(s) block:\n",text
     return text
 
@@ -1108,6 +1110,8 @@ action number and subpopulation directory appended"""
                 tempAction['actionEfficacyIn'] = intervNew[3]
                 tempAction['actionEfficacyOut'] = intervNew[4]
                 conditionTotal = '9101'
+            elif method == "Sequestion":
+                tempAction['actionGroupSize'] = intervNew[3]
             if enum:    
                 tempInterv = []
                 while pos2 < len(enumList):
