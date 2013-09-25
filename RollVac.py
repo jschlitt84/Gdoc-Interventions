@@ -1027,7 +1027,7 @@ action number and subpopulation directory appended"""
                 print populationSize
                 enumList = chopper.trimEnum(cleanEnum(temp['enum']), populationSize)
                 length = chopper.getEnumSize(enumList)
-                returnSize = min(temp['total'],populationSize)
+                returnSize = int(min(temp['total'],populationSize))
             else:
                 populationSize = returnSize = chopper.popSize(population)
 
