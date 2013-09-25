@@ -528,7 +528,7 @@ def isYes(response, use):
                         
 # CHECK IF POPSIZE IS KNOWN, ELSE RETURN POPSIZE
 def checkSize(reference,popSizes):
-    if reference not in popSizes:
+    if reference not in popSizes.keys():
         popSizes[reference] = chopper.popSize(reference)
     return popSizes[reference]
     
