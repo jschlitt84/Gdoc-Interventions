@@ -195,7 +195,8 @@ def prepNewAV(avScript, diagParams, outName, directory, subpopDirectory, totalsN
         tempAction = prepNewAction()
         tempInterv = prepNewIntervention()
         tempAction['actionID'] = tempInterv['action'] = str(avCount+pos)
-        tempAction['actionType'] = tempAction['actionDescription'] = "Antiviral Treatment"
+        tempAction['actionDescription'] = "Antiviral Treatment"
+        tempAction['actionType'] = "Antiviral"
         tempInterv['interventionType'] = 'Offline'
         tempInterv['interventionID'] = str(mutStart+pos)
         tempInterv['conditionTotal'] = '9101'
