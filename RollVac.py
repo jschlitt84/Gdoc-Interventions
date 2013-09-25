@@ -526,8 +526,12 @@ def isYes(response, use):
             print "Error, please enter 'y' or 'n' for %s, defaulting to 'n'" %(use)  
     return result  
                         
-
-
+# CHECK IF POPSIZE IS KNOWN, ELSE RETURN POPSIZE
+def checkSize(reference,popSizes):
+    if reference not in popSizes:
+        popSizes[reference] = chopper.popSize(reference)
+    return popSizes[reference]
+    
 # MAIN
 
 def main(arg1, arg2, arg3, arg4, polyScript, filteredIDs):
@@ -568,6 +572,7 @@ def main(arg1, arg2, arg3, arg4, polyScript, filteredIDs):
     actionsNew = []
     totalsNew =  {'vaccination':1000000000,'antiviral':1000000000}
     interventionsNew = []
+    popSizes = dict()
     
 
 # UNIX PASSED ARGUMENTS DECISION TREE  
@@ -1008,7 +1013,7 @@ action number and subpopulation directory appended"""
                 runIDs = filteredIDs[-1]['ids']
             
             if enum:
-                populationSize = chopper.popSize(population)
+                populationSize = checkSize(population,popSizes)
                 enumList = cleanEnum(percentEnum(enumList,populationSize))
                 holder = chopper.main(population,'e'," ".join(map(str, enumList)),suffix, path,runIDs)
                 returnSize = holder['count']
@@ -1021,13 +1026,13 @@ action number and subpopulation directory appended"""
             addSubpop(subpopsNew, population.split('/')[-1], population, 9000+ len(subpopsNew))
 
             if enum:
-                populationSize = chopper.popSize(population)
+                populationSize = checkSize(population,popSizes)
                 temp = countEnum(enumList,populationSize)
                 enumList = chopper.trimEnum(cleanEnum(temp['enum']), populationSize)
                 length = chopper.getEnumSize(enumList)
                 returnSize = int(min(temp['total'],populationSize))
             else:
-                populationSize = returnSize = chopper.popSize(population)
+                populationSize = returnSize = checkSize(population,popSizes)
 
 
 # NON TREATMENT BASED INTERVENTION TRACKING            
