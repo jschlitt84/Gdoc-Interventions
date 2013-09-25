@@ -30,8 +30,9 @@ def getEnumSize(enumList):
 
 def trimEnum(enumList, target):
     total = pos = 0
+    limit = len(enumList)
     newEnum = []
-    while total <= target:
+    while total <= target and pos < limit:
         newEnum.append(enumList[pos])
         if enumList[pos+1] > 1:
             total += enumList[pos+1]
@@ -41,6 +42,7 @@ def trimEnum(enumList, target):
             newEnum.append(enumList[pos+1] - total + target)
         else:
             newEnum.append(enumList[pos+1])
+        print newEnum
         pos += 2
     print "Trimming excess enumurated interventions, original:", enumList
     print "to new:", newEnum
