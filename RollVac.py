@@ -43,7 +43,7 @@ def prepNewAction():
     actionType = 'null',
     actionEfficacy = 'null',
     actionEfficacyIn = 'null',
-    actionEfficacyOut = 'null'
+    actionEfficacyOut = 'null',
     actionGroupSize = 'null')
     return temp
     
