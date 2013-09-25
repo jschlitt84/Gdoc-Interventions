@@ -1101,7 +1101,7 @@ action number and subpopulation directory appended"""
             tempAction['actionType'] = method
             if method == 'Antiviral':
                 method += " Prophylaxis"
-            tempAction['actionDescription'] = tempAction['actionType']
+            tempAction['actionDescription'] = method
             tempAction['actionDelay'] = '0'
             tempAction['actionDuration'] = intervNew[1]
             conditionTotal = -1
