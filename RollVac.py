@@ -1147,22 +1147,22 @@ action number and subpopulation directory appended"""
         print "Generating", limit, "new format actions"
         for pos in range(limit):
             if actionsNew[pos]['actionDescription'] == "Vaccination":
-                if actionsNew[pos]['action'] not in vMutex:
+                if actionsNew[pos]['actionID'] not in vMutex:
                     vMutex.append(actionsNew[pos]['action'])
             elif actionsNew[pos]['actionDescription'] == "Antiviral":
-                if actionsNew[pos]['action'] not in avMutex:
+                if actionsNew[pos]['actionID'] not in avMutex:
                     avMutex.append(actionsNew[pos]['action'])
             elif actionsNew[pos]['actionDescription'] == "SocialDistancing":
-                if actionsNew[pos]['action'] not in sdMutex:
+                if actionsNew[pos]['actionID'] not in sdMutex:
                     sdMutex.append(actionsNew[pos]['action'])
             elif actionsNew[pos]['actionDescription'] == "CloseWork":
-                if actionsNew[pos]['action'] not in cwMutex:
+                if actionsNew[pos]['actionID'] not in cwMutex:
                     cwMutex.append(actionsNew[pos]['action'])
             elif actionsNew[pos]['actionDescription'] == "CloseSchools":
-                if actionsNew[pos]['action'] not in csMutex:
+                if actionsNew[pos]['actionID'] not in csMutex:
                     csMutex.append(actionsNew[pos]['action'])
             elif actionsNew[pos]['actionDescription'] == "Sequestion":
-                if actionsNew[pos]['action'] not in sqMutex:
+                if actionsNew[pos]['actionID'] not in sqMutex:
                     sqMutex.append(actionsNew[pos]['action'])
         limit = len(interventionsNew)
         print "Generating", limit, "new format interventions"
