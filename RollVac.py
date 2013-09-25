@@ -1023,9 +1023,6 @@ action number and subpopulation directory appended"""
             if enum:
                 populationSize = chopper.popSize(population)
                 temp = countEnum(enumList,populationSize)
-                print temp
-                print cleanEnum(temp['enum'])
-                print populationSize
                 enumList = chopper.trimEnum(cleanEnum(temp['enum']), populationSize)
                 length = chopper.getEnumSize(enumList)
                 returnSize = int(min(temp['total'],populationSize))
@@ -1145,7 +1142,6 @@ action number and subpopulation directory appended"""
                     subPopName = popName + 'd' + str(pos2+1) + 'i' + suffix
                     if ".txt" in subPopName:
                         subPopName = subPopName.replace('.txt','') + '.txt'
-                    print tempInterv[pos2]
             actionsNew.append(tempAction)
             interventionsNew += tempInterv
 
