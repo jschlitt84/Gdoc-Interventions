@@ -42,7 +42,6 @@ def trimEnum(enumList, target):
                 used = True
             else:
                 newEnum.append(enumList[pos+1])
-            print newEnum
             pos += 2
     else:
         while total <= target and pos < limit:
@@ -53,7 +52,6 @@ def trimEnum(enumList, target):
                 used = True
             else:
                 newEnum.append(enumList[pos+1])
-            print newEnum
             pos += 2
     if used: 
         print "Trimming excess enumurated interventions, original:", enumList
