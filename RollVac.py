@@ -1093,9 +1093,10 @@ action number and subpopulation directory appended"""
             tempAction = prepNewAction()
             #tempInterv = [prepNewIntervention()]*len(enumList/2)
             tempAction['actionID'] = actionID = str(trigger + iCode)
+            tempAction['actionType'] = method
             if method == 'Antiviral':
                 method += " Prophylaxis"
-            tempAction['actionDescription'] = tempAction['actionType'] = method
+            tempAction['actionDescription'] = tempAction['actionType']
             tempAction['actionDelay'] = '0'
             tempAction['actionDuration'] = intervNew[1]
             conditionTotal = -1
@@ -1146,24 +1147,24 @@ action number and subpopulation directory appended"""
         limit = len(actionsNew)
         print "Generating", limit, "new format actions"
         for pos in range(limit):
-            if actionsNew[pos]['actionDescription'] == "Vaccination":
+            if actionsNew[pos]['actionType'] == "Vaccination":
                 if actionsNew[pos]['actionID'] not in vMutex:
-                    vMutex.append(actionsNew[pos]['action'])
-            elif actionsNew[pos]['actionDescription'] == "Antiviral":
+                    vMutex.append(actionsNew[pos]['actionID'])
+            elif actionsNew[pos]['actionType'] == "Antiviral":
                 if actionsNew[pos]['actionID'] not in avMutex:
-                    avMutex.append(actionsNew[pos]['action'])
-            elif actionsNew[pos]['actionDescription'] == "SocialDistancing":
+                    avMutex.append(actionsNew[pos]['actionID'])
+            elif actionsNew[pos]['actionType'] == "SocialDistancing":
                 if actionsNew[pos]['actionID'] not in sdMutex:
-                    sdMutex.append(actionsNew[pos]['action'])
-            elif actionsNew[pos]['actionDescription'] == "CloseWork":
+                    sdMutex.append(actionsNew[pos]['actionID'])
+            elif actionsNew[pos]['actionType'] == "CloseWork":
                 if actionsNew[pos]['actionID'] not in cwMutex:
-                    cwMutex.append(actionsNew[pos]['action'])
-            elif actionsNew[pos]['actionDescription'] == "CloseSchools":
+                    cwMutex.append(actionsNew[pos]['actionID'])
+            elif actionsNew[pos]['actionType'] == "CloseSchools":
                 if actionsNew[pos]['actionID'] not in csMutex:
-                    csMutex.append(actionsNew[pos]['action'])
-            elif actionsNew[pos]['actionDescription'] == "Sequestion":
+                    csMutex.append(actionsNew[pos]['actionID'])
+            elif actionsNew[pos]['actionType'] == "Sequestion":
                 if actionsNew[pos]['actionID'] not in sqMutex:
-                    sqMutex.append(actionsNew[pos]['action'])
+                    sqMutex.append(actionsNew[pos]['actionID'])
         limit = len(interventionsNew)
         print "Generating", limit, "new format interventions"
         for pos in range(limit):
