@@ -1033,7 +1033,7 @@ action number and subpopulation directory appended"""
                 print popSizes
                 populationSize = returnSize = checkSize(population,popSizes)
                 print popSizes
-                quit()
+                
 
 
 # NON TREATMENT BASED INTERVENTION TRACKING            
