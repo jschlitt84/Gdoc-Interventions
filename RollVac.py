@@ -87,7 +87,8 @@ def getInterventionText(interv):
         text += makeIfFound(item['conditionMutex'],"ConditionMutex = ")
         text += makeIfFound(item['conditionCompliance'],"ConditionCompliance = ")
         text += makeIfFound(item['conditionThresholdValue'],"ConditionThresholdValue = ")
-        text += makeIfFound(item['conditionThresholdSubpopulation'],"ConditionThresholdSubpopulation = ") + '\n'
+        text += makeIfFound(item['conditionThresholdSubpopulation'],"ConditionThresholdSubpopulation = ")
+        text += makeIfFound(item['action'],"Action = ") + '\n'
     print "Intervention(s) block:\n",text
     return text
     
