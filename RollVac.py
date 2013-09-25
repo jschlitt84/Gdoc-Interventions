@@ -246,7 +246,7 @@ def prepNewAV(avScript, diagParams, outName, directory, subpopDirectory, totalsN
 
 def countEnum(enumerator,size):
     pos1 = 1
-    print
+    print enumerator
     workEnum =  enumerator[:]
     total = 0
     limit =  len(workEnum)    
@@ -254,7 +254,7 @@ def countEnum(enumerator,size):
         temp = float(workEnum[pos1])
         if temp > 1:
             workEnum[pos1] = float(temp/size)
-            print "Count", temp, "of population size", size, "converted to", "%.2f" % workEnum[pos1]*100, "percent for new format enumeration" 
+            print "Count", int(temp), "of population size", size, "converted to", "%.2f" % (workEnum[pos1]*100), "percent for new format enumeration" 
         else:
             workEnum[pos1] = int(workEnum[pos1])
         total += workEnum[pos1]*size
