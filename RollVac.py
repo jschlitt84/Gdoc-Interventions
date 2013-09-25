@@ -254,7 +254,7 @@ def countEnum(enumerator,size):
         temp = float(workEnum[pos1])
         if temp > 1:
             workEnum[pos1] = float(temp/size)
-            print "Count", temp, "of population size", size, "converted to", workEnum[pos1], "percent for new format enumeration" 
+            print "Count", temp, "of population size", size, "converted to", "%.2f" % workEnum[pos1]*100, "percent for new format enumeration" 
         else:
             workEnum[pos1] = int(workEnum[pos1])
         total += workEnum[pos1]*size
@@ -1023,7 +1023,7 @@ action number and subpopulation directory appended"""
             if enum:
                 populationSize = chopper.popSize(population)
                 temp = countEnum(enumList,populationSize)
-                enumList = chopper.trimEnum(cleanEnum(temp['enum']))
+                enumList = chopper.trimEnum(cleanEnum(temp['enum']), populationSize)
                 length = chopper.getEnumSize(enumList)
                 returnSize = min(temp['total'],populationSize)
             else:
