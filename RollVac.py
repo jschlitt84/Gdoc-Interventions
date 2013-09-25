@@ -1029,9 +1029,7 @@ action number and subpopulation directory appended"""
                 length = chopper.getEnumSize(enumList)
                 returnSize = int(min(temp['total'],populationSize))
             else:
-                print popSizes
                 populationSize = returnSize = checkSize(population,popSizes)
-                print popSizes
                 
 
 
