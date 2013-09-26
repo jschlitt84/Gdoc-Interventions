@@ -97,16 +97,16 @@ def getInterventionText(interv):
 def getTotalText(total):
     text = "TotalId = 9100\n"
     text += "TotalName = Vaccine Supply\n"
-    text += "Total Amount = " + str(total['vaccination']) + '\n\n'
+    text += "TotalAmount = " + str(total['vaccination']) + '\n\n'
     text += "TotalId = 9101\n"
     text += "TotalName = Antiviral Supply\n"
-    text += "Total Amount = " + str(total['antiviral']) + '\n\n'
+    text += "TotalAmount = " + str(total['antiviral']) + '\n\n'
     return text
 
 # GENERATE FINAL OUTPUT    
             
 def getOutputNew(subpop, total, action, interv):
-    return getSubpopText(subpop) + getTotalText(total) + getActionText(action) + getInterventionText(interv)
+    return 'InterventionsVersion = 2010\n\n' + getSubpopText(subpop) + getTotalText(total) + getActionText(action) + getInterventionText(interv)
     
     
 #PREPS SCRIPT OUTPUT IF BLOCK HAS CONTENTS
