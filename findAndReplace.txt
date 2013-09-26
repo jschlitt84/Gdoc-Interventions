@@ -8,6 +8,10 @@ Replace = #PBS -o $DIR/ef_$ITER.qlog
 Find = $MPIRUN
 Replace = $MPIRUN /vbi/projects/epifast/bin/EpiFast $DIR/config > $DIR/cout
 File = config
+Find = SimulationDuration =
+Replace = SimulationDuration = 60
+Find = EpidemicSeedNumber =
+Replace = EpidemicSeedNumber = 60
 Find = ContactGraphFile =
 Replace = ContactGraphFile = /vbi/protopop/USPopv2/regions/seattle_military_corrected/socialnet/EFIG6Bb
 Find = IncubationPeriodFile =
