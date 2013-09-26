@@ -85,7 +85,7 @@ def getInterventionText(interv):
         text += makeIfFound(item['conditionState'],"ConditionState = ")
         text += makeIfFound(item['conditionDate'],"ConditionDate = ")
         text += makeIfFound(item['conditionTotal'],"ConditionTotal = ")
-        text += makeIfFound(item['conditionMembership'],"ConditionMemberShip = ")
+        text += makeIfFound(item['conditionMembership'],"ConditionMembership = ")
         text += makeIfFound(item['conditionMutex'],"ConditionMutex = ")
         text += makeIfFound(item['conditionCompliance'],"ConditionCompliance = ")
         text += makeIfFound(item['conditionThresholdValue'],"ConditionThresholdValue = ")
@@ -195,7 +195,7 @@ def prepNewAV(avScript, diagParams, outName, directory, subpopDirectory, totalsN
         tempAction = prepNewAction()
         tempInterv = prepNewIntervention()
         tempAction['actionID'] = tempInterv['action'] = str(avCount+pos)
-        tempAction['actionDescription'] = "Antiviral Treatment"
+        tempAction['actionDescription'] = "Antiviral_Treatment"
         tempAction['actionType'] = "Antiviral"
         tempInterv['interventionType'] = 'Offline'
         tempInterv['interventionID'] = str(mutStart+pos)
@@ -1103,7 +1103,7 @@ action number and subpopulation directory appended"""
             tempAction['actionID'] = actionID = str(trigger + iCode)
             tempAction['actionType'] = method
             if method == 'Antiviral':
-                method += " Prophylaxis"
+                method += "_Prophylaxis"
             tempAction['actionDescription'] = method
             tempAction['actionDelay'] = '0'
             tempAction['actionDuration'] = intervNew[1]
