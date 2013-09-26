@@ -2,7 +2,7 @@ File = qsub
 Find = #PBS -W
 Replace = #PBS -W group_list=pecos
 Find = #PBS -N
-Replace = #PBS -N FTLewis-$ITER
+Replace = #PBS -N FTLewisV2010-$ITER
 Find = #PBS -o
 Replace = #PBS -o $DIR/ef_$ITER.qlog
 Find = $MPIRUN
