@@ -11,7 +11,7 @@ File = config
 Find = SimulationDuration =
 Replace = SimulationDuration = 60
 Find = EpidemicSeedNumber =
-Replace = EpidemicSeedNumber = 60
+Replace = EpidemicSeedNumber = 30
 Find = ContactGraphFile =
 Replace = ContactGraphFile = /vbi/protopop/USPopv2/regions/seattle_military_corrected/socialnet/EFIG6Bb
 Find = IncubationPeriodFile =
