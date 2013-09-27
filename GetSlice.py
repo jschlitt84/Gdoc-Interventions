@@ -466,6 +466,7 @@ def checkLines(fileName, subpopLoaded, useSubpop, multiThreaded):
     searchWidth = .20
     peakToLocal = 10
     localSNR = 2
+    secondaryThreshold = 10
     pos1 = 0
             
     while pos1 < iterations + 1:
@@ -531,7 +532,7 @@ def checkLines(fileName, subpopLoaded, useSubpop, multiThreaded):
 		      pos2 += 1
                 elif localMaxima > sliceWidth/2:
                     pos2 += localMaxima - sliceWidth/2
-                elif localPeak*peakToLocal >= tempMax and localPeak != tempMax and str(localMaxima + pos2) not in secondaryMaxima[pos1]:
+                elif localPeak*peakToLocal >= tempMax and localPeak != tempMax and localPeak > secondaryThreshold and str(localMaxima + pos2) not in secondaryMaxima[pos1]:
                     leftSlice = tempSlice[0:localMaxima]
                     rightSlice = tempSlice[localMaxima:len(tempSlice)+1]
                     leftMin = min(leftSlice)
