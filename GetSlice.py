@@ -5,10 +5,10 @@ from multiprocessing import Process, Queue, cpu_count
 from math import ceil
 try:
     from collections import OrderedDict
-    print "*** Python 2.7+, loading OrderedDict from Collections ***"
+    print "\n*** Python 2.7+, loading OrderedDict from Collections ***"
 except:
     from OrderedDict import OrderedDict
-    print "*** OrderedDict not found in collections, using drop in version ***"
+    print "\n*** OrderedDict not found in collections, using drop in version ***"
 
 
 #From Rollvac, loads IDS as set for fast search
@@ -348,7 +348,6 @@ def sortEFO6(trimmed, subpopLoaded, useSubpop, out_q, core, iterations, disjoint
     outdict['filtered'+str(core)] = filtered
     outdict['byDay' + str(core)] = iterXDay
     outdict['days' + str(core)] = days
-    print "DEBUG****", outdict
     out_q.put(outdict)
         
 #Main Stat Generation Function
@@ -364,6 +363,7 @@ def checkLines(fileName, subpopLoaded, useSubpop, multiThreaded):
     length0 = len(trimmed)
     days =comments = filtered = pos = 0
     lengths = []
+    isEmpty = False
     
     #debug var
     #trimmed = trimmed[:2000]
@@ -378,7 +378,6 @@ def checkLines(fileName, subpopLoaded, useSubpop, multiThreaded):
     
     for i in range(cores):
         p = Process(target = sortEFO6, args = (trimmed[block*i:block*(i+1)], subpopLoaded, useSubpop, out_q, i, iterations, block*i))
-        #print "\n\nDEBUG****", i, '\n', trimmed[block*i:block*(i+1)]
         processes.append(p)
         p.start() 
     trimmed = None
@@ -392,7 +391,6 @@ def checkLines(fileName, subpopLoaded, useSubpop, multiThreaded):
         lengths.append(merged["days" + str(i)])
         comments += merged["comments" + str(i)]
         filtered += merged["filtered" + str(i)]
-        print "DEBUG****", merged['byDay' + str(i)]
         
     days = max(lengths)
     #print "%s entries remaining of %s entries: %s entries commented out, %s filtered via subpop membership" % (str(filtered),str(length0),str(comments),str(filtered))
@@ -463,8 +461,12 @@ def checkLines(fileName, subpopLoaded, useSubpop, multiThreaded):
     if sum(meanCurve) == 0:
         empty[iterations] = True    
         
-    epiNumber = max(meanCurve)
-    epiPeak =  meanCurve.index(epiNumber)
+    if not empty[iterations]:
+        epiNumber = max(meanCurve)
+        epiPeak =  meanCurve.index(epiNumber)
+    else:
+        epiNumber = 0
+        epiPeak = 0
     
     leftBounds = []
     rightBounds = []
