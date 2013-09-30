@@ -375,6 +375,7 @@ def checkLines(fileName, subpopLoaded, useSubpop, multiThreaded):
     
     for i in range(cores):
         p = Process(target = sortEFO6, args = (trimmed[block*i:block*(i+1)], subpopLoaded, useSubpop, out_q, i, iterations, block*i))
+        print "\n\nDEBUG****", i, '\n', trimmed[block*i:block*(i+1)]
         processes.append(p)
         p.start() 
     trimmed = None
