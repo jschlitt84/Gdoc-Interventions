@@ -305,8 +305,7 @@ def writeAll(directory,title,data):
 def sortEFO6(trimmed, subpopLoaded, useSubpop, out_q, core, iterations, disjoint):
     length = length0 =  len(trimmed)
     days = comments = filtered = pos = 0
-    #notifyEvery = 50000
-    notifyEvery = 1000
+    notifyEvery = 50000
     print "Core", core, "preparing to filter population, size:", length0
     outdict = {}
     content = {}
