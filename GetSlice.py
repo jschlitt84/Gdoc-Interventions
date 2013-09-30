@@ -440,7 +440,10 @@ def checkLines(fileName, subpopLoaded, useSubpop, multiThreaded):
             epiAttack += attackRates[pos]
         pos += 1
     print "Ignored:", ignored
-    epiMean = epiAttack/(iterations-ignored)
+    if ignored != iterations:
+        epiMean = epiAttack/(iterations-ignored)
+    else:
+        epiMean = 0
     epiPercent = ((iterations-ignored)/iterations)*100
     print "Percent Reaching Epidemic:", epiPercent
     print "Mean epdidemic attack rate:", epiMean
