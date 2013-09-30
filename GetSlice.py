@@ -405,10 +405,8 @@ def checkLines(fileName, subpopLoaded, useSubpop, multiThreaded):
                     summed += merged['byDay' + str(k)][j][i]
             iterXDay[j][i] += summed
             
-    print "DEBUG****", iterXDay
     print "Results merge complete, beginning analysis"
     
-    #print "ITEXDAY:", iterXDay
     pos = 0
     attackRates = []
     ignore = [False]*iterations
@@ -431,7 +429,7 @@ def checkLines(fileName, subpopLoaded, useSubpop, multiThreaded):
     pos = 0
     epiAttack = 0
     while pos < iterations:
-        if attackRates[pos] < meanAttack/10:
+        if attackRates[pos] < meanAttack/10 or attackRates[pos] == 0:
             ignore[pos] =  True
             ignored += 1
             print "Iteration",pos,"did not reach epidemic status"
