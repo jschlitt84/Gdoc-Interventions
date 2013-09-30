@@ -351,6 +351,7 @@ def sortEFO6(trimmed, subpopLoaded, useSubpop, out_q, core, iterations, disjoint
 #Main Stat Generation Function
 
 def checkLines(fileName, subpopLoaded, useSubpop, multiThreaded):
+    print "Reading file:", fileName
     wholeThing = open(fileName)
     content = wholeThing.readlines()
     params = content[0].split(' ')    
