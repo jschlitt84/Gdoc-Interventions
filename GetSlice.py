@@ -852,6 +852,7 @@ def main():
             
             while pos < qsubLimit:
             #while pos < 1:
+                print "Analyzing cell #", pos
                 data = checkLines(qsubList[pos]+'/'+target, subpopLoaded, useSubpop, multiCore)
                 qsubTemp = qsubList[pos].replace(directoryIn,'')
                 #filteredName = removeDescriptor(qsubTemp,['ve','ate','ape']).replace('/',' ')
