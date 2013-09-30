@@ -77,6 +77,8 @@ def getFile(userName, __password, fileName):
 # RETURNS PUBLIC SPREADSHEET AS LIST OF STRINGS   
                        
 def getPublicFile(userName, fileName):
+    
+    print "DEBUG*****", username, filename
     try:
         fileName = fileName[:fileName.index('#gid')]
     finally:
@@ -298,6 +300,7 @@ def getLine(userName, __password, fileName, line, isPoly, polyScript):
 def getScript(userName, __password, fileName, start, end, loadType, isPoly, polyScript):
     if __password == "null" and "https://docs.google.com" in fileName:
         
+        print "****DEBUG", userName, fileName
         publicData = getPublicFile(userName, fileName)
         isPrivate = False
         
