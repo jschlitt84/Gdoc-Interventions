@@ -388,6 +388,8 @@ def checkLines(fileName, subpopLoaded, useSubpop, multiThreaded):
         lengths.append(merged["days" + str(i)])
         comments += merged["comments" + str(i)]
         filtered += merged["filtered" + str(i)]
+        print "DEBUG****", merged['byDay' + str(i)]
+        
     days = max(lengths)
     #print "%s entries remaining of %s entries: %s entries commented out, %s filtered via subpop membership" % (str(filtered),str(length0),str(comments),str(filtered))
    
