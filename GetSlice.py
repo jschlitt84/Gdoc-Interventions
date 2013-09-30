@@ -348,7 +348,7 @@ def sortEFO6(trimmed, subpopLoaded, useSubpop, out_q, core, iterations, disjoint
     outdict['filtered'+str(core)] = filtered
     outdict['byDay' + str(core)] = iterXDay
     outdict['days' + str(core)] = days
-    print "DEBUG****", outDict
+    print "DEBUG****", outdict
     out_q.put(outdict)
         
 #Main Stat Generation Function
