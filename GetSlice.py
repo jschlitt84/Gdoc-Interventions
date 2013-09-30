@@ -401,6 +401,7 @@ def checkLines(fileName, subpopLoaded, useSubpop, multiThreaded):
                     summed += merged['byDay' + str(k)][j][i]
             iterXDay[j][i] += summed
             
+    print "DEBUG****", iterXDay
     print "Results merge complete, beginning analysis"
     
     #print "ITEXDAY:", iterXDay
