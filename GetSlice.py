@@ -305,6 +305,8 @@ def writeAll(directory,title,data):
 def sortEFO6(trimmed, subpopLoaded, useSubpop, out_q, core, iterations, disjoint):
     length = length0 =  len(trimmed)
     days = comments = filtered = pos = 0
+    #notifyEvery = 50000
+    notifyEvery = 1000
     print "Core", core, "preparing to filter population, size:", length0
     outdict = {}
     content = {}
@@ -328,7 +330,7 @@ def sortEFO6(trimmed, subpopLoaded, useSubpop, out_q, core, iterations, disjoint
     	  content[adjusted] = map(int,trimmed[pos].split(' '))
     	
     	pos += 1
-        if (pos+filtered)%50000 == 0:
+        if (pos+filtered)%notifyEvery == 0:
             print "Core", core, "filtering", pos+filtered, "out of", length0, "entries"
     
     print "Core", core, "filtering complete, beginning sort by day"
@@ -346,6 +348,7 @@ def sortEFO6(trimmed, subpopLoaded, useSubpop, out_q, core, iterations, disjoint
     outdict['filtered'+str(core)] = filtered
     outdict['byDay' + str(core)] = iterXDay
     outdict['days' + str(core)] = days
+    print "DEBUG****", outDict
     out_q.put(outdict)
         
 #Main Stat Generation Function
