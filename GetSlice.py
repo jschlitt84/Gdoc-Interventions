@@ -282,7 +282,7 @@ def writeAll(directory,title,data):
     summaryOut.write("\nEpicurve Right Bounds:\t" + str(data['rightBound']))
     
     summaryOut.close()
-    chartsOut.write('ATTACK RATE V DAY' + ','*(data['iterations']+1) + '\n')
+    #chartsOut.write('ATTACK RATE V DAY' + ','*(data['iterations']+1) + '\n')
     chartsOut.write('DAY')
     pos = 0
     while pos < data['iterations']:
@@ -296,7 +296,10 @@ def writeAll(directory,title,data):
         while pos2 < data['iterations']:
             chartsOut.write(str(data['iterationsByDay'][pos2][pos1]) + ', ')
             pos2 += 1
-        chartsOut.write(str(data['meanCurve'][pos1]) + '\n')
+        try:
+            chartsOut.write(str(data['meanCurve'][pos1]) + '\n')
+        except:
+            chartsOut.write('[0]\n')
         pos1 += 1
     chartsOut.close()
     
@@ -862,7 +865,7 @@ def main():
             
             while pos < qsubLimit:
             #while pos < 1:
-                print '\033[1m' + "Analyzing cell #" + str(pos) + '\033[0m'
+                print '\033[1m' + "\nAnalyzing cell #" + str(pos) + '\033[0m'
                 data = checkLines(qsubList[pos]+'/'+target, subpopLoaded, useSubpop, multiCore)
                 qsubTemp = qsubList[pos].replace(directoryIn,'')
                 #filteredName = removeDescriptor(qsubTemp,['ve','ate','ape']).replace('/',' ')
