@@ -456,7 +456,8 @@ def checkLines(fileName, subpopLoaded, useSubpop, multiThreaded):
                 temp += iterXDay[pos2][pos1]
             pos2 += 1
   	pos1 += 1    
-        meanCurve.append(int((float(temp)/(iterations-ignored))+.5))
+        if iterations != ignored:
+            meanCurve.append(int((float(temp)/(iterations-ignored))+.5))
     
     if sum(meanCurve) == 0:
         empty[iterations] = True    
