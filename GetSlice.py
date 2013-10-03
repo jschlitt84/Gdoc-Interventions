@@ -300,7 +300,7 @@ def getMeanPlots(directory,data,duration):
     entries =  len(data['meanCurve'])
     text = ''
     for i in range(entries):
-        text += str(data['meanCurve'][i] + ', ')
+        text += str(data['meanCurve'][i]) + ', '
     text +='0, '*(duration - entries)
     return text
     
