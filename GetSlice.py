@@ -298,7 +298,7 @@ def writeAll(directory,title,data):
     
 def getMeanPlots(directory,data,duration):
     entries =  len(data['meanCurve'])
-    text = ''
+    text = directory + ', '
     for i in range(entries):
         text += str(data['meanCurve'][i]) + ', '
     text +='0, '*(duration - entries)
