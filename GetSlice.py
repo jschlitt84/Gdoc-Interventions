@@ -1,6 +1,5 @@
 import gDocsImport
 import sys, os
-import pandas as pd
 from multiprocessing import Process, Queue, cpu_count
 
 from math import ceil
@@ -817,7 +816,7 @@ def main():
         qsubDir = params[3]
         target = params[4]
         runAll = params[14].lower()[0] == 'y'
-        makeAll =  params[15]
+        makeAll =  params[15].lower()[0] == 'y'
 	hideThese = params[16]
         
         fileIn = open(directoryIn + qsubDir)
