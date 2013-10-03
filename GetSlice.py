@@ -303,6 +303,8 @@ def writeAll(directory,title,data):
         pos1 += 1
     chartsOut.close()
     
+    
+    
 #Worker function for EFO6 sorting & parallelization
     
 def sortEFO6(trimmed, subpopLoaded, useSubpop, out_q, core, iterations, disjoint):
