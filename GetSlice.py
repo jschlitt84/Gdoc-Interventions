@@ -302,7 +302,7 @@ def getMeanPlots(directory,data,duration):
     for i in range(entries):
         text += str(data['meanCurve'][i]) + ', '
     text +='0, '*(duration - entries)
-    return text
+    return text + '\n'
     
 def getDuration(directory):
     fileIn = open(directory + '/config')
@@ -882,6 +882,8 @@ def main():
                     statsOut = open(studyPrefix + 'DetailStats.csv','w')
                     statsOut.write(getSpreadSheet(data, '', hideThese, True))
                     statsOut.close()
+                    plotsOut = open(studyPrefix + 'MeanPlots.csv','w')
+                    plotsOut.close()
                 attackOut = open(studyPrefix + 'AttackList.txt','a+b')            
                 statsOut = open(studyPrefix + 'DetailStats.csv','a+b')
                 plotsOut = open(studyPrefix + 'MeanPlots.csv','a+b') 
