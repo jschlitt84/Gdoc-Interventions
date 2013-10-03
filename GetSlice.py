@@ -1,5 +1,6 @@
 import gDocsImport
 import sys, os
+import pandas as pd
 from multiprocessing import Process, Queue, cpu_count
 
 from math import ceil
@@ -282,28 +283,38 @@ def writeAll(directory,title,data):
     summaryOut.write("\nEpicurve Right Bounds:\t" + str(data['rightBound']))
     
     summaryOut.close()
-    #chartsOut.write('ATTACK RATE V DAY' + ','*(data['iterations']+1) + '\n')
     chartsOut.write('DAY')
-    pos = 0
-    while pos < data['iterations']:
+    for pos in range(data['iterations']):
         chartsOut.write(', ' + str(pos) + ' ')
-        pos += 1
     chartsOut.write(', MEAN\n')
-    pos1 = 0
-    while pos1 < data['days']:
-        pos2 = 0
+    for pos1 in range(data['days']):
         chartsOut.write(str(pos1) + ', ')
-        while pos2 < data['iterations']:
+        for pos2 in range(data['iterations']):
             chartsOut.write(str(data['iterationsByDay'][pos2][pos1]) + ', ')
-            pos2 += 1
         try:
             chartsOut.write(str(data['meanCurve'][pos1]) + '\n')
         except:
             chartsOut.write('[0]\n')
-        pos1 += 1
     chartsOut.close()
     
+def getMeanPlots(directory,data,duration):
+    entries =  len(data['meanCurve'])
+    text = ''
+    for i in range(entries):
+        text += str(data['meanCurve'][i] + ', ')
+    text +='0, '*(duration - entries)
+    return text
     
+def getDuration(directory):
+    fileIn = open(directory + '/config')
+    cue = "SimulationDuration = "
+    config = fileIn.readlines()
+    for line in config:
+        if cue in line:
+            return int(line.replace(cue,''))
+    print "Error: Simulation duration not found in", directory + '/config'
+    quit()
+
     
 #Worker function for EFO6 sorting & parallelization
     
@@ -356,7 +367,7 @@ def sortEFO6(trimmed, subpopLoaded, useSubpop, out_q, core, iterations, disjoint
         
 #Main Stat Generation Function
 
-def checkLines(fileName, subpopLoaded, useSubpop, multiThreaded):
+def checkLines(fileName, subpopLoaded, useSubpop, multiThreaded,):
     print "Reading file:", fileName
     wholeThing = open(fileName)
     content = wholeThing.readlines()
@@ -411,28 +422,25 @@ def checkLines(fileName, subpopLoaded, useSubpop, multiThreaded):
             
     print "Results merge complete, beginning analysis"
     
-    pos = 0
     attackRates = []
     ignore = [False]*iterations
     empty = [False]*(iterations+1)
     ignored = 0
     maxDay = []
     maxNumber = []
-    while pos < iterations:
+    for pos in range(iterations):
         attackRates.append(sum(iterXDay[pos]))
         maxima = max(iterXDay[pos])
         maxNumber.append(max(iterXDay[pos]))
         maxDay.append(iterXDay[pos].index(maxima))
-        pos += 1
     meanAttack = sum(attackRates)/iterations
     print "Attack Rates:", attackRates
     print "Mean:", meanAttack
     print "Peak Days:", maxDay
     print "Peak Infected:", maxNumber
     
-    pos = 0
     epiAttack = 0
-    while pos < iterations:
+    for pos in range(iterations):
         if attackRates[pos] < meanAttack/10 or attackRates[pos] == 0:
             ignore[pos] =  True
             ignored += 1
@@ -442,7 +450,6 @@ def checkLines(fileName, subpopLoaded, useSubpop, multiThreaded):
 	   empty[pos] = True
         else:
             epiAttack += attackRates[pos]
-        pos += 1
     print "Ignored:", ignored
     if ignored != iterations:
         epiMean = epiAttack/(iterations-ignored)
@@ -452,15 +459,12 @@ def checkLines(fileName, subpopLoaded, useSubpop, multiThreaded):
     print "Percent Reaching Epidemic:", epiPercent
     print "Mean epdidemic attack rate:", epiMean
     
-    pos1 = 0
     meanCurve = []
-    while pos1 < days:
-        pos2 = temp = 0
-        while pos2 < iterations:
+    for pos1 in range(days):
+        temp = 0
+        for pos2 in range(iterations):
             if not ignore[pos2]:
-                temp += iterXDay[pos2][pos1]
-            pos2 += 1
-  	pos1 += 1    
+                temp += iterXDay[pos2][pos1]   
         if iterations != ignored:
             meanCurve.append(int((float(temp)/(iterations-ignored))+.5))
     
@@ -812,14 +816,14 @@ def main():
         studyName = params[2]
         qsubDir = params[3]
         target = params[4]
-	hideThese = params[15]
         runAll = params[14].lower()[0] == 'y'
+        makeAll =  params[15]
+	hideThese = params[16]
         
         fileIn = open(directoryIn + qsubDir)
         qsubList = fileIn.readlines()
         fileIn.close()
         pos = 0
-        
         splitList =[]
         if "chmod -R 775" in qsubList:
             del qsubList[qsubList.index("chmod -R 775")]
@@ -838,7 +842,9 @@ def main():
 		print "Duplicate entry on line %s ignored" % (pos)
 		del qsubList[pos]
 		limit -= 1
-    
+		
+        duration = getDuration(qsubList[0])
+        
         if not runAll:
             prepped = prepSingle(params,qsubList,splitList,'','','','', multiCore)
             writeToFiles(prepped['directoryOut'],prepped['runList'],prepped['refMatrix'],prepped['valMatrix'],prepped['xTitles'],prepped['yTitles'],prepped['studyName'])
@@ -858,18 +864,13 @@ def main():
             if not os.path.exists(meansPrefix):
                 os.makedirs(meansPrefix)
             
-            
-            
-            pos = 0
-            qsubLimit = len(qsubList)
             #uniqueInterventions = []
             #uniqueIndex = []
             
-            while pos < qsubLimit:
-            #while pos < 1:
+            for item in qsubList:
                 print '\033[1m' + "\nAnalyzing cell #" + str(pos) + '\033[0m'
-                data = checkLines(qsubList[pos]+'/'+target, subpopLoaded, useSubpop, multiCore)
-                qsubTemp = qsubList[pos].replace(directoryIn,'')
+                data = checkLines(item+'/'+target, subpopLoaded, useSubpop, multiCore)
+                qsubTemp = item.replace(directoryIn,'')
                 #filteredName = removeDescriptor(qsubTemp,['ve','ate','ape']).replace('/',' ')
                 qsubTemp = qsubTemp.replace('/','_')
                 #if filteredName not in uniqueInterventions:
@@ -884,17 +885,20 @@ def main():
                     statsOut.close()
                 attackOut = open(studyPrefix + 'AttackList.txt','a+b')            
                 statsOut = open(studyPrefix + 'DetailStats.csv','a+b')
+                plotsOut = open(studyPrefix + 'MeanPlots.csv','a+b') 
                 #qsubLine = meansPrefix + '/' + qsubTemp
                 #meansOut = open(qsubLine + 'Means.tsv','w')
-                writeAll(qsubList[pos]+'/', studyName, data)
-                writeAll(meansPrefix, qsubTemp, data)           
-                attackOut.write(qsubList[pos].replace(directoryIn,'') + ' ' + str(data['epiMean']) + '\n')
-                statsOut.write(getSpreadSheet(data, qsubList[pos].replace(directoryIn,''),hideThese, False))
+                if makeAll:
+                    writeAll(item+'/', studyName, data)
+                    writeAll(meansPrefix, qsubTemp, data)        
+                attackOut.write(item.replace(directoryIn,'') + ' ' + str(data['epiMean']) + '\n')
+                statsOut.write(getSpreadSheet(data, item.replace(directoryIn,''),hideThese, False))
+                plotsOut.write(getMeanPlots(item,data,duration))
                 #meansOut.write(curveToTSV(data['meanCurve']))
                 attackOut.close()
 	        statsOut.close()
 	        #meansOut.close()
-                pos += 1
+	        
             """print "Finished generation of cell summaries & detail stats, starting mass chart generation"
             uniqueLimit = len(uniqueInterventions)
             cells =  qsubLimit/uniqueLimit
