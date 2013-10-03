@@ -883,6 +883,7 @@ def main():
                     statsOut.write(getSpreadSheet(data, '', hideThese, True))
                     statsOut.close()
                     plotsOut = open(studyPrefix + 'MeanPlots.csv','w')
+                    plotsOut.write('')
                     plotsOut.close()
                 attackOut = open(studyPrefix + 'AttackList.txt','a+b')            
                 statsOut = open(studyPrefix + 'DetailStats.csv','a+b')
