@@ -866,6 +866,7 @@ def main():
             #uniqueInterventions = []
             #uniqueIndex = []
             
+            pos =  0
             for item in qsubList:
                 print '\033[1m' + "\nAnalyzing cell #" + str(pos) + '\033[0m'
                 data = checkLines(item+'/'+target, subpopLoaded, useSubpop, multiCore)
@@ -883,7 +884,7 @@ def main():
                     statsOut.write(getSpreadSheet(data, '', hideThese, True))
                     statsOut.close()
                     plotsOut = open(studyPrefix + 'MeanPlots.csv','w')
-                    plotsOut.write('')
+                    plotsOut.write()
                     plotsOut.close()
                 attackOut = open(studyPrefix + 'AttackList.txt','a+b')            
                 statsOut = open(studyPrefix + 'DetailStats.csv','a+b')
@@ -900,6 +901,7 @@ def main():
                 attackOut.close()
 	        statsOut.close()
 	        #meansOut.close()
+	        pos += 1
 	        
             """print "Finished generation of cell summaries & detail stats, starting mass chart generation"
             uniqueLimit = len(uniqueInterventions)
