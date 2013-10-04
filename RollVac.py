@@ -564,7 +564,10 @@ def main(arg1, arg2, arg3, arg4, polyScript, filteredIDs,popSizes):
     schoolTotal = 0
     sqTotal = 0
     avTreatments = 0
-    toFilterIDs = len(filteredIDs) > 0
+    try:
+        toFilterIDs = len(filteredIDs) > 0
+    except:
+        toFilterIDS = False
     useNew = False
     subpopsNew = []
     actionsNew = []

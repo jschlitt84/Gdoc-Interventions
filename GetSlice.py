@@ -760,11 +760,9 @@ def prepSingle(params,qsubList,splitList,passedX,passedY,passedC,lineIndex, subp
     return writeParams
 
 def curveToTSV(epiMean):
-    pos = 0
     text = "day\tinfected\n"
-    while pos < len(epiMean):
+    for pos in range(len(epiMean)):
         text += str(pos+1) + '\t' + str(epiMean[pos]) + '\n'
-        pos += 1
     return text
 
 def main():
@@ -788,11 +786,9 @@ def main():
         limit  = len(script)
         hasContent = False
         while not hasContent and column < len(script[0]):  
-            pos = 0
             params = []
-            while pos < limit:
+            for pos in range(len(script)):
                 params.append(script[pos][column])
-                pos += 1
             column +=1
             hasContent = len(''.join(params).replace(' ','') ) != 0
         if column == len(script[0]) and not hasContent:
