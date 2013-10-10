@@ -892,7 +892,7 @@ def main():
                     writeAll(meansPrefix, qsubTemp, data)        
                 attackOut.write(item.replace(directoryIn,'') + ' ' + str(data['epiMean']) + '\n')
                 statsOut.write(getSpreadSheet(data, item.replace(directoryIn,''),hideThese, False))
-                plotsOut.write(getMeanPlots(item,data,duration))
+                plotsOut.write(getMeanPlots(item.replace(directoryIn,''),data,duration))
                 #meansOut.write(curveToTSV(data['meanCurve']))
                 attackOut.close()
 	        statsOut.close()
