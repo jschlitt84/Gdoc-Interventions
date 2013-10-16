@@ -168,7 +168,8 @@ def getSpreadSheet(data, line, hide, justGetKeys):
         dataDict['leftBound'] = data['leftBound'][pos]
         dataDict['rightBound'] = data['rightBound'][pos]
         try:
-            dataDict['secondaryMaxima'] = data['secondaryMaxima'][pos][0:-1].replace(' ','-')
+            #dataDict['secondaryMaxima'] = data['secondaryMaxima'][pos][0:-1].replace(' ','-')
+            dataDict['secondaryMaxima'] = '_'.join(data['secondaryMaxima'][pos])
         except:
             dataDict['secondaryMaxima'] = ''
         lineOut = line + ', ' + str(pos) + ', ' + filterDict(paramDict, False, hide) + ', ' + filterDict(dataDict, False, hide) + '\n'
@@ -181,9 +182,10 @@ def getSpreadSheet(data, line, hide, justGetKeys):
     dataDict['leftBound'] = data['epiLeft']
     dataDict['rightBound'] = data['epiRight']
     try:
-            dataDict['secondaryMaxima'] = data['epiSecondary'][0:-1].replace(' ','-')
+        #dataDict['secondaryMaxima'] = data['epiSecondary'][0:-1].replace(' ','-')
+        dataDict['secondaryMaxima'] = '_'.join(data['epiSecondary'][pos])
     except:
-            dataDict['secondaryMaxima'] = ''
+        dataDict['secondaryMaxima'] = ''
     outString += line + ', Mean, ' + filterDict(paramDict, False, hide) + ', ' + filterDict(dataDict, False, hide) + '\n'
     return outString
 
