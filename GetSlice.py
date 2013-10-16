@@ -111,7 +111,7 @@ def getSpreadSheet(data, line, hide, justGetKeys):
             if pos == len(line) -1 or line[pos] ==  '/':
                 if isDigit(line[pos]):
                     if tempString not in paramDict.keys():
-                        extra += tempString + str(line[pos])
+                        extra += tempString + str(line[pos]) + "WOO"
                     else:
                         words.append(tempString)
                         numbers.append(line[pos])
@@ -132,7 +132,7 @@ def getSpreadSheet(data, line, hide, justGetKeys):
                 if isValid:
                     numbers.append(tempString)
                 else:
-                    extra += tempString
+                    extra += tempString + "HOO"
                 if pos < len(line):
                     if line[pos] != '/':
                         tempString = line[pos]
