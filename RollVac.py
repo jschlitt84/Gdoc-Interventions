@@ -629,10 +629,6 @@ def main(arg1, arg2, arg3, arg4, polyScript, filteredIDs,popSizes):
         loadType = "intervention script"
         print sys.argv
         script = gDocsImport.getScript(sys.argv[2], sys.argv[3], sys.argv[4], startWord, stopWord, loadType, isPoly, polyScript)
-        print "###DEBUG1", script
-        print "###DEBUG2" 
-        for item in polyScript:
-            print item
         params = gDocsImport.getLine(sys.argv[2], sys.argv[3], sys.argv[4],paramsStart, isPoly, polyScript)
         
         emptyblock = script == 'null'
@@ -931,7 +927,6 @@ action number and subpopulation directory appended"""
                 
             cmd = script[pos]
             items = cmd.split()
-            print "###DEBUG:", items, pos, script
             population =  (subpopDirectory + '/' + items[0]).replace('//','/')
             try:
                 with open(population): pass
