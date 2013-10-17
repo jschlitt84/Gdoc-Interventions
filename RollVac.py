@@ -699,12 +699,6 @@ def main(arg1, arg2, arg3, arg4, polyScript, filteredIDs,popSizes):
             else:
                 if avScript == 'null':
                     print "No AV-Script found"
-                    temp = open(path+'/Antiviral', 'w')
-                    temp.write("#Null file: AV-Scripting enabled though no interventions found")
-                    temp.close()
-                    temp = open(path+'/Diagnosis', 'w')
-                    temp.write("#Null file: AV-Scripting enabled though no interventions found")
-                    temp.close()
                     avTreatments = 0
                 else:
                     temp = prepNewAV(avScript, diagParams, outName, path, subpopDirectory, totalsNew)
@@ -1140,7 +1134,8 @@ action number and subpopulation directory appended"""
                     tempInterv[pos2/2]['interventionType'] = "Offline"
                     if conditionTotal != -1:
                         tempInterv[pos2/2]['conditionTotal'] = conditionTotal
-                    tempInterv[pos2/2]['conditionDate'] = str(enumList[pos2]) + '~' + str(enumList[pos2])
+                    if len(conditionDate) > 0:
+                        tempInterv[pos2/2]['conditionDate'] = str(enumList[pos2]) + '~' + str(enumList[pos2])
                     tempInterv[pos2/2]['conditionMembership'] = getSubpopID(subpopsNew,popName)
                     tempInterv[pos2/2]['conditionCompliance'] = str(float(intervNew[2]) * enumList[pos2+1])
                     tempInterv[pos2/2]['action'] = actionID
