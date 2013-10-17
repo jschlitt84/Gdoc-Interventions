@@ -334,7 +334,7 @@ def writeAvScript(avScript, diagParams, outName, directory, subpopDirectory):
         avFile.write("\n\n# -----------------------\n")
         avFile.write("\nInterventionId = " + str(pos+5000))
         if len(avLine) != 0:
-            avFile.write("\nConditionDate = " + avLine[1])
+            avFile.write("\nConditionDate = [" + avLine[1] + ']DEBUG')
         if len(avLine[2]) != 0:
             if percentFix(avLine[2]) >= 1:
                 avFile.write("\nConditionThresholdValue = " + avLine[2])
@@ -1134,8 +1134,7 @@ action number and subpopulation directory appended"""
                     tempInterv[pos2/2]['interventionType'] = "Offline"
                     if conditionTotal != -1:
                         tempInterv[pos2/2]['conditionTotal'] = conditionTotal
-                    if len(conditionDate) > 0:
-                        tempInterv[pos2/2]['conditionDate'] = str(enumList[pos2]) + '~' + str(enumList[pos2])
+                    tempInterv[pos2/2]['conditionDate'] = str(enumList[pos2]) + '~' + str(enumList[pos2])
                     tempInterv[pos2/2]['conditionMembership'] = getSubpopID(subpopsNew,popName)
                     tempInterv[pos2/2]['conditionCompliance'] = str(float(intervNew[2]) * enumList[pos2+1])
                     tempInterv[pos2/2]['action'] = actionID
