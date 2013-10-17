@@ -356,16 +356,10 @@ def main():
         pos = 0
         length = len(script)
         rollScript = []
-        print "###DEBUGP2:"
-        for item in script:
-            print item
         print "Loading Script for line:", runTracker
         for pos in range(len(script)):
             if getPoly(script[pos])[0] == 'null' or getPoly(script[pos])[1] in toRun:
                 rollScript.append(filterPoly(script[pos]))
-        print "###DEBUGP1:"
-        for item in rollScript:
-            print item
                 
 # SUPPORT ADDED FOR MULTIPLE DIRECTORIES/ RUN         
                 
