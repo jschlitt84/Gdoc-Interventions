@@ -927,6 +927,7 @@ action number and subpopulation directory appended"""
                 
             cmd = script[pos]
             items = cmd.split()
+            print "###DEBUG:", items
             population =  (subpopDirectory + '/' + items[0]).replace('//','/')
             try:
                 with open(population): pass
