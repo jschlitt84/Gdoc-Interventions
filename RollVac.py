@@ -683,6 +683,12 @@ def main(arg1, arg2, arg3, arg4, polyScript, filteredIDs,popSizes):
             if not useNew:
                 if avScript == 'null':
                     print "No AV-Script found"
+                    temp = open(path+'/Antiviral', 'w')
+                    temp.write("#Null file: AV-Scripting enabled though no interventions found")
+                    temp.close()
+                    temp = open(path+'/Diagnosis', 'w')
+                    temp.write("#Null file: AV-Scripting enabled though no interventions found")
+                    temp.close()
                     avTreatments = 0
                 else:
                     avTreatments = writeAvScript(avScript, diagParams, outName, path, subpopDirectory)
@@ -693,6 +699,12 @@ def main(arg1, arg2, arg3, arg4, polyScript, filteredIDs,popSizes):
             else:
                 if avScript == 'null':
                     print "No AV-Script found"
+                    temp = open(path+'/Antiviral', 'w')
+                    temp.write("#Null file: AV-Scripting enabled though no interventions found")
+                    temp.close()
+                    temp = open(path+'/Diagnosis', 'w')
+                    temp.write("#Null file: AV-Scripting enabled though no interventions found")
+                    temp.close()
                     avTreatments = 0
                 else:
                     temp = prepNewAV(avScript, diagParams, outName, path, subpopDirectory, totalsNew)
