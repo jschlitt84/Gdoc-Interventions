@@ -333,8 +333,8 @@ def writeAvScript(avScript, diagParams, outName, directory, subpopDirectory):
     for avLine in avScript:
         avFile.write("\n\n# -----------------------\n")
         avFile.write("\nInterventionId = " + str(pos+5000))
-        if len(avLine) != 0:
-            avFile.write("\nConditionDate = [" + avLine[1] + ']DEBUG')
+        if len(avLine[1]) != 0:
+            avFile.write("\nConditionDate = " + avLine[1])
         if len(avLine[2]) != 0:
             if percentFix(avLine[2]) >= 1:
                 avFile.write("\nConditionThresholdValue = " + avLine[2])
