@@ -141,8 +141,9 @@ def getSpreadSheet(data, line, hide, justGetKeys):
         pos += 1
     pos = 0
     
-    if extra[-1]=='_':
-        extra = extra[0:-1]
+    if len(extra)!= 0:
+        if extra[-1]=='_':
+            extra = extra[0:-1]
     
     if len(words) != len(numbers):
         print "Data output error, word & number list lengths do not match"
