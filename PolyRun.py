@@ -19,11 +19,9 @@ def appendSuffix(directory, suffix):
 # ERASES DIRECTORIES FROM GIVEN LIST
 
 def flushDirectories(directoryList):
-    pos = 0
     suffix = 2
-    limit = len(directoryList)
     usedNum = False
-    while pos < limit:    
+    for pos in range(len(directoryList))
         flushDirectory= directoryList[pos].replace(' ','')
         if len(flushDirectory) == 0:
             flushDirectory = "polyrun"
@@ -55,7 +53,6 @@ def flushDirectories(directoryList):
                     
         else:
             print "not found, skipping"
-        pos += 1
         
     suffix = str(suffix)
     if usedNum:
@@ -70,13 +67,11 @@ def flushDirectories(directoryList):
 def getPoly(refLine):
     pos = 0
     line = refLine[:]
-    length= len(line)
     found = False
-    while pos < length:
-        if '$' in line[pos]:
+    for item in line:
+        if '$' in item:
             found = True
             break
-        pos += 1
     if not found:
         return ['null', 'null']
     else:
@@ -111,19 +106,17 @@ def fileCopy(fileString, directory):
         return False
     fileList = fileString.split(';')
     print "copying files:", fileList
-    pos = 0
-    limit = len(fileList)
-    while pos < limit:
-        copyFile = fileList[pos].replace(' ','')
-        copyFile2 = copyFile
+
+    for copyFile in fileList:
+        copyFile = copyFile.replace(' ','')
         print "File %s: %s" % (pos, copyFile)
         if os.path.exists(copyFile):
-            shutil.copy2(copyFile, directory + copyFile2)
+            shutil.copy2(copyFile, directory + copyFile)
             print "copied succesfully"
         else:
             print "Error: copyfile not found"
             quit()
-        pos += 1
+
     return True    
     
 
@@ -134,9 +127,7 @@ def findNReplace(fileString, replaceScript, directory, iteration, home, explicit
     
     fileList = fileString.split(';')
     print "Loading files:", fileList
-    pos = 0
-    limit = len(fileList)
-    while pos < limit:
+    for pos in range(len(fileList)):
         copyFile = fileList[pos].replace(' ','')
         print "File %s: %s" % (pos, copyFile)
         if os.path.exists(copyFile):
@@ -147,12 +138,9 @@ def findNReplace(fileString, replaceScript, directory, iteration, home, explicit
             
             limit3 = len(replaceScript)
             limit2 = len(contents)
-            pos2 = 0
             
-            while pos2 < limit2:
-                
-                pos3 = 0
-                while pos3 < limit3:
+            for pos2 in range(limit2):
+                for pos3 in range(limit3):
                     if replaceScript[pos3]['file'] == copyFile:
                         if replaceScript[pos3]['find'] in contents[pos2]:
                             line = replaceScript[pos3]['replace']                    
@@ -164,14 +152,11 @@ def findNReplace(fileString, replaceScript, directory, iteration, home, explicit
                                 line =  line.replace("//","/")
                             contents[pos2] = line + '\n'
                             print line
-                    pos3 +=1
-                pos2 += 1
                 
             replaceFile = open((directory + '/' + copyFile).replace('//','/'), 'w')
             contents = ''.join(contents)
             replaceFile.write(contents)
             replaceFile.close()
-            pos += 1
 
         else:
             print "Error: copyfile not found"
@@ -278,15 +263,13 @@ def main():
     
 # ERASES DIRECTORY NAMES GIVEN BY GDOC
     
-    pos = 0
     directories = []
     toSetPermissions = []
-    while pos  < len(directoryLines):
-        dirToFlush =(directoryLines[pos][2] + '/' + directoryLines[pos][0]).replace('//','/')
+    for directory in directoryLines:
+        dirToFlush =(directory[2] + '/' + directory[0]).replace('//','/')
         if not dirToFlush in directories: 
             directories.append(dirToFlush)
             #toSetPermissions.append(RollVac.isYes(directoryLines[pos][7],'set 775 permissions'))
-        pos += 1
     
     directorySuffix = flushDirectories(directories)
     
@@ -315,17 +298,13 @@ def main():
     
     
 # CREATES MATRICES OF SUFFIXES, VARIABLE ID, AND LIST POSITION FOR ITERATION  
-    
-    pos2 = pos1 = 0                 
-    while pos2 < totalVars:
-        pos1 = 0
-        while pos1 < length:
+      
+    for pos2 in range(totalVars):              
+        for pos1 in range(length):
             if varSets[pos1] == varList[pos2] and (suffixes[pos1] not in suffixMatrix[pos2]):
                 varMatrix[pos2].append(varSets[pos1])
                 suffixMatrix[pos2].append(suffixes[pos1])
 #                positionMatrix[pos2].append(positions[pos1])
-            pos1 += 1
-        pos2 += 1
     
 
 # SETS UP RUN BOUNDS
@@ -333,27 +312,22 @@ def main():
     runTracker = [0] * totalVars
     done = False
     totalRuns = 1
-    pos = 0
     ends = []
-    while pos < totalVars:
+    for pos in range(totalVars):
         totalRuns *= len(varMatrix[pos])
         ends.append(len(varMatrix[pos])-1)
         if pos >= 1:
             ends[pos] += 1
-        pos += 1  
         
     
 # ITERATED RUN GENERATION, IF SCRIPT LINE CONTAINS CURRENT ITERATION RUN MARKERS OR NONE, SENT TO RollVac TO PARSE    
     
     while not done:      
-        
-        pos = 0      
+            
         toRun  =  []
-        while pos < totalVars:
-            toRun.append(suffixMatrix[pos][runTracker[pos]])
-            pos += 1        
+        for pos in range(totalVars):
+            toRun.append(suffixMatrix[pos][runTracker[pos]])      
         
-        pos = 0
         length = len(script)
         rollScript = []
         print "Loading Script for line:", runTracker
@@ -369,10 +343,8 @@ def main():
 
 # OUT DIRECTORY GENERATED VIA SUFFIX MATRIX
                                 
-        pos = 0
-        while pos < totalVars:
+        for pos in range(totalVars):
             directory += suffixMatrix[pos][runTracker[pos]] + '/'
-            pos += 1
             
         params = gDocsImport.loadNClean(False, rollScript, paramsStart, startWord, "single line")
         print params
