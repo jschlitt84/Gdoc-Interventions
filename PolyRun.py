@@ -21,7 +21,7 @@ def appendSuffix(directory, suffix):
 def flushDirectories(directoryList):
     suffix = 2
     usedNum = False
-    for pos in range(len(directoryList))
+    for pos in range(len(directoryList)):
         flushDirectory= directoryList[pos].replace(' ','')
         if len(flushDirectory) == 0:
             flushDirectory = "polyrun"
