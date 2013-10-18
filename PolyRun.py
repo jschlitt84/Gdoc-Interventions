@@ -65,21 +65,19 @@ def flushDirectories(directoryList):
 # PULLS POLYRUN OPERATOR FROM CSV ROW VIA LIST OF STRINGS FORMAT. RETURNS NULL IF NOT FOUND  
 
 def getPoly(refLine):
-    pos = 0
     line = refLine[:]
     found = False
     for item in line:
         if '$' in item:
             found = True
             break
-        pos+= 1
     if not found:
         return ['null', 'null']
     else:
-        line[pos]= line[pos].replace('\n','')
-        while "  " in line[pos]:
-            line[pos]= line[pos].replace('  ',' ')
-        cmd = line[pos].split(' ')
+        item= item.replace('\n','')
+        while "  " in item:
+            item= item.replace('  ',' ')
+        cmd = item.split(' ')
         del cmd[0]
         return cmd
 
