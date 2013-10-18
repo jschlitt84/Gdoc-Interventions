@@ -72,6 +72,7 @@ def getPoly(refLine):
         if '$' in item:
             found = True
             break
+        pos+= 1
     if not found:
         return ['null', 'null']
     else:
