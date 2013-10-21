@@ -1,0 +1,35 @@
+import sys, os
+
+commands = [
+    "echo hello world1",
+    "echo hello world2",
+    "echo hello world3"]
+    
+directory = sys.argv[1]
+
+words = [
+    "intFileCleaned",
+    "nowhiteCFG"]
+    
+fileIn = directory.open()
+qsublist = fileIn.readlines
+
+for line in qsublist:
+    actualDir = line.replace('qsub ','').replace('qsub\n','')
+    print "\nchecking directory", actualDir
+    useCommands = True
+    for word in words:
+        if word not in actualDir:
+            useCommands = False
+            break
+    if useCommands:
+        for command in commands:
+            print "\tRunning Command:", command
+            os(command)
+    else:
+        print "\tNo commands run"
+    
+print ".....done"
+quit()
+    
+    
