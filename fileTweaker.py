@@ -7,7 +7,7 @@ cwd = os.getcwd()
 
 def runFix(qsublist, commands, words, fix):
 
-    print "*** RUNNING FIX", "'" + fix + "'"
+    print "*** RUNNING UNIX FIX", "'" + fix + "'"
     for line in qsublist:
         actualDir = line.replace('qsub ','').replace('qsub\n','')
         print "\nchecking directory", actualDir
@@ -59,7 +59,7 @@ commands = [
     "rm Diagnosis",
     "rm Antiviral"]
 words = [
-    "NoAV"]
+    "noAV"]
 runFix(qsublist, commands, words, "No AV/Diag File or References")
 
 # Loop 4.2 Config Tweaks
@@ -67,7 +67,7 @@ commands = [
     "echo > Antiviral",
     "echo > Diagnosis"]
 words = [
-    "EmptyAV"]
+    "emptyAV"]
 runFix(qsublist, commands, words, "Empty AV/Diag Files")
 
 print "****Operations complete!****"
