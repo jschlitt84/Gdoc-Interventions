@@ -29,12 +29,18 @@ def runFix(qsublist, commands, words, fix):
 # Loop 1 Intervention Tweaks
 commands = [
     "sed -e 's/#.*$//' -e '/^$/d' -e 's/  //' Intervention > temp",
-    "mv temp Intervention"]
+    "mv temp Intervention",
+    "sed -e 's/#.*$//' -e '/^$/d' -e 's/  //' Antiviral > temp",
+    "mv temp Antiviral",
+    "sed -e 's/#.*$//' -e '/^$/d' -e 's/  //' Diagnosis > temp",
+    "mv temp Diagnosis",
+    "sed -e 's/#.*$//' -e '/^$/d' -e 's/  / /' config > temp",
+    "mv temp config"]
 words = [
-    "nowhiteINT"]
+    "nowhite"]
 runFix(qsublist, commands, words, "No WhiteSpace Interventions")
 
-# Loop 2 AV/Diag Tweaks
+"""# Loop 2 AV/Diag Tweaks
 commands = [
     "sed -e 's/#.*$//' -e '/^$/d' -e 's/  //' Antiviral > temp",
     "mv temp Antiviral",
@@ -68,7 +74,7 @@ commands = [
     "echo > Diagnosis"]
 words = [
     "emptyAV"]
-runFix(qsublist, commands, words, "Empty AV/Diag Files")
+runFix(qsublist, commands, words, "Empty AV/Diag Files")"""
 
 print "****Operations complete!****"
 quit()
