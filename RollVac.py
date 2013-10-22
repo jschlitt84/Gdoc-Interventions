@@ -1220,10 +1220,8 @@ action number and subpopulation directory appended"""
             print "Appending manually iterated script"
             outFile.write(appendScript)
     
-        outFile.write("""\n#----- End of Generated Intervention File -----\n\n# RollVac.Py Pre Compliance Intervention Totals- calculated per output,
-does not account for over-application to a given set of IDs. 
-Please apply only one of each type per sub pop, using enumerated
-    interventions for complex interventions.""")
+        outFile.write("\n#----- End of Generated Intervention File -----\n\n")
+        outFile.write("\n#Use only one intervention of each type per sub pop, using enumerated interventions for complex interventions.")
         outFile.write("\n# Vaccination: " + str(vacTotal))
         outFile.write("\n# Antiviral Prophylaxis: " + str(avTotal))
         outFile.write("\n# Social Distancing: " + str(socialTotal))
