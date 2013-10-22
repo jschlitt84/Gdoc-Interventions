@@ -37,7 +37,7 @@ runFix(qsublist, commands, words, "No WhiteSpace Interventions")
 # Loop 2 AV/Diag Tweaks
 commands = [
     "sed -e 's/#.*$//' -e '/^$/d' -e 's/  //' Antiviral > temp",
-    "mv temp Antiviral,
+    "mv temp Antiviral",
     "sed -e 's/#.*$//' -e '/^$/d' -e 's/  //' Diagnosis > temp",
     "mv temp Diagnosis"]
 words = [
@@ -46,7 +46,7 @@ runFix(qsublist, commands, words, "No WhiteSpace AV/Diag")
     
 # Loop 3 Config Tweaks
 commands = [
-    "sed -e 's/#.*$//' -e '/^$/d' -e 's/  //' config > temp",
+    "sed -e 's/#.*$//' -e '/^$/d' -e 's/  / /' config > temp",
     "mv temp config"]
 words = [
     "nowhiteCFG"]
