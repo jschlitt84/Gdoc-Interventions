@@ -1,8 +1,8 @@
 import sys, os
 
 commands = [
-    "sed -e 's/#.*$//' -e '/^$/d' -e 's/  //' config > temp",
-    "mv temp config"]
+    "sed -e 's/#.*$//' -e '/^$/d' -e 's/  //' Intervention > temp",
+    "mv temp Intervention"]
     
 directory = sys.argv[1]
 
