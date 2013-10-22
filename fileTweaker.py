@@ -2,7 +2,7 @@ import sys, os
 
 directory = sys.argv[1]
 fileIn = open(directory)
-qsublist = fileIn.readlines
+qsublist = fileIn.readlines()
 cwd = os.getcwd()
 
 def runFix(qsublist, commands, words, fix):
