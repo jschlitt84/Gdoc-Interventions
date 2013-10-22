@@ -1,7 +1,7 @@
 import sys, os
 
 directory = sys.argv[1]
-fileIn = directory.open()
+fileIn = open(directory)
 qsublist = fileIn.readlines
 cwd = os.getcwd()
 
