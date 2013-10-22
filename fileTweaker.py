@@ -17,14 +17,14 @@ def runFix(qsublist, commands, words, fix):
                 useCommands = False
                 break
         if useCommands:
+            os.chdir(actualDir)
             for command in commands:
                 print "\tRunning Command:", command
-                os.system("cd " + actualDir)
                 os.system(command)
         else:
             print "\tNo commands run"
     print "\tfix complete"
-    os.system("cd " + cwd)
+    os.chdir(cwd)
 
 # Loop 1 Intervention Tweaks
 commands = [
