@@ -866,15 +866,20 @@ action number and subpopulation directory appended"""
                     print "Error: please enter intervention command\n"
                 else:   
                     method = temp[0]
+                    arguments =  len(temp)
                     target = 0
                     if method == "Vaccination":
                         target = 4
                         meth = "v"
                         iCode = 0
+                        if arguments == 4:
+                            temp[2],temp[3] = temp[3],temp[2]
                     elif method == "Antiviral":
                         target = 5
                         meth = "av"
                         iCode = 1000
+                        if arguments == 5:
+                            temp[2],temp[3],temp[4] = temp[3],temp[4],temp[2]
                     elif method == "SocialDistancing":
                         target = 3
                         meth = "sd"
@@ -891,7 +896,7 @@ action number and subpopulation directory appended"""
                         target = 4
                         meth =  "sq"
                         iCode = 6000
-                    if (len(temp) != target):
+                    if arguments != target:
                         print "Error:",  len(temp), "parameters found,", target, "expected for intervention type", method, "\n"
                     elif target == 0:
                         print "Error:", method, "method not recognized\n"
@@ -961,14 +966,20 @@ action number and subpopulation directory appended"""
             temp = cmd.split()
             print "Generating interventions with parameters:",cmd
             method = temp[3]
+            arguments = len(temp)
+            
             if method == "Vaccination":
                 target = 7
                 meth = "v"
                 iCode = 0
+                if arguments == 7:
+                    temp[5],temp[6] = temp[6],temp[5]
             elif method == "Antiviral":
                 target = 8
                 meth = "av"
                 iCode = 1000
+                if arguments == 8:
+                    temp[5],temp[6],temp[7] = temp[6],temp[7],temp[5]
             elif method == "SocialDistancing":
                 target = 6
                 meth = "sd"
@@ -988,7 +999,7 @@ action number and subpopulation directory appended"""
             else:
                 print "Error:", method, "method not recognized\n"
                 quit()
-            if (len(temp) != target):
+            if arguments != target:
                 print "Error:",  len(temp), "parameters found,", target, "expected for intervention type", method, "\n"
                 quit()
             

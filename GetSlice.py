@@ -824,7 +824,8 @@ def main():
         qsubDir = params[3]
         target = params[4]
         runAll = params[14].lower()[0] == 'y'
-        makeAll =  params[15].lower()[0] == 'y'
+        #makeAll =  params[15].lower()[0] == 'y'
+        makeAll = False
 	hideThese = params[16]
         
         fileIn = open(directoryIn + qsubDir)
