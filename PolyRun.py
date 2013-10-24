@@ -351,7 +351,7 @@ def main():
         explicit =  appendSuffix(params[2], directorySuffix)
         
         needsReplace = len(params[5]) > 0
-        noAVDiag = not RollVac.isYes(params[1])
+        noAVDiag = not RollVac.isYes(params[1],'null')
         fileString =  params[3]
         filesToCopy = len(fileString) > 0
                
@@ -367,6 +367,8 @@ def main():
                 "Replace = ",
                 "Find =  AntiviralFile = ",
                 "Replace = "]
+        else:
+            extraCommands = 'null'
                 
         if needsReplace:
             replaceFile = params[5]
