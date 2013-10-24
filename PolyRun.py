@@ -135,11 +135,8 @@ def findNReplace(fileString, replaceScript, directory, iteration, home, explicit
             replaceFile.close()
             print "loaded succesfully, replacing target content"
             
-            limit3 = len(replaceScript)
-            limit2 = len(contents)
-            
-            for pos2 in range(limit2):
-                for pos3 in range(limit3):
+            for pos2 in range(len(contents)):
+                for pos3 in range(len(replaceScript)):
                     if replaceScript[pos3]['file'] == copyFile:
                         if replaceScript[pos3]['find'] in contents[pos2]:
                             line = replaceScript[pos3]['replace']                    
@@ -170,10 +167,15 @@ def findNReplace(fileString, replaceScript, directory, iteration, home, explicit
     
 # LOADS REPLACE SCRIPT 
 
-def loadReplaceScript(replaceFile):
+def loadReplaceScript(replaceFile, extraCommands):
     print "Loading find/replace script"
-    replaceFile = open(replaceFile)
-    script = replaceFile.readlines()
+    script = []
+    if replaceFile != "null":
+        replaceFile = open(replaceFile)
+        script += replaceFile.readlines()
+    if extraCommands != "null":
+        script += extraCommands
+    
     replaceFile.close()
     fileName = ""
     replaceScript = []
@@ -263,19 +265,16 @@ def main():
 # ERASES DIRECTORY NAMES GIVEN BY GDOC
     
     directories = []
-    toSetPermissions = []
     for directory in directoryLines:
         dirToFlush =(directory[2] + '/' + directory[0]).replace('//','/')
         if not dirToFlush in directories: 
             directories.append(dirToFlush)
-            #toSetPermissions.append(RollVac.isYes(directoryLines[pos][7],'set 775 permissions'))
     
     directorySuffix = flushDirectories(directories)
     
     
 # CREATES LISTS OF ALL EXPERIMENTAL VARIABLES ITERATED OVER
             
-    pos = 0
     length = len(script)
     
     print "Searching list for experimentally iterated variables"
@@ -352,42 +351,35 @@ def main():
         explicit =  appendSuffix(params[2], directorySuffix)
         
         needsReplace = len(params[5]) > 0
+        noAVDiag = not RollVac.isYes(params[1])
         fileString =  params[3]
         filesToCopy = len(fileString) > 0
- #       fileList = fileString.split(';')
- #       homeList = []
-        
- #       needsToHome = False 
-        
- #       pos = 0
- #       length = len(fileList)
- #       while pos < len(fileList):
- #           if fileList[pos].startswith('@'):
- #               homeList.append(fileList[pos].replace('@',''))
- #               del fileList[pos]
- #               length -=1
- #           pos += 1
-            
- #       fileString = ';'.join(fileList)
- #       homeString = ';'.join(homeList)
                
         filteredIDs = RollVac.main('poly', directory, 'null', 'null', rollScript, filteredIDs, popSizes)
         sleep(0.05)
         
         qsubs = open(homeDir + 'qsublist', 'a+b')
         qsubs.write(("qsub " + directory + 'qsub\n').replace('//','/'))   
-        qsubs.close()    
-               
+        qsubs.close()
+        
+        if noAVDiag: 
+            extraCommands = ["Find = DiagnosisFile =",
+                "Replace = ",
+                "Find =  AntiviralFile = ",
+                "Replace = "]
+                
         if needsReplace:
             replaceFile = params[5]
-            replaceScript = loadReplaceScript(replaceFile)
+        else:
+            replaceFile = 'null'
+               
+        if needsReplace or noAVDiag:
+            replaceScript = loadReplaceScript(replaceFile, extraCommands)    
             findNReplace(fileString, replaceScript, directory, vacsRolled, homeDir, explicit)
-#            findNReplace(homeString, replaceScript, directory, vacsRolled, homeDir, explicit)
         
         if filesToCopy and not needsReplace:
             print fileString, directory       
             fileCopy(fileString, directory)
- #           fileCopy(homeString, explicit)
             
         vacsRolled += 1
 
@@ -417,17 +409,5 @@ def main():
             runTracker[0] += 1   
             
     print "Intervention iteration succesfully complete!"
-    
- #   pos = 0
- #   limit = len(toSetPermissions)
- #   while pos < limit:
- #       if toSetPermissions[pos]:
- #           print "Appending bash set permissions to 775 command to qsub list in directory:", directories[pos]
- #           qsubs = open(directories[pos] + '/qsublist', 'a+b')
- #           qsubs.write("chmod -R 775 " + directories[pos])   
- #           qsubs.close()  
- #       pos += 1 
- 
-
-            
+                 
 main() 
