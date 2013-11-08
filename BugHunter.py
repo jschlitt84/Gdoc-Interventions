@@ -327,7 +327,7 @@ def getEFO6s(directories):
         if fileName not in dirList:
             dirList.append(fileName)
     
-    print "\nLoading EFO6 Files:"
+    print "\nLoading EFO6 files:"
     for directory in dirList:
         p = Process(target = loadEFO6, args = (directory, out_q))
         processes.append(p)
@@ -339,6 +339,80 @@ def getEFO6s(directories):
     print "EFO6 loading complete"
     
     return EFO6Files
+    
+def loadSubpop(subpop, subPopDir, out_q):
+    outDict = dict
+    print "\tReading subpop:", subpop
+    while '  ' in subpop:
+        subpop = subpop.replace('  ',' ')
+    while subpop[0] == ' ':
+        subpop = subpop[1:]
+    while subpop[-1] == ' ':
+        subpop = subpop[:-1]
+    params = subpop.split(' ')
+    direct = True
+    while params[0] == "NOT":
+        direct = not direct
+        params = params[1:]
+    if len(params) == 1:
+        loadType = "normal"
+    elif len(params) == 2:
+        loadType = "error"
+        print "Error: 2 arguments found, 'NOT' expected as first parameter"
+    elif len(params) == 3:
+        if params[1] == "AND" or params[1] == "OR":
+           loadType = params[1].lower()
+        else:
+            loadType = "error"
+            print "Error: 3 arguments found, 'AND' or 'OR' expected as second parameter"
+    else:
+        loadType = "error"
+        print "Error, no/ excess arguments found"
+    if loadType == "error":
+        outDict[subpop] = 'error'
+        out_q.put(outDict)
+    
+    if loadType == "normal":
+        print "Directly loading subpop", params[0]
+        outDict[subpop] = filterIDs(subPopDir + params[0])
+        outDict[subpop + "_type"] = direct
+    if loadType == "and":
+        print "Loading intersection of subpops", params[0], "and", params[2] 
+        outDict[subpop] = filterIDs(subPopDir + params[0]).intersection(filterIDs(subPopDir + params[2]))
+        outDict[subpop + "_type"] = direct
+    if loadType == "or":
+        print "Loading combined subpops", params[0], "and", params[2] 
+        outDict[subpop] = filterIDs(subPopDir + params[0]).update(filterIDs(subPopDir + params[2]))
+        outDict[subpop + "_type"] = direct
+            
+    outDict[subpop + '_popSize'] = popSize = len(outDict[subpop])
+    print "\t\tSupopulation size:", popSize
+    print "Load complete, returning subpop:", subpop
+    out_q.put(outDict)
+    
+def getSubpops(script, subpopDir):
+    subpopFiles = dict
+    subpopList = []
+    out_q = Queue()
+    processes = []
+    for line in script:
+        for subpop in line[:2]:
+            if subpop not in subpopList:
+                subpopList.append(subPop)
+    
+    print "\nLoading subpop files:"
+    for subpop in subpopList:
+        p = Process(target = loadEFO6, args = (subpop, subpopDir, out_q))
+        processes.append(p)
+        p.start() 
+    for subpop in subpopList:
+        subpopFiles.update(out_q.get())
+    for p in processes:
+        p.join()
+    print "Subpop loading complete"
+    
+    return EFO6Files  
+
             
 def main():
     if len(sys.argv) > 2:
@@ -356,15 +430,8 @@ def main():
     directories = gd.getScript(sys.argv[1], sys.argv[2], sys.argv[3], EFO6Line, -1, "default", False, [])
     sys.argv = None
     
-    print params
-    print ; print
-    print script
-    print ; print
-    print directories
-    print ; print
-    
-    outDir = params[0]
-    subpopDir = params[1]
+    outDir = prepDir(params[0])
+    subpopDir = prepDir(params[1])
     filesOut = []
     
     for line in script:
@@ -375,7 +442,7 @@ def main():
     for line in directories:
         if line[0] not in filesOut:
             filesOut.append(line[0])
-            flush = open(prepDir(outDir) + line[0],'w'); flush.close()
+            flush = open(outDir + line[0],'w'); flush.close()
         if len(line[0]) == 0 or len(line[1]) == 0:
             print "Error, missing file or directory name, line:", line
             quit()
@@ -399,6 +466,7 @@ def main():
     print "Analyses:\n", printList(directories)
     
     EFO6Files = getEFO6s(directories)
+    subpopFiles = getSubpops(script, subpopDir)
     
 main()
 quit()
