@@ -29,7 +29,7 @@ def prepDir(directory):
     return directory
       
 def filterIDs(directory):   
-    print "Initiating one time ID load/ filter to memory"
+    print "\tInitiating one time ID load/ filter to memory"
     popfile = open(directory)
     ids = set()              
     line = 0
@@ -42,7 +42,7 @@ def filterIDs(directory):
                 line += 1
                 
     idstemp =  sorted(list(ids))      
-    print str(line), "entries with IDS\n", int(idstemp[0]), "through", int(idstemp[line-1]), "loaded,\npreparing to analyze\n"
+    print '\t', str(line), "entries with IDS", int(idstemp[0]), "through", int(idstemp[line-1]), "loaded"
     return ids
 
 def sortEFO6(trimmed, subpopLoaded, useSubpop, out_q, core, iterations, disjoint):
@@ -345,7 +345,7 @@ def getEFO6s(directories):
     
 def loadSubpop(subpop, subPopDir, out_q, count):
     outDict = {}
-    print "\tReading subpop", count, ":",  subpop
+    print "\tReading Subpop", count, ":",  subpop
     while '  ' in subpop:
         subpop = subpop.replace('  ',' ')
     while subpop[0] == ' ':
@@ -424,7 +424,7 @@ def getSubpops(script, subpopDir):
         p.join()
     print "Subpop loading complete"
     
-    return EFO6Files  
+    return subpopFiles  
 
             
 def main():
