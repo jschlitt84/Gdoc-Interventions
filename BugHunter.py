@@ -384,7 +384,7 @@ def loadSubpop(subpop, subPopDir, out_q, count):
             outDict[subpop] = filterIDs(subPopDir + params[0], count)
             outDict[subpop + "_type"] = direct
         else:
-            print "Subpop 'ANY' specified, will pass values from general population"
+            print "\t\tSubpop", count, "'ANY' specified, will pass values from general population"
             outDict[subpop] = []
             outDict[subpop + "_type"] = True
     elif loadType == "and":
