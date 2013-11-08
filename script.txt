@@ -1,7 +1,0 @@
-Directory local
-SUBPOP 3 2 Vaccination 10 0.3 0.7
-SUBPOP enum Antiviral 20 0.13 0.2 0.55
-0 1; 2 3; 0 2; 5 1; 32 4
-SUBPOP 5 3 SocialDistancing 4 0.5
-SUBPOP enum SchoolClosure 10 0.6
-0 3; 5 6; 0 2; 1 1
