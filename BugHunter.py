@@ -361,7 +361,7 @@ def main():
     print "\nLoading EFO6 File:"
     for experiment in directories:
         fileName = experiment[0]
-        if not fileName in EFO6Files:
+        if not fileName in EFO6Files.keys():
             print "\tReading file:", fileName
             wholeThing = open(fileName)
             content = wholeThing.readlines()
@@ -381,3 +381,38 @@ def main():
     
 main()
 quit()
+
+"""
+    out_q = Queue()
+    block =  int(ceil(len(trimmed)/float(cores)))
+    processes = []
+    
+    for i in range(cores):
+        p = Process(target = sortEFO6, args = (trimmed[block*i:block*(i+1)], subpopLoaded, useSubpop, out_q, i, iterations, block*i))
+        processes.append(p)
+        p.start() 
+    trimmed = None
+    merged = {}
+    for i in range(cores):
+        merged.update(out_q.get())
+    for p in processes:
+        p.join()
+    
+    for i in range(cores):
+        lengths.append(merged["days" + str(i)])
+        comments += merged["comments" + str(i)]
+        filtered += merged["filtered" + str(i)]
+        
+    days = max(lengths)
+    #print "%s entries remaining of %s entries: %s entries commented out, %s filtered via subpop membership" % (str(filtered),str(length0),str(comments),str(filtered))
+   
+    print "Subproccesses complete, merging results" 
+    iterXDay = [[0 for pos1 in range(days+1)] for pos2 in range(iterations)]
+    for i in range(days):
+        for j in range(iterations):
+            summed = 0
+            for k in range(cores):
+                if i <= lengths[k]:
+                    summed += merged['byDay' + str(k)][j][i]
+            iterXDay[j][i] += summed"""
+            
