@@ -332,14 +332,14 @@ def main():
     if len(outDir) == 0:
         print "Error, no output directory specified"
         quit()
-    elif not os.subpopDir.isdir:
+    elif not os.path.isdir(subpopDir):
         print "Error, subpop diretory", subpopDir, "does not exist"
         quit()
     elif len(filesOut) == 0:
         print "Error, no analysis output directories specified"
         quit()
     
-    if not os.outDir.isdir:
+    if not os.path.isdir(outDir):
         os.makedir(outDir)
     
     print "Prepping experiment, parameters are:"
