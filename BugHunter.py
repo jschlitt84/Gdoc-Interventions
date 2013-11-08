@@ -33,7 +33,7 @@ def filterIDs(directory, count):
         popfile = open(directory)
     except:
         print "Error: population file not found at", directory
-        quit()
+        return 'error'
     ids = set()              
     line = 0
     while True:
@@ -380,12 +380,18 @@ def loadSubpop(subpop, subPopDir, out_q, count):
         outDict[subpop] = 'error'
         print "Terminating process due to error"
         out_q.put(outDict)
-        quit()
+        return
     
     if loadType == "normal":
         if params[0] != 'ANY':
             print "\tDirectly loading subpop", count, ":", params[0]
-            outDict[subpop] = filterIDs(subPopDir + params[0], count)
+            temp = filterIDs(subPopDir + params[0], count)
+            if temp == 'error':
+                outDict[subpop] = 'error'
+                print "Terminating process due to error"
+                out_q.put(outDict)
+                return
+            outDict[subpop] = temp
             outDict[subpop + "_type"] = direct
         else:
             print "\tSubpop", count, ": 'ANY' specified, will pass values from general population"
@@ -393,11 +399,25 @@ def loadSubpop(subpop, subPopDir, out_q, count):
             outDict[subpop + "_type"] = True
     elif loadType == "and":
         print "\tLoading intersection of subpops", count, ":", params[0], "and", params[2] 
-        outDict[subpop] = filterIDs(subPopDir + params[0], count).intersection(filterIDs(subPopDir + params[2], count))
+        temp = filterIDs(subPopDir + params[0], count)
+        temp2 = filterIDs(subPopDir + params[2], count)
+        if temp == 'error' or temp2 == 'error':
+            outDict[subpop] = 'error'
+            print "Terminating process due to error"
+            out_q.put(outDict)
+            return
+        outDict[subpop] = temp.intersection(temp2)
         outDict[subpop + "_type"] = direct
     elif loadType == "or":
         print "\tLoading combined subpops", count, ':', params[0], "or", params[2] 
-        outDict[subpop] = filterIDs(subPopDir + params[0], count).union(filterIDs(subPopDir + params[2], count))
+        temp = filterIDs(subPopDir + params[0], count)
+        temp2 = filterIDs(subPopDir + params[2], count)
+        if temp == 'error' or temp2 == 'error':
+            outDict[subpop] = 'error'
+            print "Terminating process due to error"
+            out_q.put(outDict)
+            return
+        outDict[subpop] = temp.union(temp2)
         outDict[subpop + "_type"] = direct
     if outDict[subpop] != "ANY" and outDict[subpop] != "error": 
         outDict[subpop + '_popSize'] = popSize = len(outDict[subpop])
@@ -486,6 +506,9 @@ def main():
     
     EFO6Files = getEFO6s(directories)
     subpopFiles = getSubpops(script, subpopDir)
+    if "error" in subpopFiles:
+        print "Error termination"
+        quit()
     
 main()
 quit()
