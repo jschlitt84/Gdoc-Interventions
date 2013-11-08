@@ -503,7 +503,6 @@ def main():
     
     EFO6Files = getEFO6s(directories)
     subpopFiles = getSubpops(script, subpopDir)
-    print subpopFiles
     if "error" in subpopFiles:
         print "Error termination"
         quit()
