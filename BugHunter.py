@@ -367,7 +367,7 @@ def main():
     print "\nLoading EFO6 File:"
     for fileName in dirList:
         fileName = experiment[0]
-        if not fileName in EFO6Files.keys():
+        if not fileName in EFO6Files:
             print "\tReading file:", fileName
             wholeThing = open(fileName)
             content = wholeThing.readlines()
