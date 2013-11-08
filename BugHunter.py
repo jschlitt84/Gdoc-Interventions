@@ -318,7 +318,7 @@ def loadEFO6(fileName, out_q, count):
     outDict[fileName + "_iterations"] = iterations   
     out_q.put(outDict)
     
-def getEFO6s(directories, count):
+def getEFO6s(directories):
     EFO6Files = dict
     dirList = []
     out_q = Queue()
@@ -401,7 +401,7 @@ def loadSubpop(subpop, subPopDir, out_q, count):
     print "\t\tLoad complete, returning subpop", count
     out_q.put(outDict)
     
-def getSubpops(script, subpopDir, count):
+def getSubpops(script, subpopDir):
     subpopFiles = dict
     subpopList = []
     out_q = Queue()
