@@ -360,13 +360,13 @@ def main():
     EFO6Files = {'null':[]}
     dirList = []
     for experiment in directories:
-        fileName = experiment[0]
+        fileName = experiment[1]
         if fileName not in dirList:
             dirList.append(fileName)
     
     print "\nLoading EFO6 File:"
     for fileName in dirList:
-        fileName = experiment[0]
+        fileName = experiment[1]
         if not fileName in EFO6Files:
             print "\tReading file:", fileName
             wholeThing = open(fileName)
