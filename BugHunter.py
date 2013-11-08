@@ -392,7 +392,7 @@ def loadSubpop(subpop, subPopDir, out_q, count):
         outDict[subpop] = filterIDs(subPopDir + params[0], count).intersection(filterIDs(subPopDir + params[2], count))
         outDict[subpop + "_type"] = direct
     elif loadType == "or":
-        print "\tLoading combined subpops", count, ':", params[0], "and", params[2] 
+        print "\tLoading combined subpops", count, ':', params[0], "and", params[2] 
         outDict[subpop] = filterIDs(subPopDir + params[0], count).update(filterIDs(subPopDir + params[2], count))
         outDict[subpop + "_type"] = direct
     if outDict[subpop] != "ANY" and outDict[subpop] != "error": 
