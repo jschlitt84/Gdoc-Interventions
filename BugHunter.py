@@ -28,8 +28,7 @@ def prepDir(directory):
         directory += '/'
     return directory
       
-def filterIDs(directory):   
-    print "\tInitiating one time ID load/ filter to memory"
+def filterIDs(directory, count):
     popfile = open(directory)
     ids = set()              
     line = 0
@@ -42,7 +41,7 @@ def filterIDs(directory):
                 line += 1
                 
     idstemp =  sorted(list(ids))      
-    print '\t', str(line), "entries with IDS", int(idstemp[0]), "through", int(idstemp[line-1]), "loaded"
+    print '\tSubpop', count, str(line), "entries with IDS", int(idstemp[0]), "through", int(idstemp[line-1]), "loaded"
     return ids
 
 def sortEFO6(trimmed, subpopLoaded, useSubpop, out_q, core, iterations, disjoint):
@@ -345,7 +344,6 @@ def getEFO6s(directories):
     
 def loadSubpop(subpop, subPopDir, out_q, count):
     outDict = {}
-    print "\tReading Subpop", count, ":",  subpop
     while '  ' in subpop:
         subpop = subpop.replace('  ',' ')
     while subpop[0] == ' ':
@@ -376,11 +374,13 @@ def loadSubpop(subpop, subPopDir, out_q, count):
         print "Error, no/ excess arguments found"
     if loadType == "error":
         outDict[subpop] = 'error'
+        print "Terminating process due to error"
         out_q.put(outDict)
+        quit()
     
     if loadType == "normal":
         if params[0] != 'ANY':
-            print "Directly loading subpop", params[0]
+            print "\t\tDirectly loading subpop", count, ":", params[0]
             outDict[subpop] = filterIDs(subPopDir + params[0])
             outDict[subpop + "_type"] = direct
         else:
@@ -395,8 +395,10 @@ def loadSubpop(subpop, subPopDir, out_q, count):
         print "Loading combined subpops", params[0], "and", params[2] 
         outDict[subpop] = filterIDs(subPopDir + params[0]).update(filterIDs(subPopDir + params[2]))
         outDict[subpop + "_type"] = direct
-            
-    outDict[subpop + '_popSize'] = popSize = len(outDict[subpop])
+    if outDict[subpop] != "ANY" and outDict[subpop] != "error": 
+        outDict[subpop + '_popSize'] = popSize = len(outDict[subpop])
+    else:
+        outDict[subpop + '_popSize'] = 0
     print "\t\tSupopulation size:", popSize
     print "\t\tLoad complete, returning subpop", count
     out_q.put(outDict)
