@@ -309,7 +309,7 @@ def loadEFO6(fileName, out_q, count):
     iterations = int(params[3])
     trimmed = content[popSize+2:]
     length0 = len(trimmed)
-    print "\t*File Count"
+    print "\tFile", count, ":"
     print "\t\tPopsize:", popSize
     print "\t\tIterations:", iterations
     print "\t\tLines:", length0
@@ -328,7 +328,7 @@ def getEFO6s(directories):
         if fileName not in dirList:
             dirList.append(fileName)
     
-    print "\nLoading EFO6 files:"
+    print "\nLoading EFO6 files:\n"
     count = 0
     for directory in dirList:
         count += 1
@@ -339,7 +339,7 @@ def getEFO6s(directories):
         EFO6Files.update(out_q.get())
     for p in processes:
         p.join()
-    print "EFO6 loading complete"
+    print "\nEFO6 loading complete"
     
     return EFO6Files
     
@@ -415,7 +415,7 @@ def getSubpops(script, subpopDir):
     count = 0
     for subpop in subpopList:
         count += 1
-        p = Process(target = loadEFO6, args = (subpop, subpopDir, out_q, count))
+        p = Process(target = loadSubpop, args = (subpop, subpopDir, out_q, count))
         processes.append(p)
         p.start() 
     for subpop in subpopList:
