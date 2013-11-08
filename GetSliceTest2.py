@@ -15,7 +15,6 @@ except:
 def filterIDs(directory):   
     print "Initiating one time ID load/ filter to memory"
     popfile = open(directory)
-    #ids = []   
     ids = set()              
     line = 0
     while True:
@@ -23,13 +22,11 @@ def filterIDs(directory):
             if len(testline) == 0:
                 break
             if not testline.startswith("#"):
-                #ids.append(testline)
                 ids.add(testline.strip())
                 line += 1
                 
     idstemp =  sorted(list(ids))      
     print str(line), "entries with IDS\n", int(idstemp[0]), "through", int(idstemp[line-1]), "loaded,\npreparing to analyze\n"
-    
     return ids
 
 #Returns first instance of substring in list of strings or false if not found
