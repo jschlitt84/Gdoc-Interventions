@@ -417,10 +417,11 @@ def loadSubpop(subpop, subPopDir, out_q, count):
                 
     if outDict[subpop] != "ANY" and outDict[subpop] != "error": 
         outDict[subpop + '_popSize'] = popSize = len(outDict[subpop])
+        print "\t\tSupopulation size:", popSize
+        print "\t\tLoad complete, returning subpop", count
     else:
         outDict[subpop + '_popSize'] = 0
-    print "\t\tSupopulation size:", popSize
-    print "\t\tLoad complete, returning subpop", count
+
     out_q.put(outDict)
     
 def getSubpops(script, subpopDir):
