@@ -381,7 +381,7 @@ def loadSubpop(subpop, subPopDir, out_q, count):
     if loadType == "normal":
         if params[0] != 'ANY':
             print "\t\tDirectly loading subpop", count, ":", params[0]
-            outDict[subpop] = filterIDs(subPopDir + params[0])
+            outDict[subpop] = filterIDs(subPopDir + params[0], count)
             outDict[subpop + "_type"] = direct
         else:
             print "Subpop 'ANY' specified, will pass values from general population"
@@ -389,11 +389,11 @@ def loadSubpop(subpop, subPopDir, out_q, count):
             outDict[subpop + "_type"] = True
     elif loadType == "and":
         print "Loading intersection of subpops", params[0], "and", params[2] 
-        outDict[subpop] = filterIDs(subPopDir + params[0]).intersection(filterIDs(subPopDir + params[2]))
+        outDict[subpop] = filterIDs(subPopDir + params[0], count).intersection(filterIDs(subPopDir + params[2], count))
         outDict[subpop + "_type"] = direct
     elif loadType == "or":
         print "Loading combined subpops", params[0], "and", params[2] 
-        outDict[subpop] = filterIDs(subPopDir + params[0]).update(filterIDs(subPopDir + params[2]))
+        outDict[subpop] = filterIDs(subPopDir + params[0], count).update(filterIDs(subPopDir + params[2]), count)
         outDict[subpop + "_type"] = direct
     if outDict[subpop] != "ANY" and outDict[subpop] != "error": 
         outDict[subpop + '_popSize'] = popSize = len(outDict[subpop])
