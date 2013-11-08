@@ -366,22 +366,20 @@ def main():
     
     print "\nLoading EFO6 File:"
     for fileName in dirList:
-        fileName = experiment[1]
-        if not fileName in EFO6Files:
-            print "\tReading file:", fileName
-            wholeThing = open(fileName)
-            content = wholeThing.readlines()
-            params = content[0].split(' ')    
-            popSize = int(params[1])
-            iterations = int(params[3])
-            trimmed = content[popSize+2:]
-            length0 = len(trimmed)
-            print "\tPopsize:", popSize
-            print "\tIterations:", iterations
-            print "\tLines:", length0
-            EFO6Files[fileName] = trimmed
-            EFO6Files[fileName + "_size"] = popSize
-            EFO6Files[fileName + "_iterations"] = iterations 
+        print "\tReading file:", fileName
+        wholeThing = open(fileName)
+        content = wholeThing.readlines()
+        params = content[0].split(' ')    
+        popSize = int(params[1])
+        iterations = int(params[3])
+        trimmed = content[popSize+2:]
+        length0 = len(trimmed)
+        print "\tPopsize:", popSize
+        print "\tIterations:", iterations
+        print "\tLines:", length0
+        EFO6Files[fileName] = trimmed
+        EFO6Files[fileName + "_size"] = popSize
+        EFO6Files[fileName + "_iterations"] = iterations 
             
     print "EFO6 loading complete"
     
