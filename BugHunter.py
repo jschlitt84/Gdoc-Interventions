@@ -328,8 +328,18 @@ def getEFO6s(directories):
     processes = []
     for experiment in directories:
         fileName = experiment[1]
+        if fileName.startswith("qsub "):
+            fileName = fileName.replace("qsub ","")
+        if fileName.endswith("qsub"):
+            fileName = fileName.replace("qsub","EFO6")
+        try:
+            open(fileName)
+        except:
+            print "Error: EFO6 file not found"
+            quit()
         if fileName not in dirList:
             dirList.append(fileName)
+        
     
     print "\nLoading EFO6 files:\n"
     count = 0
