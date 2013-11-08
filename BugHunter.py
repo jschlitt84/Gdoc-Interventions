@@ -322,7 +322,7 @@ def loadEFO6(fileName, out_q, count):
     out_q.put(outDict)
     
 def getEFO6s(directories):
-    EFO6Files = dict
+    EFO6Files = {}
     dirList = []
     out_q = Queue()
     processes = []
@@ -425,7 +425,7 @@ def loadSubpop(subpop, subPopDir, out_q, count):
     out_q.put(outDict)
     
 def getSubpops(script, subpopDir):
-    subpopFiles = dict
+    subpopFiles = {}
     subpopList = []
     out_q = Queue()
     processes = []
