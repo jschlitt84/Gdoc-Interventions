@@ -324,7 +324,7 @@ def main():
     for line in directories:
         if line[0] not in filesOut:
             filesOut.append(line[0])
-            flush = open(prepDir(outDir + '/' + line[0]),'w'); flush.close()
+            flush = open(prepDir(outDir) + line[0],'w'); flush.close()
         if len(line[0]) == 0 or len(line[1]) == 0:
             print "Error, missing file or directory name, line:", line
             quit()
