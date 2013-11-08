@@ -298,7 +298,48 @@ def checkLines(fileName, subpopLoaded, useSubpop, multiThreaded, crossTalk):
     del secondaryMaxima[-1]
     
     return {'directory':fileName,'days':days,'meanCurve':meanCurve,"iterationsByDay":iterXDay}
+
+def loadEFO6(fileName, out_q):
+    outDict = dict
+    print "\tReading file:", fileName
+    wholeThing = open(fileName)
+    content = wholeThing.readlines()
+    params = content[0].split(' ')    
+    popSize = int(params[1])
+    iterations = int(params[3])
+    trimmed = content[popSize+2:]
+    length0 = len(trimmed)
+    print "\t\tPopsize:", popSize
+    print "\t\tIterations:", iterations
+    print "\t\tLines:", length0
+    outDict[fileName] = trimmed
+    outDict[fileName + "_size"] = popSize
+    outDict[fileName + "_iterations"] = iterations   
+    out_q.put(outDict)
     
+def getEFO6s(directories):
+    EFO6Files = dict
+    dirList = []
+    out_q = Queue()
+    processes = []
+    for experiment in directories:
+        fileName = experiment[1]
+        if fileName not in dirList:
+            dirList.append(fileName)
+    
+    print "\nLoading EFO6 Files:"
+    for directory in dirList:
+        p = Process(target = loadEFO6, args = (directory, out_q))
+        processes.append(p)
+        p.start() 
+    for directory in dirList:
+        EFO6Files.update(out_q.get())
+    for p in processes:
+        p.join()
+    print "EFO6 loading complete"
+    
+    return EFO6Files
+            
 def main():
     if len(sys.argv) > 2:
         if len(sys.argv) == 3:
@@ -357,31 +398,7 @@ def main():
     print "Subpopulations to/ from:\n", printList(script)
     print "Analyses:\n", printList(directories)
     
-    EFO6Files = {'null':[]}
-    dirList = []
-    for experiment in directories:
-        fileName = experiment[1]
-        if fileName not in dirList:
-            dirList.append(fileName)
-    
-    print "\nLoading EFO6 Files:"
-    for fileName in dirList:
-        print "\tReading file:", fileName
-        wholeThing = open(fileName)
-        content = wholeThing.readlines()
-        params = content[0].split(' ')    
-        popSize = int(params[1])
-        iterations = int(params[3])
-        trimmed = content[popSize+2:]
-        length0 = len(trimmed)
-        print "\t\tPopsize:", popSize
-        print "\t\tIterations:", iterations
-        print "\t\tLines:", length0
-        EFO6Files[fileName] = trimmed
-        EFO6Files[fileName + "_size"] = popSize
-        EFO6Files[fileName + "_iterations"] = iterations 
-            
-    print "EFO6 loading complete"
+    EFO6Files = getEFO6s(directories)
     
 main()
 quit()
