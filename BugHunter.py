@@ -311,9 +311,41 @@ def main():
     script = gd.getScript(sys.argv[1], sys.argv[2], sys.argv[3], toFromLine, EFO6Line, "default", False, [])
     directories = gd.getScript(sys.argv[1], sys.argv[2], sys.argv[3], EFO6Line, -1, "default", False, [])
     sys.argv = None
-    print "PARAMS:", params
-    print "SCRIPT:", script
-    print "DIRECTORIES:", directories
+    
+    outDir = params[0]
+    subpopDir = params[1]
+    filesOut = []
+    
+    for line in script:
+        if len(line[0]) == 0 or len(line[1]) == 0:
+            print "Error, missing to or from subpop name, line:", line
+            quit()
+    
+    for line in directories:
+        if line[0] not in filesOut:
+            filesOut.append(line[0])
+            flush = open(prepDir(outDir + '/' + line[0]),'w'); flush.close()
+        if len(line[0]) == 0 or len(line[1]) == 0:
+            print "Error, missing file or directory name, line:", line
+            quit()
+    
+    if len(outDir) == 0:
+        print "Error, no output directory specified"
+        quit()
+    elif not os.subpopDir.isdir:
+        print "Error, subpop diretory", subpopDir, "does not exist"
+        quit()
+    elif len(filesOut) == 0:
+        print "Error, no analysis output directories specified"
+        quit()
+    
+    if not os.outDir.isdir:
+        os.makedir(outDir)
+    
+    print "Prepping experiment, parameters are:"
+    print "Analysis Directory:", outDir, "Subpop Director:", subpopDir
+    print "Subpopulations to/ from:\n", script
+    print "Analyses:\n", directories
 
     
 main()
