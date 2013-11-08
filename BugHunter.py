@@ -351,6 +351,9 @@ def loadSubpop(subpop, subPopDir, out_q):
         subpop = subpop[:-1]
     params = subpop.split(' ')
     direct = True
+    if params == ["NOT","ANY"]:
+        print "Error: well that's not particularly useful, is it?"
+        loadType = "error"
     while params[0] == "NOT":
         direct = not direct
         params = params[1:]
@@ -373,14 +376,19 @@ def loadSubpop(subpop, subPopDir, out_q):
         out_q.put(outDict)
     
     if loadType == "normal":
-        print "Directly loading subpop", params[0]
-        outDict[subpop] = filterIDs(subPopDir + params[0])
-        outDict[subpop + "_type"] = direct
-    if loadType == "and":
+        if params[0] != 'ANY':
+            print "Directly loading subpop", params[0]
+            outDict[subpop] = filterIDs(subPopDir + params[0])
+            outDict[subpop + "_type"] = direct
+        else:
+            print "Subpop 'ANY' specified, will pass values from general population"
+            outDict[subpop] = []
+            outDict[subpop + "_type"] = True
+    elif loadType == "and":
         print "Loading intersection of subpops", params[0], "and", params[2] 
         outDict[subpop] = filterIDs(subPopDir + params[0]).intersection(filterIDs(subPopDir + params[2]))
         outDict[subpop + "_type"] = direct
-    if loadType == "or":
+    elif loadType == "or":
         print "Loading combined subpops", params[0], "and", params[2] 
         outDict[subpop] = filterIDs(subPopDir + params[0]).update(filterIDs(subPopDir + params[2]))
         outDict[subpop + "_type"] = direct
