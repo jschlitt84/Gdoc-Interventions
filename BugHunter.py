@@ -284,7 +284,7 @@ def main():
             sys.argv.insert(1,'null')
 
     #script = gDocsImport.getScript(sys.argv[1], sys.argv[2], sys.argv[3], 0, -1, "default", False, [])
-    params = gd.getLine(sys.argv[1], sys.argv[2], sys.argv[3], paramsLine, False, []):
+    params = gd.getLine(sys.argv[1], sys.argv[2], sys.argv[3], paramsLine, False, [])
     script = gd.getScript(sys.argv[1], sys.argv[2], sys.argv[3], toFromLine, EFO6Line, "default", False, [])
     directories = gd.getScript(sys.argv[1], sys.argv[2], sys.argv[3], EFO6Line, -1, "default", False, [])
     sys.argv = None
