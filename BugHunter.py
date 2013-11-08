@@ -364,7 +364,7 @@ def main():
         if fileName not in dirList:
             dirList.append(fileName)
     
-    print "\nLoading EFO6 File:"
+    print "\nLoading EFO6 Files:"
     for fileName in dirList:
         print "\tReading file:", fileName
         wholeThing = open(fileName)
@@ -374,9 +374,9 @@ def main():
         iterations = int(params[3])
         trimmed = content[popSize+2:]
         length0 = len(trimmed)
-        print "\tPopsize:", popSize
-        print "\tIterations:", iterations
-        print "\tLines:", length0
+        print "\t\tPopsize:", popSize
+        print "\t\tIterations:", iterations
+        print "\t\tLines:", length0
         EFO6Files[fileName] = trimmed
         EFO6Files[fileName + "_size"] = popSize
         EFO6Files[fileName + "_iterations"] = iterations 
