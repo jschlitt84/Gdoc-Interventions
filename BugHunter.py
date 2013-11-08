@@ -15,6 +15,12 @@ paramsLine = "Output Folder,Subpopulation Directory"
 toFromLine = "To Subpopulation,From Subpopulation"
 EFO6Line = "EFO6 Files To Analyze"
 
+def printList(list):
+    text = ""
+    for item in list:
+        text += '\t' + str(item) + '\n'
+    return text
+
 def prepDir(directory):
     while '//' in directory:
         directory = directory.replace('//','/')
@@ -350,9 +356,9 @@ def main():
         os.makedir(outDir)
     
     print "Prepping experiment, parameters are:"
-    print "Analysis Directory:", outDir, "Subpop Director:", subpopDir
-    print "Subpopulations to/ from:\n", script
-    print "Analyses:\n", directories
+    print "Analysis Directory:\n\t", outDir, "\nSubpop Director:\n\t", subpopDir
+    print "Subpopulations to/ from:\n", printList(script)
+    print "Analyses:\n", printList(directories)
 
     
 main()
