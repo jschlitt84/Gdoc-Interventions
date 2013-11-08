@@ -335,7 +335,7 @@ def getEFO6s(directories):
         try:
             open(fileName)
         except:
-            print "Error: EFO6 file not found"
+            print "Error: EFO6 file", fileName, "not found"
             quit()
         if fileName not in dirList:
             dirList.append(fileName)
