@@ -357,9 +357,15 @@ def main():
     print "Subpopulations to/ from:\n", printList(script)
     print "Analyses:\n", printList(directories)
     
-    EFO6Files =  dict
-    print "\nLoading EFO6 File:"
+    EFO6Files = dict
+    dirList = []
     for experiment in directories:
+        fileName = experiment[0]
+        if fileName not in dirList:
+            dirList.append(fileName)
+    
+    print "\nLoading EFO6 File:"
+    for fileName in dirList:
         fileName = experiment[0]
         if not fileName in EFO6Files.keys():
             print "\tReading file:", fileName
