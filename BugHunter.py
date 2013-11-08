@@ -300,7 +300,7 @@ def checkLines(fileName, subpopLoaded, useSubpop, multiThreaded, crossTalk):
     return {'directory':fileName,'days':days,'meanCurve':meanCurve,"iterationsByDay":iterXDay}
 
 def loadEFO6(fileName, out_q):
-    outDict = dict
+    outDict = {}
     print "\tReading file:", fileName
     wholeThing = open(fileName)
     content = wholeThing.readlines()
@@ -341,7 +341,7 @@ def getEFO6s(directories):
     return EFO6Files
     
 def loadSubpop(subpop, subPopDir, out_q):
-    outDict = dict
+    outDict = {}
     print "\tReading subpop:", subpop
     while '  ' in subpop:
         subpop = subpop.replace('  ',' ')
