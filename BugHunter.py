@@ -360,8 +360,8 @@ def main():
     EFO6Files =  dict
     print "\nLoading EFO6 File:"
     for experiment in directories:
+        fileName = experiment[0]
         if not fileName in EFO6Files:
-            fileName = experiment[0]
             print "\tReading file:", fileName
             wholeThing = open(fileName)
             content = wholeThing.readlines()
