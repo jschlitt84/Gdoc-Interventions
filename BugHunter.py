@@ -357,7 +357,7 @@ def main():
     print "Subpopulations to/ from:\n", printList(script)
     print "Analyses:\n", printList(directories)
     
-    EFO6Files = dict
+    EFO6Files = {'null':[]}
     dirList = []
     for experiment in directories:
         fileName = experiment[0]
