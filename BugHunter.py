@@ -357,10 +357,10 @@ def main():
     print "Subpopulations to/ from:\n", printList(script)
     print "Analyses:\n", printList(directories)
     
-    EFO6files =  dict
+    EFO6Files =  dict
     print "\nLoading EFO6 File:"
     for experiment in directories:
-        if not EFO6files.haskey(fileName):
+        if not fileName om EFO6Files:
             fileName = experiment[0]
             print "\tReading file:", fileName
             wholeThing = open(fileName)
