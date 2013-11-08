@@ -11,7 +11,7 @@ except:
     from OrderedDict import OrderedDict
     print "\n*** OrderedDict not found in collections, using drop in version ***"
     
-paramsLine = "Analysis Name,Output Folder"
+paramsLine = "Output Folder,Subpopulation Directory"
 toFromLine = "To Subpopulation,From Subpopulation"
 EFO6Line = "EFO6 Files To Analyze"
 
