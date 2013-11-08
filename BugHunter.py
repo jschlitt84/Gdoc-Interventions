@@ -312,6 +312,13 @@ def main():
     directories = gd.getScript(sys.argv[1], sys.argv[2], sys.argv[3], EFO6Line, -1, "default", False, [])
     sys.argv = None
     
+    print params
+    print ; print
+    print script
+    print ; print
+    print directories
+    print ; print
+    
     outDir = params[0]
     subpopDir = params[1]
     filesOut = []
