@@ -299,9 +299,9 @@ def checkLines(fileName, subpopLoaded, useSubpop, multiThreaded, crossTalk):
     
     return {'directory':fileName,'days':days,'meanCurve':meanCurve,"iterationsByDay":iterXDay}
 
-def loadEFO6(fileName, out_q):
+def loadEFO6(fileName, out_q, count):
     outDict = {}
-    print "\tReading file:", fileName
+    print "\tReading file", count, ":", fileName
     wholeThing = open(fileName)
     content = wholeThing.readlines()
     params = content[0].split(' ')    
@@ -309,6 +309,7 @@ def loadEFO6(fileName, out_q):
     iterations = int(params[3])
     trimmed = content[popSize+2:]
     length0 = len(trimmed)
+    print "\t*File Count"
     print "\t\tPopsize:", popSize
     print "\t\tIterations:", iterations
     print "\t\tLines:", length0
@@ -317,7 +318,7 @@ def loadEFO6(fileName, out_q):
     outDict[fileName + "_iterations"] = iterations   
     out_q.put(outDict)
     
-def getEFO6s(directories):
+def getEFO6s(directories, count):
     EFO6Files = dict
     dirList = []
     out_q = Queue()
@@ -328,8 +329,10 @@ def getEFO6s(directories):
             dirList.append(fileName)
     
     print "\nLoading EFO6 files:"
+    count = 0
     for directory in dirList:
-        p = Process(target = loadEFO6, args = (directory, out_q))
+        count += 1
+        p = Process(target = loadEFO6, args = (directory, out_q, count))
         processes.append(p)
         p.start() 
     for directory in dirList:
@@ -340,9 +343,9 @@ def getEFO6s(directories):
     
     return EFO6Files
     
-def loadSubpop(subpop, subPopDir, out_q):
+def loadSubpop(subpop, subPopDir, out_q, count):
     outDict = {}
-    print "\tReading subpop:", subpop
+    print "\tReading subpop", count, ":",  subpop
     while '  ' in subpop:
         subpop = subpop.replace('  ',' ')
     while subpop[0] == ' ':
@@ -395,10 +398,10 @@ def loadSubpop(subpop, subPopDir, out_q):
             
     outDict[subpop + '_popSize'] = popSize = len(outDict[subpop])
     print "\t\tSupopulation size:", popSize
-    print "Load complete, returning subpop:", subpop
+    print "\t\tLoad complete, returning subpop", count
     out_q.put(outDict)
     
-def getSubpops(script, subpopDir):
+def getSubpops(script, subpopDir, count):
     subpopFiles = dict
     subpopList = []
     out_q = Queue()
@@ -406,11 +409,13 @@ def getSubpops(script, subpopDir):
     for line in script:
         for subpop in line[:2]:
             if subpop not in subpopList:
-                subpopList.append(subPop)
+                subpopList.append(subpop)
     
     print "\nLoading subpop files:"
+    count = 0
     for subpop in subpopList:
-        p = Process(target = loadEFO6, args = (subpop, subpopDir, out_q))
+        count += 1
+        p = Process(target = loadEFO6, args = (subpop, subpopDir, out_q, count))
         processes.append(p)
         p.start() 
     for subpop in subpopList:
