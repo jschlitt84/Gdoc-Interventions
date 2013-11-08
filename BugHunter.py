@@ -105,10 +105,7 @@ def checkLines(fileName, subpopLoaded, useSubpop, multiThreaded, crossTalk):
     days =comments = filtered = pos = 0
     lengths = []
     isEmpty = False
-    
-    #debug var
-    #trimmed = trimmed[:2000]
-    
+        
     if not multiThreaded:
         cores = 1
     else:
@@ -355,11 +352,32 @@ def main():
     if not os.path.isdir(outDir):
         os.makedir(outDir)
     
-    print "Prepping experiment, parameters are:"
-    print "Analysis Directory:\n\t", outDir, "\nSubpop Director:\n\t", subpopDir
+    print "Prepping experiment, parameters are:\n"
+    print "Analysis Directory:\n\t", outDir, "\nSubpop Directory:\n\t", subpopDir
     print "Subpopulations to/ from:\n", printList(script)
     print "Analyses:\n", printList(directories)
-
+    
+    EFO6files =  dict
+    print "\nLoading EFO6 File:"
+    for experiment in directories:
+        if not EFO6files.haskey(fileName):
+            fileName = experiment[0]
+            print "\tReading file:", fileName
+            wholeThing = open(fileName)
+            content = wholeThing.readlines()
+            params = content[0].split(' ')    
+            popSize = int(params[1])
+            iterations = int(params[3])
+            trimmed = content[popSize+2:]
+            length0 = len(trimmed)
+            print "\tPopsize:", popSize
+            print "\tIterations:", iterations
+            print "\tLines:", length0
+            EFO6Files[fileName] = trimmed
+            EFO6Files[fileName + "_size"] = popSize
+            EFO6Files[fileName + "_iterations"] = iterations 
+            
+    print "EFO6 loading complete"
     
 main()
 quit()
