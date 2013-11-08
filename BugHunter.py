@@ -1,7 +1,6 @@
 import gDocsImport as gd
 import sys, os
 
-from GetSlice import filterIDs, prepDir
 from multiprocessing import Process, Queue, cpu_count
 
 from math import ceil
@@ -15,7 +14,31 @@ except:
 paramsLine = "Analysis Name,Output Folder"
 toFromLine = "To Subpopulation,From Subpopulation"
 EFO6Line = "EFO6 Files To Analyze"
-    
+
+def prepDir(directory):
+    while '//' in directory:
+        directory = directory.replace('//','/')
+    if directory[-1] != '/':
+        directory += '/'
+    return directory
+      
+def filterIDs(directory):   
+    print "Initiating one time ID load/ filter to memory"
+    popfile = open(directory)
+    ids = set()              
+    line = 0
+    while True:
+            testline = popfile.readline()
+            if len(testline) == 0:
+                break
+            if not testline.startswith("#"):
+                ids.add(testline.strip())
+                line += 1
+                
+    idstemp =  sorted(list(ids))      
+    print str(line), "entries with IDS\n", int(idstemp[0]), "through", int(idstemp[line-1]), "loaded,\npreparing to analyze\n"
+    return ids
+
 def sortEFO6(trimmed, subpopLoaded, useSubpop, out_q, core, iterations, disjoint):
     length = length0 =  len(trimmed)
     days = comments = filtered = pos = 0
