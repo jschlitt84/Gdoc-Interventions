@@ -118,7 +118,7 @@ def getPos (start, stop, script):
     if isinstance(start, str) and isinstance(stop, str):
         foundStart = False
         foundStop = False
-        for pos in range(length)::
+        for pos in range(length):
             if start in script[pos]:
                 startPos = pos + 1
                 foundStart = True
