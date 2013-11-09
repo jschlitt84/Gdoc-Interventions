@@ -78,7 +78,6 @@ def getFile(userName, __password, fileName):
                        
 def getPublicFile(userName, fileName):
     
-    #print "DEBUG*****", username, filename
     try:
         fileName = fileName[:fileName.index('#gid')]
     finally:
@@ -96,40 +95,36 @@ def getPublicFile(userName, fileName):
 
 def getPos (start, stop, script):
     length = len(script)
-    pos = 0
     startPos = 0
     stopPos = len(script)
     if isinstance(start, str) and not isinstance(stop, str):
         foundStart = False
         foundStop = True
         stopPos = int(stop)
-        while pos < length:
+        for pos in range(length):
             if start in script[pos]:
                 startPos = pos + 1
                 foundStart = True
                 break
-            pos += 1
     if not isinstance(start, str) and isinstance(stop, str):
         foundStart = True
         foundStop = False
         startPos = int(start)
-        while pos < length:
+        for pos in range(length):
             if stop in script[pos]:
                 stopPos = pos
                 foundStop = True
                 break
-            pos += 1
     if isinstance(start, str) and isinstance(stop, str):
         foundStart = False
         foundStop = False
-        while pos < length:
+        for pos in range(length)::
             if start in script[pos]:
                 startPos = pos + 1
                 foundStart = True
             if stop in script[pos]:
                 stopPos = pos
                 foundStop = True
-            pos += 1
     if not foundStart:
         print "Error, start string '", start, "' not found, defaulting to pos 0"
         startPos = 1
@@ -254,10 +249,9 @@ def loadNClean(isPrivate,publicData, start, end, cleanType):
 
     if cleanType == "default":
         listScript = []
-        pos = 0
+        for line in script:
         while pos < len(script):
-            listScript.append(script[pos].split(","))
-            pos += 1
+            listScript.append(line.split(","))
         listScript  = [item for item in listScript if len(filter(bool,item)) != 0]
         if listScript:
             return listScript
@@ -269,7 +263,6 @@ def loadNClean(isPrivate,publicData, start, end, cleanType):
     
     elif cleanType == "single line":
         return script[0].split(",")
-            
     else:
         return script
   
