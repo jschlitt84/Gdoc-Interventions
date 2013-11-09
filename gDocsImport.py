@@ -231,7 +231,6 @@ def loadNClean(isPrivate,publicData, start, end, cleanType):
             script[pos] = script[pos].replace('  ',' ')
         pos += 1
     
-    pos = 0
     print
        
 # CLEANS UP WHITESPACE AT END OF ENTRIES
@@ -250,7 +249,6 @@ def loadNClean(isPrivate,publicData, start, end, cleanType):
     if cleanType == "default":
         listScript = []
         for line in script:
-        while pos < len(script):
             listScript.append(line.split(","))
         listScript  = [item for item in listScript if len(filter(bool,item)) != 0]
         if listScript:
