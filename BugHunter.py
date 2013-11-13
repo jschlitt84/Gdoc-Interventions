@@ -548,7 +548,7 @@ def main():
                             'fromType':subpopFiles[subpop[1] + '_type'],
                             'fromName':subpop[1]}
             print "Analyszing crosstalk for", experiment[1], " with subpops", subpop[0:2]
-            duration = getLength(experiments[1])
+            duration = getLength(experiment[1])
             crossTalk = loadCrossTalk(crossTalkEFO6, crossTalkSubs, duration)
             allCurves.append(crossTalk)
             print printList(crossTalk['crossTalkCurves'])
