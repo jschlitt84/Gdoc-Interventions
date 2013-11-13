@@ -41,7 +41,7 @@ def filterIDs(directory, count):
             if len(testline) == 0:
                 break
             if not testline.startswith("#"):
-                ids.add(testline.strip())
+                ids.add(int(testline))
                 line += 1
                 
     idstemp =  sorted(list(ids))      
