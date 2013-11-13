@@ -263,7 +263,7 @@ def loadCrossTalk(crossTalkEFO6, crossTalkSubs):
     
     isEpidemic = [0]*(iterations+1)
     for i in range(iterations+1):
-        isEpidemic[i] = not ignore[i]
+        isEpidemic[i] = not(ignore[i])
         
     ctMean = []
     for pos1 in range(days):
