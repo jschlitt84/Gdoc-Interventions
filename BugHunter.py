@@ -155,7 +155,7 @@ def loadCrossTalk(crossTalkEFO6, crossTalkSubs):
     lengths = []
     #isEmpty = False
     
-    print "Checking for non epidemic iterations.."
+    print "\nChecking for non epidemic iterations.."
         
     cores = cpu_count()
     out_q = Queue()
@@ -187,7 +187,7 @@ def loadCrossTalk(crossTalkEFO6, crossTalkSubs):
                     summed += merged['byDay' + str(k)][j][i]
             iterXDay[j][i] += summed
             
-    print "Results merge complete, beginning analysis"
+    print "Results merge complete, beginning checking for iteration epidemic status"
     
     attackRates = []
     ignore = [False]*iterations
@@ -219,6 +219,17 @@ def loadCrossTalk(crossTalkEFO6, crossTalkSubs):
     print "Percent Reaching Epidemic:", epiPercent
     print "Mean epdidemic attack rate:", epiMean
     
+    meanCurve = []
+    for pos1 in range(days):
+        temp = 0
+        for pos2 in range(iterations):
+            if not ignore[pos2]:
+                temp += iterXDay[pos2][pos1]   
+        if iterations != ignored:
+            meanCurve.append(int((float(temp)/(iterations-ignored))+.5))
+    
+    if sum(meanCurve) == 0:
+        empty[iterations] = True    
     
     print "\nChecking for crosstalk"
         
@@ -250,9 +261,23 @@ def loadCrossTalk(crossTalkEFO6, crossTalkSubs):
             
     print "Results merge complete, beginning analysis"
     
+    isEpidemic = {None}* iterations + 1
+    for i in range(iterations+1):
+        isEpidemic[i] = not ignore[i]
+        
+    ctMean = []
+    for pos1 in range(days):
+        temp = 0
+        for pos2 in range(iterations):
+            if not ignore[pos2]:
+                temp += iterXDayCT[pos2][pos1]   
+        if iterations != ignored:
+            ctMean.append(int((float(temp)/(iterations-ignored))+.5))
     
+    if sum(meanCurve) == 0:
+        empty[iterations] = True    
     
-    return {'directory':fileName,'days':days,'meanCurve':meanCurve,"iterationsByDay":iterXDay}
+    return {'epiCurves':iterXDay,'crossTalkCurves':iterXDay,'meanCurve':meanCurve,"meanCrossTalkCurve":ctMean, "isEpidemic":isEpidemic}
 
 def loadEFO6(fileName, out_q, count):
     outDict = {}
@@ -480,10 +505,11 @@ def main():
                             'fromPop':subpopFiles[subpop[1]],
                             'fromType':subpopFiles[subpop[1] + '_type'],
                             'fromName':subpop[1]}
-            #print sorted(EFO6Files.keys())
-            #print sorted(subpopFiles.keys())
             print "Analyszing crosstalk for", experiment[1], " with subpops", subpop[0:2]
             crossTalk = loadCrossTalk(crossTalkEFO6, crossTalkSubs)
+            print printList(crossTalk['crossTalkCurves'])
+             #return {'epiCurves':iterXDay,'crossTalkCurves':iterXDay,'meanCurve':meanCurve,"meanCrossTalkCurve":ctMean, "isEpidemic":isEpidemic}
+
             print crossTalk
             
     
