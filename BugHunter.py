@@ -114,7 +114,7 @@ def getCrossTalk(trimmed, crossTalkSubs, iterations, disjoint, out_q, core):
         else:
 	   toID = trimmed[pos][0]
 	   fromID = trimmed[pos][3]
-	   if ((toID in toSubpop or toName == 'ANY') != toType) or ((toID in toSubpop or fromName == 'ANY') != toType):
+	   if (((toID in toSubpop) or toName == 'ANY') != toType) or (((fromID in fromSubpop) or fromName == 'ANY') != fromType):
 	       disjoint -=1
 	   else:
     	       content[adjusted] = trimmed[pos]	      
@@ -243,9 +243,9 @@ def loadCrossTalk(crossTalkEFO6, crossTalkSubs):
         p = Process(target = getCrossTalk, args = (EFO6[block*i:block*(i+1)], crossTalkSubs, iterations, block*i, out_q, i))
         processes.append(p)
         p.start() 
-    merged = {}
+    merged2 = {}
     for i in range(cores):
-        merged.update(out_q.get())
+        merged2.update(out_q.get())
     for p in processes:
         p.join()
        
@@ -256,7 +256,7 @@ def loadCrossTalk(crossTalkEFO6, crossTalkSubs):
             summed = 0
             for k in range(cores):
                 if i <= lengths[k]:
-                    summed += merged['byDay' + str(k)][j][i]
+                    summed += merged2['byDay' + str(k)][j][i]
             crossTalk[j][i] += summed
             
     print "Results merge complete, beginning analysis"
@@ -277,7 +277,7 @@ def loadCrossTalk(crossTalkEFO6, crossTalkSubs):
     if sum(meanCurve) == 0:
         empty[iterations] = True    
     
-    return {'epiCurves':iterXDay,'crossTalkCurves':crossTalk,'meanCurve':meanCurve,"meanCrossTalkCurve":ctMean, "isEpidemic":isEpidemic}
+    return {'epiCurves':iterXDay,'crossTalkCurves':crossTalk,'meanCurve':meanCurve,"meanCrossTalkCurve":ctMean, "isEpidemic":isEpidemic, 'length':days}
 
 def loadEFO6(fileName, out_q, count):
     outDict = {}
@@ -496,6 +496,7 @@ def main():
         print "Error termination"
         quit()
     
+    allCurves = []
     for experiment in directories:
         for subpop in script:
             crossTalkEFO6 = {'EFO6':EFO6Files[experiment[1]],'iterations':EFO6Files[experiment[1] +'_iterations']} 
@@ -507,10 +508,11 @@ def main():
                             'fromName':subpop[1]}
             print "Analyszing crosstalk for", experiment[1], " with subpops", subpop[0:2]
             crossTalk = loadCrossTalk(crossTalkEFO6, crossTalkSubs)
+            allCurves.append(crossTalk)
             print printList(crossTalk['crossTalkCurves'])
-             #return {'epiCurves':iterXDay,'crossTalkCurves':iterXDay,'meanCurve':meanCurve,"meanCrossTalkCurve":ctMean, "isEpidemic":isEpidemic}
-
-            print crossTalk
+    
+    print "CrossTalk Analysis Complete, preparing output"
+    
             
     
 main()
