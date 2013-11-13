@@ -275,7 +275,10 @@ def loadCrossTalk(crossTalkEFO6, crossTalkSubs):
             summed = 0
             for k in range(cores):
                 if i <= lengths[k]:
-                    summed += merged2['byDay' + str(k)][j][i]
+                    try:
+                        summed += merged2['byDay' + str(k)][j][i]
+                    except:
+                        print k,i,j, "not found"
             crossTalk[j][i] += summed
             
     print "Results merge complete, beginning analysis"
