@@ -117,7 +117,7 @@ def getCrossTalk(trimmed, crossTalkSubs, iterations, disjoint, out_q, core):
 	   if ((toID in toSubpop or toName == 'ANY') != toType) or ((toID in toSubpop or fromName == 'ANY') != toType):
 	       disjoint -=1
 	   else:
-    	       content[adjusted] = map(int,trimmed[pos].split(' '))	      
+    	       content[adjusted] = trimmed[pos]	      
     	
     	pos += 1
         if (pos+filtered)%notifyEvery == 0:
