@@ -66,7 +66,7 @@ def sortEFO6(trimmed, subpopLoaded, useSubpop, out_q, core, iterations, disjoint
 		disjoint -= 1
 		comments += 1
         elif useSubpop:
-	   temp = trimmed[pos].split()[0]
+	   temp = trimmed[pos].split(' ')[0]
 	   if temp not in subpopLoaded:
 	           disjoint -=1
 	   else:
@@ -96,11 +96,17 @@ def sortEFO6(trimmed, subpopLoaded, useSubpop, out_q, core, iterations, disjoint
     out_q.put(outdict)
     
     
-def checkLines(fileName, subpopLoaded, useSubpop, multiThreaded, crossTalk):
-    print "Reading file:", fileName
-    wholeThing = open(fileName)
-    content = wholeThing.readlines()
-    params = content[0].split(' ')    
+def getCrossTalk(crossTalkEFO6, crossTalkSubs):
+    EFO6 = crossTalkEFO6['EFO6']
+    iterations = crossTalkEFO6['iterations']
+    toSubpop = crossTalkSubs['toPop']
+    toDirect = crossTalkSubs['toType']
+    fromSubpop =  crossTalkSubs['fromPop']
+    fromDirect =  crossTalkSubs['fromType']
+    length0 =  len(EFO6)
+    
+    quit()
+       
     popSize = int(params[1])
     iterations = int(params[3])
     trimmed = content[popSize+2:]
@@ -311,6 +317,8 @@ def loadEFO6(fileName, out_q, count):
     popSize = int(params[1])
     iterations = int(params[3])
     trimmed = content[popSize+2:]
+    for pos in range(len(trimmed)):
+        trimmed[pos] =  map(int,trimmed[pos].split(' '))
     length0 = len(trimmed)
     print "\tFile", count, ":"
     print "\t\tPopsize:", popSize
@@ -517,40 +525,17 @@ def main():
         print "Error termination"
         quit()
     
+    for experiment in directories:
+        for subpop in script:
+            crossTalkEFO6 = {'EFO6':EFO6Files[experiment[1]],'iterations':EFO6Files[experiment[1] +'_iterations']} 
+            crossTalkSubs = {'toPop':subpopFiles[subpop[0]],
+                            'toType':subpopFiles[subpop[0]+'_type'],
+                            'fromPop':subpopFiles[subpop[1]],
+                            'fromType':subpopFiles[subpop[1] + '_type']}
+            print "Analyszing crosstalk for", EFO6Files[experiment[0]], " with subpops", subpop[0:2]
+            crossTalk = getCrossTalk(crossTalkEFO6, crossTalkSubs)
+            print crossTalk
+            
+    
 main()
 quit()
-
-"""
-    out_q = Queue()
-    block =  int(ceil(len(trimmed)/float(cores)))
-    processes = []
-    
-    for i in range(cores):
-        p = Process(target = sortEFO6, args = (trimmed[block*i:block*(i+1)], subpopLoaded, useSubpop, out_q, i, iterations, block*i))
-        processes.append(p)
-        p.start() 
-    trimmed = None
-    merged = {}
-    for i in range(cores):
-        merged.update(out_q.get())
-    for p in processes:
-        p.join()
-    
-    for i in range(cores):
-        lengths.append(merged["days" + str(i)])
-        comments += merged["comments" + str(i)]
-        filtered += merged["filtered" + str(i)]
-        
-    days = max(lengths)
-    #print "%s entries remaining of %s entries: %s entries commented out, %s filtered via subpop membership" % (str(filtered),str(length0),str(comments),str(filtered))
-   
-    print "Subproccesses complete, merging results" 
-    iterXDay = [[0 for pos1 in range(days+1)] for pos2 in range(iterations)]
-    for i in range(days):
-        for j in range(iterations):
-            summed = 0
-            for k in range(cores):
-                if i <= lengths[k]:
-                    summed += merged['byDay' + str(k)][j][i]
-            iterXDay[j][i] += summed"""
-            
