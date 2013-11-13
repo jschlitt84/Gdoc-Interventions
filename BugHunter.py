@@ -256,7 +256,7 @@ def loadCrossTalk(crossTalkEFO6, crossTalkSubs):
         lengths.append(merged2["days" + str(i)])
         
     for i in range(iterations):
-        print "LENGTH", i, len(merged2['byDay'[i]+ str(k)])
+        print "LENGTH", i, len(merged2['byDay'+ str(k)][i])
        
     print "Subproccesses complete, merging results" 
     crossTalk = [[0 for pos1 in range(days+1)] for pos2 in range(iterations)]
