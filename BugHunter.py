@@ -261,6 +261,13 @@ def loadCrossTalk(crossTalkEFO6, crossTalkSubs):
             
     print "Results merge complete, beginning analysis"
     
+    ctRates = []
+    for pos in range(iterations):
+        ctRates.append(sum(crossTalk[pos]))
+    meanCT = sum(ctRates)/iterations
+    print "Cross Talk Rates:", ctRates
+    print "Mean:", meanCT
+    
     isEpidemic = [0]*iterations
     for i in range(iterations):
         isEpidemic[i] = not(ignore[i])
