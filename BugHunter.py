@@ -248,9 +248,12 @@ def loadCrossTalk(crossTalkEFO6, crossTalkSubs):
         merged2.update(out_q.get())
     for p in processes:
         p.join()
+        
+    for i in range(cores):
+        lengths.append(merged2["days" + str(i)])
        
     print "Subproccesses complete, merging results" 
-    crossTalk = [[0 for pos1 in range(days)] for pos2 in range(iterations)]
+    crossTalk = [[0 for pos1 in range(days+1)] for pos2 in range(iterations)]
     for i in range(days):
         for j in range(iterations):
             summed = 0
