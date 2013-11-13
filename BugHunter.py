@@ -532,7 +532,7 @@ def main():
                             'toType':subpopFiles[subpop[0]+'_type'],
                             'fromPop':subpopFiles[subpop[1]],
                             'fromType':subpopFiles[subpop[1] + '_type']}
-            print sorted(EFO6Files.keys().sorted)
+            print sorted(EFO6Files.keys())
             print sorted(subpopFiles.keys())
             print "Analyszing crosstalk for", EFO6Files[experiment[1]], " with subpops", subpop[0:2]
             crossTalk = getCrossTalk(crossTalkEFO6, crossTalkSubs)
