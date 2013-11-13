@@ -316,7 +316,7 @@ def loadEFO6(fileName, out_q, count):
     params = content[0].split(' ')    
     popSize = int(params[1])
     iterations = int(params[3])
-    trimmed = content[popSize+2:]
+    trimmed = content[popSize+3:]
     for pos in range(len(trimmed)):
         trimmed[pos] =  map(int,trimmed[pos].split(' '))
     length0 = len(trimmed)
