@@ -261,7 +261,7 @@ def loadCrossTalk(crossTalkEFO6, crossTalkSubs):
             
     print "Results merge complete, beginning analysis"
     
-    isEpidemic = [0 for pos in range(iterations+1)]
+    isEpidemic = [0]*(iterations+1)
     for i in range(iterations+1):
         isEpidemic[i] = not ignore[i]
         
