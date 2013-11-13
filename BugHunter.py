@@ -15,6 +15,9 @@ paramsLine = "Output Folder,Subpopulation Directory"
 toFromLine = "To Subpopulation,From Subpopulation"
 EFO6Line = "EFO6 Files To Analyze"
 
+def fixLengths(matrix):
+    None
+
 def printList(list):
     text = ""
     for item in list:
@@ -251,6 +254,9 @@ def loadCrossTalk(crossTalkEFO6, crossTalkSubs):
         
     for i in range(cores):
         lengths.append(merged2["days" + str(i)])
+        
+    for i in range(iterations):
+        print "LENGTH", i, len(merged2['byDay'[i]+ str(k)])
        
     print "Subproccesses complete, merging results" 
     crossTalk = [[0 for pos1 in range(days+1)] for pos2 in range(iterations)]
