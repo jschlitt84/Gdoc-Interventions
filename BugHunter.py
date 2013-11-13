@@ -261,7 +261,7 @@ def loadCrossTalk(crossTalkEFO6, crossTalkSubs):
             
     print "Results merge complete, beginning analysis"
     
-    isEpidemic = [0]* iterations + 1
+    isEpidemic = [0 for pos in range(iterations+1)]
     for i in range(iterations+1):
         isEpidemic[i] = not ignore[i]
         
@@ -270,14 +270,14 @@ def loadCrossTalk(crossTalkEFO6, crossTalkSubs):
         temp = 0
         for pos2 in range(iterations):
             if not ignore[pos2]:
-                temp += iterXDayCT[pos2][pos1]   
+                temp += crossTalk[pos2][pos1]   
         if iterations != ignored:
             ctMean.append(int((float(temp)/(iterations-ignored))+.5))
     
     if sum(meanCurve) == 0:
         empty[iterations] = True    
     
-    return {'epiCurves':iterXDay,'crossTalkCurves':iterXDay,'meanCurve':meanCurve,"meanCrossTalkCurve":ctMean, "isEpidemic":isEpidemic}
+    return {'epiCurves':iterXDay,'crossTalkCurves':crossTalk,'meanCurve':meanCurve,"meanCrossTalkCurve":ctMean, "isEpidemic":isEpidemic}
 
 def loadEFO6(fileName, out_q, count):
     outDict = {}
