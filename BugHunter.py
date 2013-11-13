@@ -97,9 +97,8 @@ def getCrossTalk(trimmed, crossTalkSubs, iterations, disjoint, out_q, core):
     fromSubpop =  crossTalkSubs['fromPop']
     fromType =  crossTalkSubs['fromType']
     fromName = crossTalkSubs['fromName']
-    length0 =  len(trimmed)
-    
-    length = length0 =  len(EFO6)
+
+    length = length0 =  len(trimmed)
     days = comments = filtered = pos = 0
     notifyEvery = 50000
     print "Core", core, "preparing to filter population, size:", length0
