@@ -50,8 +50,15 @@ def filterIDs(directory, count):
     idstemp =  sorted(list(ids))      
     print '\tSubpop', count, str(line), "entries with IDS", int(idstemp[0]), "through", int(idstemp[line-1]), "loaded"
     return ids
+    
+def getLength(directory):
+	fileIn = open('/'.join(directory.split('/')[:-1])+'/config')
+	line = ''
+	while not line.startswith('SimulationDuration = '):
+		line = fileIn.readline()
+	return int(line.replace('SumulationDuration = ','')	
 
-def findIgnores(trimmed, subpopLoaded, out_q, core, iterations, disjoint):
+def findIgnores(trimmed, subpopLoaded, out_q, core, iterations, disjoint, duration):
     length = length0 =  len(trimmed)
     days = comments = filtered = pos = 0
     notifyEvery = 50000
@@ -77,8 +84,10 @@ def findIgnores(trimmed, subpopLoaded, out_q, core, iterations, disjoint):
             print "Core", core, "filtering", pos+filtered, "out of", length0, "entries"
     
     print "Core", core, "filtering complete, beginning sort by day"
-    for key, entry in content.iteritems():
-        days =  max(days, entry[2])
+    #for key, entry in content.iteritems():
+    #    days =  max(days, entry[2])
+    
+    days = duration
         
     iterXDay = [[0 for pos1 in range(days+1)] for pos2 in range(iterations)]
     for key, entry in content.iteritems():
@@ -93,7 +102,7 @@ def findIgnores(trimmed, subpopLoaded, out_q, core, iterations, disjoint):
     outdict['days' + str(core)] = days
     out_q.put(outdict)
 
-def getCrossTalk(trimmed, crossTalkSubs, iterations, disjoint, out_q, core):
+def getCrossTalk(trimmed, crossTalkSubs, iterations, disjoint, out_q, core, duration):
     toSubpop = crossTalkSubs['toPop']
     toType = crossTalkSubs['toType']
     toName = crossTalkSubs['toName']
@@ -127,8 +136,9 @@ def getCrossTalk(trimmed, crossTalkSubs, iterations, disjoint, out_q, core):
             print "Core", core, "filtering", pos+filtered, "out of", length0, "entries"
     
     print "Core", core, "filtering complete, beginning sort by day"
-    for key, entry in content.iteritems():
-        days =  max(days, entry[2])
+    #for key, entry in content.iteritems():
+    #    days =  max(days, entry[2])
+    days = duration
         
     iterXDay = [[0 for pos1 in range(days+1)] for pos2 in range(iterations)]
     for key, entry in content.iteritems():
@@ -143,7 +153,7 @@ def getCrossTalk(trimmed, crossTalkSubs, iterations, disjoint, out_q, core):
     
     
     
-def loadCrossTalk(crossTalkEFO6, crossTalkSubs):
+def loadCrossTalk(crossTalkEFO6, crossTalkSubs, duration):
     EFO6 = crossTalkEFO6['EFO6']
     iterations = crossTalkEFO6['iterations']
     toSubpop = crossTalkSubs['toPop']
@@ -166,7 +176,7 @@ def loadCrossTalk(crossTalkEFO6, crossTalkSubs):
     processes = []
     
     for i in range(cores):
-        p = Process(target = findIgnores, args = (EFO6[block*i:block*(i+1)], toSubpop, out_q, i, iterations, block*i))
+        p = Process(target = findIgnores, args = (EFO6[block*i:block*(i+1)], toSubpop, out_q, i, iterations, block*i, duration))
         processes.append(p)
         p.start() 
     merged = {}
@@ -248,7 +258,7 @@ def loadCrossTalk(crossTalkEFO6, crossTalkSubs):
     
     for i in range(cores):
         #p = Process(target = getCrossTalk, args = (EFO6[block*i:block*(i+1)], toSubpop, out_q, i, iterations, block*i))
-        p = Process(target = getCrossTalk, args = (EFO6[block*i:block*(i+1)], crossTalkSubs, iterations, block*i, out_q, i))
+        p = Process(target = getCrossTalk, args = (EFO6[block*i:block*(i+1)], crossTalkSubs, iterations, block*i, out_q, i, duration))
         processes.append(p)
         p.start() 
     merged2 = {}
@@ -481,7 +491,6 @@ def main():
             sys.argv.insert(1,'null')
             sys.argv.insert(1,'null')
 
-    #script = gDocsImport.getScript(sys.argv[1], sys.argv[2], sys.argv[3], 0, -1, "default", False, [])
     params = gd.getLine(sys.argv[1], sys.argv[2], sys.argv[3], paramsLine, False, [])
     script = gd.getScript(sys.argv[1], sys.argv[2], sys.argv[3], toFromLine, EFO6Line, "default", False, [])
     directories = gd.getScript(sys.argv[1], sys.argv[2], sys.argv[3], EFO6Line, -1, "default", False, [])
@@ -539,7 +548,8 @@ def main():
                             'fromType':subpopFiles[subpop[1] + '_type'],
                             'fromName':subpop[1]}
             print "Analyszing crosstalk for", experiment[1], " with subpops", subpop[0:2]
-            crossTalk = loadCrossTalk(crossTalkEFO6, crossTalkSubs)
+            duration = getLength(experiments[1])
+            crossTalk = loadCrossTalk(crossTalkEFO6, crossTalkSubs, duration)
             allCurves.append(crossTalk)
             print printList(crossTalk['crossTalkCurves'])
     
