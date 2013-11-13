@@ -56,8 +56,8 @@ def getLength(directory):
 	line = ''
 	while not line.startswith('SimulationDuration = '):
 		line = fileIn.readline()
-	return int(line.replace('SumulationDuration = ','')	
-
+	return int(line.replace('SumulationDuration = ',''))
+	
 def findIgnores(trimmed, subpopLoaded, out_q, core, iterations, disjoint, duration):
     length = length0 =  len(trimmed)
     days = comments = filtered = pos = 0
