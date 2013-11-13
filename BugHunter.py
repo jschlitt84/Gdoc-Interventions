@@ -177,6 +177,7 @@ def loadCrossTalk(crossTalkEFO6, crossTalkSubs):
     
     for i in range(cores):
         lengths.append(merged["days" + str(i)])
+    days = max(lengths)
         
     for i in range(iterations):
         for k in range(cores):
@@ -255,9 +256,13 @@ def loadCrossTalk(crossTalkEFO6, crossTalkSubs):
         merged2.update(out_q.get())
     for p in processes:
         p.join()
-        
+    
+    lengths2 = []    
+       
     for i in range(cores):
-        lengths.append(merged2["days" + str(i)])
+        lengths2.append(merged["days" + str(i)])
+ 
+    days = max(lengths2)
         
     for i in range(iterations):
         for k in range(cores):
@@ -270,11 +275,7 @@ def loadCrossTalk(crossTalkEFO6, crossTalkSubs):
             summed = 0
             for k in range(cores):
                 if i <= lengths[k]:
-                    #print k, i, j
-                    try:
-                        summed += merged2['byDay' + str(k)][j][i]
-                    except:
-                        print "Errrm....."
+                    summed += merged2['byDay' + str(k)][j][i]
             crossTalk[j][i] += summed
             
     print "Results merge complete, beginning analysis"
