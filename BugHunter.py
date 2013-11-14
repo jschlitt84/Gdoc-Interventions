@@ -123,7 +123,7 @@ def getCrossTalk(trimmed, crossTalkSubs, iterations, disjoint, out_q, core, dura
 		print "Ignoring comment:", trimmed[pos]
 		disjoint -= 1
 		comments += 1
-	elif trimmed[pos][3] = -1:
+	elif trimmed[pos][3] == -1:
 		disjoint -= 1
 		comments += 1
         else:
