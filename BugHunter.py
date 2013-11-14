@@ -30,7 +30,7 @@ def printList(listed):
             level += 1
             text += line[0:100]
             line = '\n' + '\t'*level + line[100:]
-            text += line
+        text += line
     else:
         for item in temp:
        	    level = 1
