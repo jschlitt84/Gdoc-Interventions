@@ -62,7 +62,7 @@ def findIgnores(trimmed, subpopLoaded, out_q, core, iterations, disjoint, durati
     length = length0 =  len(trimmed)
     days = comments = filtered = pos = 0
     notifyEvery = 50000
-    print "Core", core, "preparing to filter population, size:", length0
+    print "\tCore", core, "preparing to filter population, size:", length0
     outdict = {}
     content = {}
     
@@ -81,9 +81,9 @@ def findIgnores(trimmed, subpopLoaded, out_q, core, iterations, disjoint, durati
     	
     	pos += 1
         if (pos+filtered)%notifyEvery == 0:
-            print "Core", core, "filtering", pos+filtered, "out of", length0, "entries"
+            print "\tCore", core, "filtering", pos+filtered, "out of", length0, "entries"
     
-    print "Core", core, "filtering complete, beginning sort by day"
+    print "\tCore", core, "filtering complete, beginning sort by day"
     #for key, entry in content.iteritems():
     #    days =  max(days, entry[2])
     
@@ -93,7 +93,7 @@ def findIgnores(trimmed, subpopLoaded, out_q, core, iterations, disjoint, durati
     for key, entry in content.iteritems():
 	iterXDay[entry[1]][entry[2]] += 1
     
-    print "Core", core, "task complete"
+    print "\tCore", core, "task complete"
     
     filtered = length - comments - len(outdict)
     outdict['comments'+str(core)] = comments
@@ -113,7 +113,7 @@ def getCrossTalk(trimmed, crossTalkSubs, iterations, disjoint, out_q, core, dura
     length = length0 =  len(trimmed)
     days = comments = filtered = pos = 0
     notifyEvery = 50000
-    print "Core", core, "preparing to filter population, size:", length0
+    print "\tCore", core, "preparing to filter population, size:", length0
     outdict = {}
     content = {}
     
@@ -136,16 +136,16 @@ def getCrossTalk(trimmed, crossTalkSubs, iterations, disjoint, out_q, core, dura
     	
     	pos += 1
         if (pos+filtered)%notifyEvery == 0:
-            print "Core", core, "filtering", pos+filtered, "out of", length0, "entries"
+            print "\tCore", core, "filtering", pos+filtered, "out of", length0, "entries"
     
-    print "Core", core, "filtering complete, beginning sort by day"
+    print "\tCore", core, "filtering complete, beginning sort by day"
     days = duration
         
     iterXDay = [[0 for pos1 in range(days+1)] for pos2 in range(iterations)]
     for key, entry in content.iteritems():
 	iterXDay[entry[1]][entry[2]] += 1
     
-    print "Core", core, "task complete"
+    print "\tCore", core, "task complete"
     
     filtered = length - comments - len(outdict)
     outdict['byDay' + str(core)] = iterXDay
@@ -195,7 +195,7 @@ def loadCrossTalk(crossTalkEFO6, crossTalkSubs, duration):
     #        print "LENGTH", i, len(merged['byDay'+ str(1)][i])
     days = duration
    
-    print "Subproccesses complete, merging results" 
+    print "\tSubproccesses complete, merging results" 
     iterXDay = [[0 for pos1 in range(days+1)] for pos2 in range(iterations)]
     for i in range(days):
         for j in range(iterations):
@@ -205,7 +205,7 @@ def loadCrossTalk(crossTalkEFO6, crossTalkSubs, duration):
                     summed += merged['byDay' + str(k)][j][i]
             iterXDay[j][i] += summed
             
-    print "Results merge complete, beginning checking for iteration epidemic status"
+    print "\tResults merge complete, beginning checking for iteration epidemic status"
     
     attackRates = []
     ignore = [False]*iterations
@@ -214,7 +214,7 @@ def loadCrossTalk(crossTalkEFO6, crossTalkSubs, duration):
     for pos in range(iterations):
         attackRates.append(sum(iterXDay[pos]))
     meanAttack = sum(attackRates)/iterations
-    print "Attack Rates:", attackRates
+    print "\nAttack Rates:", attackRates
     print "Mean:", meanAttack
     
     epiAttack = 0
@@ -282,7 +282,7 @@ def loadCrossTalk(crossTalkEFO6, crossTalkSubs, duration):
     
     days = duration
        
-    print "Subproccesses complete, merging results" 
+    print "\tSubproccesses complete, merging results" 
     crossTalk = [[0 for pos1 in range(days+1)] for pos2 in range(iterations)]
     for i in range(days):
         for j in range(iterations):
@@ -292,13 +292,13 @@ def loadCrossTalk(crossTalkEFO6, crossTalkSubs, duration):
                     summed += merged2['byDay' + str(k)][j][i]
             crossTalk[j][i] += summed
             
-    print "Results merge complete, beginning analysis"
+    print "\tResults merge complete, beginning analysis"
     
     ctRates = []
     for pos in range(iterations):
         ctRates.append(sum(crossTalk[pos]))
     meanCT = sum(ctRates)/iterations
-    print "Cross Talk Rates:", ctRates
+    print "\nCross Talk Rates:", ctRates
     print "Mean:", meanCT
     
     isEpidemic = [0]*iterations
@@ -444,7 +444,7 @@ def loadSubpop(subpop, subPopDir, out_q, count):
                 outDict[subpop] = temp.union(temp2)
                 outDict[subpop + "_type"] = direct
         elif loadType == "xor":
-            print "\tLoading symmetric difference of subpops", count, ':', params[0], "or", params[2] 
+            print "\tLoading symmetric difference of subpops", count, ':', params[0], "xor", params[2] 
             temp = filterIDs(subPopDir + params[0], count)
             temp2 = filterIDs(subPopDir + params[2], count)
             if temp == 'error' or temp2 == 'error':
@@ -555,7 +555,7 @@ def main():
                             'fromPop':subpopFiles[subpop[1]],
                             'fromType':subpopFiles[subpop[1] + '_type'],
                             'fromName':subpop[1]}
-            print "Analyszing crosstalk for", experiment[1], " with subpops", subpop[0:2]
+            print "\nAnalizing crosstalk for", experiment[1], "\n\twith subpops", subpop[0:2]
             duration = getLength(experiment[1])
             crossTalk = loadCrossTalk(crossTalkEFO6, crossTalkSubs, duration)
             allCurves.append(crossTalk)
