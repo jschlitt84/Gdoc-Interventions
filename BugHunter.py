@@ -530,13 +530,13 @@ def getRepNum(popName, subpop, isDirect, EFO6slice, out_q, iteration, duration):
         if (((row[0] in subpop) == isDirect) or popName == "ANY") and row[2] < duration:
             infectedIDS[row[0]] = prepID(row[0], row[2])
     
-    print "Iteration", iteration, "prameters"    
+    print "\n\tIteration", iteration, "parameters"    
     print "\tSubpop Inclusive:", isDirect
     print "\tSubpop Size:", len(subpop)
     print "\tSubpop Infected:", len(infectedIDS)
     print "\tTransmission events:", len(infectors)
             
-    print "\tTabulating iteration", iteration, "total infections by day infector was infected"
+    print "\n\tTabulating iteration", iteration, "total infections by day infector was infected"
     for key, value in infectedIDS.iteritems():
         infectedIDS[key]['numInfected'] =  infectors.count(key) 
         infectionsByDay[infectedIDS[key]['dayInfected']] += infectedIDS[key]['numInfected']
@@ -592,7 +592,7 @@ def loadRepNum(popName, subpop, isDirect, EFO6, iterations, duration, isEpi):
                 dailySum += rCurves[iteration][day]
         meanCurve[day] = float(dailySum)/sum(isEpi)
     
-    return {'repNumCurves':repNumStats,'repNumMeanCurve':meanCurve}
+    return {'repNumCurves':repNumStats,'meanRepNumCurve':meanCurve}
             
 def main():
     if len(sys.argv) > 2:
@@ -677,7 +677,6 @@ def main():
                             'fromType':subpopFiles[subpop[1] + '_type'],
                             'fromName':subpop[1]}
             print "\nAnalizing crosstalk for", experiment[1], "\n\twith subpops", subpop[0:2]
-            #crossTalk = loadCrossTalk(crossTalkEFO6, crossTalkSubs, durations[experiment[0]], subpop[0], subpop[1])
             crossTalk = loadCrossTalk(crossTalkEFO6, crossTalkSubs, durations[experiment[0]])
             
             fromPopIsEpi[fromPops.index(subpop[1])] = crossTalk['isEpidemic']
@@ -704,7 +703,14 @@ def main():
                             EFO6Files[experiment[1]+'_iterations'],
                             durations[experiment[0]],
                             fromPopIsEpi[pos])
-            print repNumStats['repNumMeanCurve']
+            print repNumStats['meanRepNumCurve']
+            statsOut = open(outDir + 'RepNum_' + experiment[0],'a+b')
+            statsOut.write(curvesToStringRN(repNumStats['meanRepNumCurve'],
+                                            repNumStats['repNumCurves'],
+                                            fromPopIsEpi[pos],
+                                            experiment[1],
+                                            subpop[1]))
+            statsOut.close()
             
     
     
