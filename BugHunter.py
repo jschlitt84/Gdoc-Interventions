@@ -492,7 +492,7 @@ def curvesToString(meanCurves, iterationCurves, isEpidemic, directory):
     text += '\n'
     if iterationCurves != 'null':
         for row in range(len(iterationCurves)):
-            text += directory + ',' + str(row) + ',' + str(isEpidemic) + ','
+            text += directory + ',' + str(row) + ',' + str(isEpidemic[row]) + ','
             for entry in iterationCurves[row]:
                 text += str(entry) + ','
             text += '\n'
