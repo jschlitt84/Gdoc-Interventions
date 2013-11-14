@@ -538,6 +538,9 @@ def getRepNum(popName, subpop, isDirect, EFO6slice, out_q, iteration, duration):
     
     print "\tDeriving iteration", iteration, "Reproductive Number"
     
+    print infectedIDS
+    print "INFECTED", len(infectedIDS)
+    print "INFECTORS", len(infectors)
     print infectors[0:10]
     
     for day in range(duration):
