@@ -485,20 +485,104 @@ def getSubpops(script, subpopDir):
     
     return subpopFiles  
     
-def curvesToString(meanCurves, iterationCurves, isEpidemic, directory):
+def curvesToStringCT(meanCurves, iterationCurves, isEpidemic, directory, toSubpop, fromSubpop):
     text = directory + ',mean,-1,'
     for entry in meanCurves:
         text += str(entry) + ','
     text += '\n'
     if iterationCurves != 'null':
         for row in range(len(iterationCurves)):
-            text += directory + ',' + str(row) + ',' + str(isEpidemic[row]) + ','
+            text += directory + ',' + toSubpop + ',' + fromSubpop + ',' + str(row) + ',' + str(isEpidemic[row]) + ','
+            for entry in iterationCurves[row]:
+                text += str(entry) + ','
+            text += '\n'
+    return text
+
+def curvesToStringRN(meanCurves, iterationCurves, isEpidemic, directory, fromSubpop):
+    text = directory + ',mean,-1,'
+    for entry in meanCurves:
+        text += str(entry) + ','
+    text += '\n'
+    if iterationCurves != 'null':
+        for row in range(len(iterationCurves)):
+            text += directory + ',' + fromSubpop + ',' + str(row) + ',' + str(isEpidemic[row]) + ','
             for entry in iterationCurves[row]:
                 text += str(entry) + ','
             text += '\n'
     return text
     
+def prepID(ID, dayInfected):
+    return {'ID':ID,'dayInfected':dayInfected,'numInfected':0}
+    
+def getRepNum(popName, subpop, isDirect, EFO6slice, out_q, iteration, duration):
+    infectedIDS = {}
+    infectors = []
+    infectionsByDay = [[0]]*duration
+    infectorsByDay = [[0]]*duration
+    repNumByDay = [[0]]*duration
+    
+    outDict = {}
+    
+    print "\tPrepping infector/infectee structures for iteration", iteration
+    for row in EFO6slice:
+        if row[3] != -1:
+            infectors.append(row[3])
+        if (row[0] in subpop == isDirect) or popName == "ANY":
+            infectedIDS[row[0]] = prepID(row[0], row[2])
+            
+    print "\tTabulating iteration", iteration, "total infections by day infector was infected"
+    for key, value in infectedIDS.iteritems():
+        infectedIDS[key]['numInfected'] =  infectors.count[key]
+        infectionsByDay[infectedIDS[key]['dayInfected']] += infectedIDS[key]['numInfected']
+        infectorsByDay[infectedIDS[key]['dayInfected']] += 1
+    
+    print "\tDeriving Reproductive Number"
+    
+    for day in range(duration):
+        repNumByDay[day] = float(infectionsByDay[day]) / infectorsByDay[day]
+        
+    print "\tIteration", iteration, "Complete"
+    
+    outDict[iteration] = repNumByDay
+    outDict['iteration' + '_data'] = infectedIDS
+    out_q.put(outDict)
+    
+def loadRepNum(popName, subpop, isDirect, EFO6, iterations, duration, isEpi):
+    print "Sorting EF06 by", iterations, "iterations"
+    iterEFO6 = []
+    for iteration in iterations:
+        iterEFO6.append([])
+    for row in EFO6:
+        iterEFO6[row[1]].append(row)
+    out_q = Queue()
 
+    print "\nPassing arguments:"
+    repNumStats = {}
+    rCurves = []*iterations
+    meanCurve = []*duration
+    processes = []
+    
+    for iteration in range(iterations):
+        p = Process(target = getRepNum, args = (popName, subpop, isDirect, iterEFO6[iteration], out_q, iteration, duration))
+        processes.append(p)
+        p.start() 
+    for iteration in range(iterations):
+        repNumStats.update(out_q.get())
+    for p in processes:
+        p.join()
+    print "Reproductive number computation complete"
+    
+    for iteration in range(iterations):
+        rCurves[iteration] = repNumStats[iteration]
+ 
+    for day in range(duration):
+        dailySum = 0
+        for iteration in range(iterations):
+            if isEpi[iteration]:
+                dailySum += rCurves[iteration][day]
+        meanCurve[day] = float(dailySum)/sum(isEpi)
+    
+    return {'repNumCurves':repNumStats,'repNumMeanCurve':meanCurve}
             
 def main():
     if len(sys.argv) > 2:
@@ -519,11 +603,14 @@ def main():
     subpopDir = prepDir(params[1])
     filesOut = []
     durations = {}
+    fromPops = []
     
     for line in script:
         if len(line[0]) == 0 or len(line[1]) == 0:
             print "Error, missing to or from subpop name, line:", line
             quit()
+        if line[1] not in fromPops:
+            fromPops.append(line[1])
     for line in directories:
         if len(line[0]) == 0 or len(line[1]) == 0:
             print "Error, missing file or directory name, line:", line
@@ -537,7 +624,7 @@ def main():
             filesOut.append(line[0])
             text = str(range(durations[line[0]])).replace('[','').replace(']',',\n').replace(' ','')
             flush = open(outDir + line[0],'w')
-            flush.write("directory,iteration,isEpidemic," + text)
+            flush.write("directory,toSubpop,fromSubpop,iteration,isEpidemic," + text)
             flush.close()
     
     if len(outDir) == 0:
@@ -565,6 +652,8 @@ def main():
         quit()
     
     allCurves = []
+    fromPopIsEpi = []
+    
     for experiment in directories:
         for subpop in script:
             crossTalkEFO6 = {'EFO6':EFO6Files[experiment[1]],'iterations':EFO6Files[experiment[1] +'_iterations']} 
@@ -575,7 +664,8 @@ def main():
                             'fromType':subpopFiles[subpop[1] + '_type'],
                             'fromName':subpop[1]}
             print "\nAnalizing crosstalk for", experiment[1], "\n\twith subpops", subpop[0:2]
-            crossTalk = loadCrossTalk(crossTalkEFO6, crossTalkSubs, durations[experiment[0]])
+            crossTalk = loadCrossTalk(crossTalkEFO6, crossTalkSubs, durations[experiment[0]], subpop[0], subpop[1])
+            fromPopIsEpi[fromPops.index(subpop[1])] = crossTalk['isEpidemic']
             statsOut = open(outDir + experiment[0],'a+b')
             statsOut.write(curvesToString(crossTalk['meanCrossTalkCurve'],
                                             crossTalk['crossTalkCurves'],
@@ -585,8 +675,22 @@ def main():
             #allCurves.append(crossTalk)
             print printList(crossTalk['crossTalkCurves'])
             
+    print "CrossTalk Analysis Complete, beginning reproductive number analysis"
     
-    print "CrossTalk Analysis Complete, preparing output"
+    for experiment in directories:
+        for pos in range(len(fromPops)):
+            pop = fromPops[pos]
+            repNumStats = loadRepNum(pop,
+                            subpopFiles[pop],
+                            subpopFiles[pop + '_type'],
+                            EFO6Files[experiment[1]],
+                            EFO6Files[experiment[1]+'_iterations'],
+                            durations[experiment[0]],
+                            fromPopIsEpi[pos])
+            print repNumStats['repNumMeanCurves']
+            
+    
+    
     
             
     
