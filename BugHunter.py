@@ -21,10 +21,12 @@ def fixLengths(matrix):
 def printList(list):
     text = ""
     for item in list:
+    	level = 1
         line = '\t' + str(item) + '\n'
         while len(line)>100:
+        	level += 1
         	text += line[0:100]
-        	line = '\n\t\t' + line[100:]
+        	line = '\n' + '\t'*level + line[100:]
         text += line
     return text
 
