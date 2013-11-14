@@ -503,8 +503,7 @@ def curvesToStringCT(meanCurves, iterationCurves, isEpidemic, directory, toSubpo
 
 def curvesToStringRN(meanCurves, iterationCurves, isEpidemic, directory, fromSubpop):
     for curve in iterationCurves:
-        print "CURVE"
-        print printList(curve)
+        print curve
     
     print len(iterationCurves)
     print len(iterationCurves[0])
