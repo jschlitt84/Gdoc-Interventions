@@ -95,7 +95,7 @@ def findIgnores(trimmed, subpopLoaded, out_q, core, iterations, disjoint, durati
     
     days = duration
         
-    iterXDay = [[0 for pos1 in range(days+1)] for pos2 in range(iterations)]
+    iterXDay = [[0 for pos1 in range(days)] for pos2 in range(iterations)]
     for key, entry in content.iteritems():
 	iterXDay[entry[1]][entry[2]] += 1
     
@@ -147,7 +147,7 @@ def getCrossTalk(trimmed, crossTalkSubs, iterations, disjoint, out_q, core, dura
     print "\tCore", core, "filtering complete, beginning sort by day"
     days = duration
         
-    iterXDay = [[0 for pos1 in range(days+1)] for pos2 in range(iterations)]
+    iterXDay = [[0 for pos1 in range(days)] for pos2 in range(iterations)]
     for key, entry in content.iteritems():
 	iterXDay[entry[1]][entry[2]] += 1
     
@@ -193,7 +193,7 @@ def loadCrossTalk(crossTalkEFO6, crossTalkSubs, duration):
     days = duration
    
     print "\tSubproccesses complete, merging results" 
-    iterXDay = [[0 for pos1 in range(days+1)] for pos2 in range(iterations)]
+    iterXDay = [[0 for pos1 in range(days)] for pos2 in range(iterations)]
     for i in range(days):
         for j in range(iterations):
             summed = 0
@@ -280,7 +280,7 @@ def loadCrossTalk(crossTalkEFO6, crossTalkSubs, duration):
     days = duration
        
     print "\tSubproccesses complete, merging results" 
-    crossTalk = [[0 for pos1 in range(days+1)] for pos2 in range(iterations)]
+    crossTalk = [[0 for pos1 in range(days)] for pos2 in range(iterations)]
     for i in range(days):
         for j in range(iterations):
             summed = 0
