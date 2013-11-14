@@ -501,10 +501,7 @@ def curvesToStringCT(meanCurves, iterationCurves, isEpidemic, directory, toSubpo
             text += '\n'
     return text
 
-def curvesToStringRN(meanCurves, iterationCurves, isEpidemic, directory, fromSubpop):
-    for curve in iterationCurves:
-        print curve
-    
+def curvesToStringRN(meanCurves, iterationCurves, isEpidemic, directory, fromSubpop):    
     print len(iterationCurves)
     print len(iterationCurves[0])
     text = directory + ',mean,-1,'
