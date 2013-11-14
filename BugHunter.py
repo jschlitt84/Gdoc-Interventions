@@ -20,18 +20,25 @@ def fixLengths(matrix):
 
 def printList(listed):
     temp = listed[:]
+    text = ""
     if isinstance(listed[0], float):
         temp = ['%.5f' % elem for elem in listed]
-        
-    text = ""
-    for item in temp:
-    	level = 1
+        level = 1
         line = '\t' + str(item) + '\n'
         while len(line)>100:
-        	level += 1
-        	text += line[0:100]
-        	line = '\n' + '\t'*level + line[100:]
-        text += line
+            level += 1
+            text += line[0:100]
+            line = '\n' + '\t'*level + line[100:]
+            text += line
+    else:
+        for item in temp:
+       	    level = 1
+            line = '\t' + str(item) + '\n'
+            while len(line)>100:
+           	level += 1
+           	text += line[0:100]
+           	line = '\n' + '\t'*level + line[100:]
+            text += line
     return text
 
 def prepDir(directory):
