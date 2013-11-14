@@ -168,12 +168,7 @@ def loadCrossTalk(crossTalkEFO6, crossTalkSubs, duration):
     fromSubpop =  crossTalkSubs['fromPop']
     fromType =  crossTalkSubs['fromType']
     length0 =  len(EFO6)
-
-    #trimmed = content[popSize+2:]
-    #length0 = len(trimmed)
-    #days =comments = filtered = pos = 0
     lengths = []
-    #isEmpty = False
     
     print "\nChecking for non epidemic iterations.."
         
@@ -194,11 +189,7 @@ def loadCrossTalk(crossTalkEFO6, crossTalkSubs, duration):
     
     for i in range(cores):
         lengths.append(merged["days" + str(i)])
-    #days = max(lengths)
-        
-    #for i in range(iterations):
-    #    for k in range(cores):
-    #        print "LENGTH", i, len(merged['byDay'+ str(1)][i])
+
     days = duration
    
     print "\tSubproccesses complete, merging results" 
@@ -323,7 +314,7 @@ def loadCrossTalk(crossTalkEFO6, crossTalkSubs, duration):
     if sum(meanCurve) == 0:
         empty[iterations] = True    
     
-    return {'epiCurves':iterXDay,'crossTalkCurves':crossTalk,'meanCurve':meanCurve,"meanCrossTalkCurve":ctMean, "isEpidemic":isEpidemic, 'length':days}
+    return {'epiCurves':iterXDay,'crossTalkCurves':crossTalk,'meanCurve':meanCurve,"meanCrossTalkCurve":ctMean, "isEpidemic":isEpidemic, 'length':days, 'iterations':iterations}
 
 def loadEFO6(fileName, out_q, count):
     outDict = {}
@@ -493,6 +484,20 @@ def getSubpops(script, subpopDir):
     print "Subpop loading complete"
     
     return subpopFiles  
+    
+def curvesToString(meanCurves, iterationCurves, isEpidemic, directory):
+    text = directory + ',mean,-1,'
+    for entry in meanCurves:
+        text += str(entry) + ','
+    text += '\n'
+    if iterationCurves != 'null':
+        for row in range(len(iterationCurves)):
+            text += directory + ',' + str(row) + ',' + str(isEpidemic) + ','
+            for entry in iterationCurves[row]:
+                text += str(entry) + ','
+            text += '\n'
+    return text
+    
 
             
 def main():
@@ -513,19 +518,27 @@ def main():
     outDir = prepDir(params[0])
     subpopDir = prepDir(params[1])
     filesOut = []
+    durations = {}
     
     for line in script:
         if len(line[0]) == 0 or len(line[1]) == 0:
             print "Error, missing to or from subpop name, line:", line
             quit()
-    
     for line in directories:
-        if line[0] not in filesOut:
-            filesOut.append(line[0])
-            flush = open(outDir + line[0],'w'); flush.close()
         if len(line[0]) == 0 or len(line[1]) == 0:
             print "Error, missing file or directory name, line:", line
             quit()
+        if line[0] not in durations:
+            durations[line[0]] = 0
+        durations[line[0]] = max(durations[line[0]],getLength(line[1]))
+        
+    for line in directories:
+        if line[0] not in filesOut:
+            filesOut.append(line[0])
+            text = str(range(durations[line[0]])).replace('[','').replace(']',',\n').replace(' ','')
+            flush = open(outDir + line[0],'w')
+            flush.write("directory,iteration,isEpidemic," + text)
+            flush.close()
     
     if len(outDir) == 0:
         print "Error, no output directory specified"
@@ -562,10 +575,16 @@ def main():
                             'fromType':subpopFiles[subpop[1] + '_type'],
                             'fromName':subpop[1]}
             print "\nAnalizing crosstalk for", experiment[1], "\n\twith subpops", subpop[0:2]
-            duration = getLength(experiment[1])
-            crossTalk = loadCrossTalk(crossTalkEFO6, crossTalkSubs, duration)
-            allCurves.append(crossTalk)
+            crossTalk = loadCrossTalk(crossTalkEFO6, crossTalkSubs, durations[experiment[1]])
+            statsOut = open(outDir + experiment[0],'a+b')
+            statsOut.write(curvesToString(crossTalk['meanCrossTalkCurve'],
+                                            crossTalk['crossTalkCurves'],
+                                            crossTalk['isEpidemic'],
+                                            experiment[1]))
+            statsOut.close()
+            #allCurves.append(crossTalk)
             print printList(crossTalk['crossTalkCurves'])
+            
     
     print "CrossTalk Analysis Complete, preparing output"
     
