@@ -502,8 +502,6 @@ def curvesToStringCT(meanCurves, iterationCurves, isEpidemic, directory, toSubpo
     return text
 
 def curvesToStringRN(meanCurves, iterationCurves, isEpidemic, directory, fromSubpop):    
-    print len(iterationCurves)
-    print len(iterationCurves[0])
     text = directory + ',mean,-1,'
     for entry in meanCurves:
         text += str(entry) + ','
@@ -708,7 +706,7 @@ def main():
                             EFO6Files[experiment[1]+'_iterations'],
                             durations[experiment[0]],
                             fromPopIsEpi[pos])
-            print printList(repNumStats['meanRepNumCurve'])
+            print '\n', printList(repNumStats['meanRepNumCurve'])
             statsOut = open(outDir + 'RepNum_' + experiment[0],'a+b')
             statsOut.write(curvesToStringRN(repNumStats['meanRepNumCurve'],
                                             repNumStats['repNumCurves'],
