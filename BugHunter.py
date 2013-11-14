@@ -677,8 +677,7 @@ def main():
                                             crossTalk['isEpidemic'],
                                             experiment[1],
                                             subpop[0],
-                                            subpop[1],
-                                            durations[experiment[0]]))
+                                            subpop[1]))
             statsOut.close()
             #allCurves.append(crossTalk)
             print printList(crossTalk['crossTalkCurves'])
