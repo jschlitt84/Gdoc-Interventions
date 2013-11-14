@@ -709,7 +709,7 @@ def main():
                                             repNumStats['repNumCurves'],
                                             fromPopIsEpi[pos],
                                             experiment[1],
-                                            subpop[1]))
+                                            pop)
             statsOut.close()
             
     
