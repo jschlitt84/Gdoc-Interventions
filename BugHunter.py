@@ -527,7 +527,7 @@ def getRepNum(popName, subpop, isDirect, EFO6slice, out_q, iteration, duration):
     for row in EFO6slice:
         if row[3] != -1:
             infectors.append(row[3])
-        if (((row[0] in subpop) == isDirect) or popName == "ANY") and row(2) < duration:
+        if (((row[0] in subpop) == isDirect) or popName == "ANY") and row[2] < duration:
             infectedIDS[row[0]] = prepID(row[0], row[2])
     
         
