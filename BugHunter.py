@@ -651,7 +651,7 @@ def main():
         quit()
     
     if not os.path.isdir(outDir):
-        os.makedir(outDir)
+        os.mkdir(outDir)
     
     print "Prepping experiment, parameters are:\n"
     print "Analysis Directory:\n\t", outDir, "\nSubpop Directory:\n\t", subpopDir
