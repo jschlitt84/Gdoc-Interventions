@@ -21,7 +21,11 @@ def fixLengths(matrix):
 def printList(list):
     text = ""
     for item in list:
-        text += '\t' + str(item) + '\n'
+        line += '\t' + str(item) + '\n'
+        while len(line)>100:
+        	text += line[0:100]
+        	line = '\n\t\t' + line[100:]
+        text += line
     return text
 
 def prepDir(directory):
