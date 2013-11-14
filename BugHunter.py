@@ -136,8 +136,6 @@ def getCrossTalk(trimmed, crossTalkSubs, iterations, disjoint, out_q, core, dura
             print "Core", core, "filtering", pos+filtered, "out of", length0, "entries"
     
     print "Core", core, "filtering complete, beginning sort by day"
-    #for key, entry in content.iteritems():
-    #    days =  max(days, entry[2])
     days = duration
         
     iterXDay = [[0 for pos1 in range(days+1)] for pos2 in range(iterations)]
@@ -187,13 +185,12 @@ def loadCrossTalk(crossTalkEFO6, crossTalkSubs, duration):
     
     for i in range(cores):
         lengths.append(merged["days" + str(i)])
-    days = max(lengths)
+    #days = max(lengths)
         
-    for i in range(iterations):
-        for k in range(cores):
-            print "LENGTH", i, len(merged['byDay'+ str(1)][i])
-        
-    days = max(lengths)
+    #for i in range(iterations):
+    #    for k in range(cores):
+    #        print "LENGTH", i, len(merged['byDay'+ str(1)][i])
+    days = duration
    
     print "Subproccesses complete, merging results" 
     iterXDay = [[0 for pos1 in range(days+1)] for pos2 in range(iterations)]
@@ -271,15 +268,16 @@ def loadCrossTalk(crossTalkEFO6, crossTalkSubs, duration):
        
     for i in range(cores):
         lengths2.append(merged["days" + str(i)])
- 
-    days = max(lengths2)
+    #days = max(lengths2)
         
-    for i in range(iterations):
-        for k in range(cores):
-            print "LENGTH", i, len(merged2['byDay'+ str(k)][i])
+    #for i in range(iterations):
+    #    for k in range(cores):
+    #        print "LENGTH", i, len(merged2['byDay'+ str(k)][i])
     
-    print lengths2
-    print days
+    #print lengths2
+    #print days
+    
+    days = duration
        
     print "Subproccesses complete, merging results" 
     crossTalk = [[0 for pos1 in range(days+1)] for pos2 in range(iterations)]
@@ -287,11 +285,8 @@ def loadCrossTalk(crossTalkEFO6, crossTalkSubs, duration):
         for j in range(iterations):
             summed = 0
             for k in range(cores):
-                if i <= lengths[k]:
-                    try:
-                        summed += merged2['byDay' + str(k)][j][i]
-                    except:
-                        print k,i,j, "not found"
+                if i <= lengths2[k]:
+                    summed += merged2['byDay' + str(k)][j][i]
             crossTalk[j][i] += summed
             
     print "Results merge complete, beginning analysis"
@@ -399,7 +394,7 @@ def loadSubpop(subpop, subPopDir, out_q, count):
         loadType = "error"
         print "Error: 2 arguments found, 'NOT' expected as first parameter"
     elif len(params) == 3:
-        if params[1] == "AND" or params[1] == "OR":
+        if params[1] == "AND" or params[1] == "OR" or params[1] == "XOR":
            loadType = params[1].lower()
         else:
             loadType = "error"
@@ -445,6 +440,16 @@ def loadSubpop(subpop, subPopDir, out_q, count):
             else:
                 outDict[subpop] = temp.union(temp2)
                 outDict[subpop + "_type"] = direct
+        elif loadType == "xor":
+            print "\tLoading symmetric difference of subpops", count, ':', params[0], "or", params[2] 
+            temp = filterIDs(subPopDir + params[0], count)
+            temp2 = filterIDs(subPopDir + params[2], count)
+            if temp == 'error' or temp2 == 'error':
+                outDict[subpop] = 'error'
+                print "Terminating process due to error"
+            else:
+                outDict[subpop] = temp.symmetric_difference(temp2)
+                outDict[subpop + "_type"] = direct        
                 
     if outDict[subpop] != "ANY" and outDict[subpop] != "error": 
         outDict[subpop + '_popSize'] = popSize = len(outDict[subpop])
