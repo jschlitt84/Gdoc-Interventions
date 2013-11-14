@@ -714,6 +714,8 @@ def main():
                                             experiment[1],
                                             pop))
             statsOut.close()
+    
+    print "Analysis complete, quitting now..."
             
     
     
