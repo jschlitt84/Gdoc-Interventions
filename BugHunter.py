@@ -539,7 +539,8 @@ def getRepNum(popName, subpop, isDirect, EFO6slice, out_q, iteration, duration):
     print "\tDeriving iteration", iteration, "Reproductive Number"
     
     for day in range(duration):
-        repNumByDay[day] = float(infectionsByDay[day]) / infectorsByDay[day]
+        print infectionsByDay[day], infectorsByDay[day]
+        #repNumByDay[day] = float(infectionsByDay[day]) / infectorsByDay[day]
         
     print "\tIteration", iteration, "Complete"
     
