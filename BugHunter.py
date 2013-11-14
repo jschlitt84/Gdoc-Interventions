@@ -527,7 +527,7 @@ def getRepNum(popName, subpop, isDirect, EFO6slice, out_q, iteration, duration):
     for row in EFO6slice:
         if row[3] != -1:
             infectors.append(row[3])
-        if (row[0] in subpop == isDirect) or popName == "ANY":
+        if ((row[0] in subpop) == isDirect) or popName == "ANY":
             infectedIDS[row[0]] = prepID(row[0], row[2])
             
     print "\tTabulating iteration", iteration, "total infections by day infector was infected"
@@ -539,6 +539,7 @@ def getRepNum(popName, subpop, isDirect, EFO6slice, out_q, iteration, duration):
     print "\tDeriving iteration", iteration, "Reproductive Number"
     
     print infectedIDS
+    print "DIRECT", isDirect
     print "SUBPOP", len(subpop)
     print "INFECTED", len(infectedIDS)
     print "INFECTORS", len(infectors)
