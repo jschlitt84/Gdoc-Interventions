@@ -24,7 +24,7 @@ def printList(listed):
     if isinstance(listed[0], float):
         temp = ['%.5f' % elem for elem in listed]
         level = 1
-        line = '\t' + str(item) + '\n'
+        line = '\t' + str(temp) + '\n'
         while len(line)>100:
             level += 1
             text += line[0:100]
