@@ -532,11 +532,13 @@ def getRepNum(popName, subpop, isDirect, EFO6slice, out_q, iteration, duration):
             
     print "\tTabulating iteration", iteration, "total infections by day infector was infected"
     for key, value in infectedIDS.iteritems():
-        infectedIDS[key]['numInfected'] =  infectors.count[key]
+        infectedIDS[key]['numInfected'] =  infectors.count(key)
         infectionsByDay[infectedIDS[key]['dayInfected']] += infectedIDS[key]['numInfected']
         infectorsByDay[infectedIDS[key]['dayInfected']] += 1
     
     print "\tDeriving iteration", iteration, "Reproductive Number"
+    
+    print infectors[0:10]
     
     for day in range(duration):
         print infectionsByDay[day], infectorsByDay[day]
