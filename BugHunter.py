@@ -25,6 +25,7 @@ def printList(listed):
         temp = ['%.5f' % elem for elem in listed]
         level = 1
         line = '\t' + str(temp).replace("'",'') + '\n'
+        print line
         while len(line)>100:
             level += 1
             text += line[0:100]
