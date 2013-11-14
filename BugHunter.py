@@ -600,7 +600,7 @@ def loadRepNum(popName, subpop, isDirect, EFO6, iterations, duration, isEpi):
                 dailySum += rCurves[iteration][day]
         meanCurve[day] = float(dailySum)/sum(isEpi)
     
-    return {'repNumCurves':repNumStats,'meanRepNumCurve':meanCurve}
+    return {'repNumCurves':rCurves,'meanRepNumCurve':meanCurve}
             
 def main():
     if len(sys.argv) > 2:
