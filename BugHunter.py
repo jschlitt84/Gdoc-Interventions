@@ -623,8 +623,11 @@ def main():
         if line[0] not in filesOut:
             filesOut.append(line[0])
             text = str(range(durations[line[0]])).replace('[','').replace(']',',\n').replace(' ','')
-            flush = open(outDir + line[0],'w')
+            flush = open(outDir + 'CrossTalk_' + line[0],'w')
             flush.write("directory,toSubpop,fromSubpop,iteration,isEpidemic," + text)
+            flush.close()
+            flush = open(outDir + 'RepNum_' + line[0],'w')
+            flush.write("directory,fromSubpop,iteration,isEpidemic," + text)
             flush.close()
     
     if len(outDir) == 0:
@@ -668,11 +671,14 @@ def main():
             crossTalk = loadCrossTalk(crossTalkEFO6, crossTalkSubs, durations[experiment[0]])
             
             fromPopIsEpi[fromPops.index(subpop[1])] = crossTalk['isEpidemic']
-            statsOut = open(outDir + experiment[0],'a+b')
-            statsOut.write(curvesToString(crossTalk['meanCrossTalkCurve'],
+            statsOut = open(outDir + 'CrossTalk_' + experiment[0],'a+b')
+            statsOut.write(curvesToStringCT(crossTalk['meanCrossTalkCurve'],
                                             crossTalk['crossTalkCurves'],
                                             crossTalk['isEpidemic'],
-                                            experiment[1]))
+                                            experiment[1],
+                                            subpop[0],
+                                            subpop[1],
+                                            durations[experiment[0]]))
             statsOut.close()
             #allCurves.append(crossTalk)
             print printList(crossTalk['crossTalkCurves'])
