@@ -545,8 +545,8 @@ def getRepNum(popName, subpop, isDirect, EFO6slice, out_q, iteration, duration):
     print "INFECTORS", len(infectors)
     
     for day in range(duration):
-        #print infectionsByDay[day], infectorsByDay[day]
-        repNumByDay[day] = float(infectionsByDay[day]) / infectorsByDay[day]
+        if infectorsByDay[day] != 0:
+            repNumByDay[day] = float(infectionsByDay[day]) / infectorsByDay[day]
         
     print "\tIteration", iteration, "Complete"
     
