@@ -652,7 +652,7 @@ def main():
         quit()
     
     allCurves = []
-    fromPopIsEpi = []
+    fromPopIsEpi = []*len(fromPop)
     
     for experiment in directories:
         for subpop in script:
