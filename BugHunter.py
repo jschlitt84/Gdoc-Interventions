@@ -517,9 +517,9 @@ def prepID(ID, dayInfected):
 def getRepNum(popName, subpop, isDirect, EFO6slice, out_q, iteration, duration):
     infectedIDS = {}
     infectors = []
-    infectionsByDay = [[0]]*duration
-    infectorsByDay = [[0]]*duration
-    repNumByDay = [[0]]*duration
+    infectionsByDay = [0]*duration
+    infectorsByDay = [0]*duration
+    repNumByDay = [0]*duration
     
     outDict = {}
     
@@ -536,7 +536,7 @@ def getRepNum(popName, subpop, isDirect, EFO6slice, out_q, iteration, duration):
         infectionsByDay[infectedIDS[key]['dayInfected']] += infectedIDS[key]['numInfected']
         infectorsByDay[infectedIDS[key]['dayInfected']] += 1
     
-    print "\tDeriving Reproductive Number"
+    print "\tDeriving iteration", iteration, "Reproductive Number"
     
     for day in range(duration):
         repNumByDay[day] = float(infectionsByDay[day]) / infectorsByDay[day]
