@@ -24,7 +24,7 @@ def printList(listed):
         temp = ['%.5f' % elem for elem in listed]
         
     text = ""
-    for item in ltemp:
+    for item in temp:
     	level = 1
         line = '\t' + str(item) + '\n'
         while len(line)>100:
