@@ -550,7 +550,7 @@ def getRepNum(popName, subpop, isDirect, EFO6slice, out_q, iteration, duration):
 def loadRepNum(popName, subpop, isDirect, EFO6, iterations, duration, isEpi):
     print "Sorting EF06 by", iterations, "iterations"
     iterEFO6 = []
-    for iteration in iterations:
+    for iteration in range(iterations):
         iterEFO6.append([])
     for row in EFO6:
         iterEFO6[row[1]].append(row)
