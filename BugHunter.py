@@ -628,7 +628,10 @@ def main():
         if line[0] not in durations:
             durations[line[0]] = 0
         durations[line[0]] = max(durations[line[0]],getLength(line[1]))
-        
+    
+    if not os.path.isdir(outDir):
+        os.mkdir(outDir)
+    
     for line in directories:
         if line[0] not in filesOut:
             filesOut.append(line[0])
@@ -649,9 +652,6 @@ def main():
     elif len(filesOut) == 0:
         print "Error, no analysis output directories specified"
         quit()
-    
-    if not os.path.isdir(outDir):
-        os.mkdir(outDir)
     
     print "Prepping experiment, parameters are:\n"
     print "Analysis Directory:\n\t", outDir, "\nSubpop Directory:\n\t", subpopDir
