@@ -558,8 +558,8 @@ def loadRepNum(popName, subpop, isDirect, EFO6, iterations, duration, isEpi):
 
     print "\nPassing arguments:"
     repNumStats = {}
-    rCurves = []*iterations
-    meanCurve = []*duration
+    rCurves = [0]*iterations
+    meanCurve = [0]*duration
     processes = []
     
     for iteration in range(iterations):
@@ -652,7 +652,7 @@ def main():
         quit()
     
     allCurves = []
-    fromPopIsEpi = []*len(fromPops)
+    fromPopIsEpi = [0]*len(fromPops)
     
     for experiment in directories:
         for subpop in script:
