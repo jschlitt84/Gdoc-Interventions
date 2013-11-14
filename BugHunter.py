@@ -538,7 +538,7 @@ def getRepNum(popName, subpop, isDirect, EFO6slice, out_q, iteration, duration):
     
     print "\tDeriving iteration", iteration, "Reproductive Number"
     
-    print infectedIDS
+    #print infectedIDS
     print "DIRECT", isDirect
     print "SUBPOP", len(subpop)
     print "INFECTED", len(infectedIDS)
