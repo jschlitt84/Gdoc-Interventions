@@ -543,11 +543,10 @@ def getRepNum(popName, subpop, isDirect, EFO6slice, out_q, iteration, duration):
     print "SUBPOP", len(subpop)
     print "INFECTED", len(infectedIDS)
     print "INFECTORS", len(infectors)
-    print infectors[0:10]
     
     for day in range(duration):
-        print infectionsByDay[day], infectorsByDay[day]
-        #repNumByDay[day] = float(infectionsByDay[day]) / infectorsByDay[day]
+        #print infectionsByDay[day], infectorsByDay[day]
+        repNumByDay[day] = float(infectionsByDay[day]) / infectorsByDay[day]
         
     print "\tIteration", iteration, "Complete"
     
@@ -702,7 +701,7 @@ def main():
                             EFO6Files[experiment[1]+'_iterations'],
                             durations[experiment[0]],
                             fromPopIsEpi[pos])
-            print repNumStats['repNumMeanCurves']
+            print repNumStats['repNumMeanCurve']
             
     
     
