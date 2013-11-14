@@ -25,7 +25,6 @@ def printList(listed):
         temp = ['%.5f' % elem for elem in listed]
         level = 1
         line = '\t' + str(temp).replace("'",'') + '\n'
-        print line
         while len(line)>100:
             level += 1
             text += line[0:100]
@@ -503,6 +502,8 @@ def curvesToStringCT(meanCurves, iterationCurves, isEpidemic, directory, toSubpo
     return text
 
 def curvesToStringRN(meanCurves, iterationCurves, isEpidemic, directory, fromSubpop):
+    print len(iterationCurves)
+    print len(iterationCurves[0])
     text = directory + ',mean,-1,'
     for entry in meanCurves:
         text += str(entry) + ','
