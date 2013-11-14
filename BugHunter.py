@@ -530,20 +530,15 @@ def getRepNum(popName, subpop, isDirect, EFO6slice, out_q, iteration, duration):
         if (((row[0] in subpop) == isDirect) or popName == "ANY") and row[2] < duration:
             infectedIDS[row[0]] = prepID(row[0], row[2])
     
-        
-    print "DIRECT", iteration, isDirect
-    print "SUBPOP", iteration, len(subpop)
-    print "INFECTED", iteration, len(infectedIDS)
-    print "INFECTORS", iteration, len(infectors)
+    print "Iteration", iteration, "prameters"    
+    print "\tSubpop Inclusive:", isDirect
+    print "\tSubpop Size:", len(subpop)
+    print "\tSubpop Infected:", len(infectedIDS)
+    print "\tTransmission events:", len(infectors)
             
     print "\tTabulating iteration", iteration, "total infections by day infector was infected"
     for key, value in infectedIDS.iteritems():
-        infectedIDS[key]['numInfected'] =  infectors.count(key)
-        print iteration, key
-        print iteration, infectedIDS[key]
-        print iteration, infectedIDS[key]['dayInfected']
-        print iteration, infectedIDS[key]['numInfected']
-        print iteration, infectionsByDay[infectedIDS[key]['dayInfected']] 
+        infectedIDS[key]['numInfected'] =  infectors.count(key) 
         infectionsByDay[infectedIDS[key]['dayInfected']] += infectedIDS[key]['numInfected']
         infectorsByDay[infectedIDS[key]['dayInfected']] += 1
     
