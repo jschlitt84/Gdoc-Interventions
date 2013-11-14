@@ -18,9 +18,13 @@ EFO6Line = "EFO6 Files To Analyze"
 def fixLengths(matrix):
     None
 
-def printList(list):
+def printList(listed):
+    temp = listed[:]
+    if isinstance(listed[0], float):
+        temp = ['%.5f' % elem for elem in listed]
+        
     text = ""
-    for item in list:
+    for item in ltemp:
     	level = 1
         line = '\t' + str(item) + '\n'
         while len(line)>100:
@@ -268,15 +272,7 @@ def loadCrossTalk(crossTalkEFO6, crossTalkSubs, duration):
        
     for i in range(cores):
         lengths2.append(merged["days" + str(i)])
-    #days = max(lengths2)
-        
-    #for i in range(iterations):
-    #    for k in range(cores):
-    #        print "LENGTH", i, len(merged2['byDay'+ str(k)][i])
-    
-    #print lengths2
-    #print days
-    
+
     days = duration
        
     print "\tSubproccesses complete, merging results" 
@@ -703,13 +699,13 @@ def main():
                             EFO6Files[experiment[1]+'_iterations'],
                             durations[experiment[0]],
                             fromPopIsEpi[pos])
-            print repNumStats['meanRepNumCurve']
+            print printList(repNumStats['meanRepNumCurve'])
             statsOut = open(outDir + 'RepNum_' + experiment[0],'a+b')
             statsOut.write(curvesToStringRN(repNumStats['meanRepNumCurve'],
                                             repNumStats['repNumCurves'],
                                             fromPopIsEpi[pos],
                                             experiment[1],
-                                            pop)
+                                            pop))
             statsOut.close()
             
     
