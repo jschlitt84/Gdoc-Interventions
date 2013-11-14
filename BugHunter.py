@@ -489,6 +489,8 @@ def getSubpops(script, subpopDir):
     return subpopFiles  
     
 def curvesToStringCT(meanCurves, iterationCurves, isEpidemic, directory, toSubpop, fromSubpop):
+    fromSubpop = fromSubpop.replace('.txt','')
+    toSubpop = toSubpop.replace('.txt','')
     text = directory + ',' + toSubpop + ',' + fromSubpop + ',mean,-1,'
     for entry in meanCurves:
         text += str(entry) + ','
@@ -502,6 +504,7 @@ def curvesToStringCT(meanCurves, iterationCurves, isEpidemic, directory, toSubpo
     return text
 
 def curvesToStringRN(meanCurves, iterationCurves, isEpidemic, directory, fromSubpop):    
+    fromSubpop = fromSubpop.replace('.txt','')
     text = directory + ',' + fromSubpop + ',mean,-1,'
     for entry in meanCurves:
         text += str(entry) + ','
