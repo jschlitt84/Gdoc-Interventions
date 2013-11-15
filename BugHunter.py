@@ -455,7 +455,7 @@ def loadSubpop(subpop, subPopDir, out_q, count, popSizeAll):
         outDict[subpop + '_popSize'] = 0
         print "*****HUZZAH2"
     else:
-        if outDict[subpop] == "ANY":
+        if outDict[subpop] == []:
             print "*****HUZZAH1"
             outDict[subpop + '_popSize'] = popSize = popSizeAll
         else:
