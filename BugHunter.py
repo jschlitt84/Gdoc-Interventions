@@ -176,7 +176,6 @@ def loadCrossTalk(crossTalkEFO6, crossTalkSubs, duration):
     toType = crossTalkSubs['toType']
     fromSubpop =  crossTalkSubs['fromPop']
     fromType =  crossTalkSubs['fromType']
-    isDirect = crossTalkSubs['isDirect']
     length0 =  len(EFO6)
     lengths = []
     
@@ -188,7 +187,7 @@ def loadCrossTalk(crossTalkEFO6, crossTalkSubs, duration):
     processes = []
     
     for i in range(cores):
-        p = Process(target = findIgnores, args = (EFO6[block*i:block*(i+1)], toSubpop, out_q, i, iterations, block*i, duration, isDirect))
+        p = Process(target = findIgnores, args = (EFO6[block*i:block*(i+1)], toSubpop, out_q, i, iterations, block*i, duration, toType))
         processes.append(p)
         p.start() 
     merged = {}
