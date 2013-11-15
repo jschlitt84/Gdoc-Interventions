@@ -540,8 +540,7 @@ def getRepNum(popName, subpop, isDirect, EFO6slice, out_q, iteration, duration):
             infectedIDS[row[0]] = prepID(row[0], row[2])
     
     print "\n\tIteration", iteration, "parameters"    
-    print "\tSubpop Inclusive:", isDirect
-    print "\tSubpop Size:", len(subpop), isDirect*'in' + 'direct'
+    print "\tSubpop Size:", (subpop == [] or not(isDirect))*'whole population', not(isDirect)*'-', str(len(subpop))*(subpop!=[])
     print "\tSubpop Infected:", len(infectedIDS)
     print "\tTransmission events:", len(infectors)
             
