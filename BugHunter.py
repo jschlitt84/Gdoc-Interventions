@@ -75,7 +75,7 @@ def getLength(directory):
 		line = fileIn.readline()
 	return int(line.replace('SimulationDuration = ',''))
 	
-def findIgnores(trimmed, subpopLoaded, out_q, core, iterations, disjoint, duration):
+def findIgnores(trimmed, subpopLoaded, out_q, core, iterations, disjoint, duration, isDirect):
     length = length0 =  len(trimmed)
     days = comments = filtered = pos = 0
     notifyEvery = 50000
@@ -91,7 +91,7 @@ def findIgnores(trimmed, subpopLoaded, out_q, core, iterations, disjoint, durati
 		comments += 1
         else:
 	   temp = trimmed[pos][0]
-	   if temp not in subpopLoaded and subpopLoaded != []:
+	   if (temp in subpopLoaded) != isDirect and subpopLoaded != []:
 	           disjoint -=1
 	   else:
     	       content[adjusted] = map(int,trimmed[pos])	      
@@ -176,6 +176,7 @@ def loadCrossTalk(crossTalkEFO6, crossTalkSubs, duration):
     toType = crossTalkSubs['toType']
     fromSubpop =  crossTalkSubs['fromPop']
     fromType =  crossTalkSubs['fromType']
+    isDirect = crossTalkSubs['isDirect']
     length0 =  len(EFO6)
     lengths = []
     
@@ -187,7 +188,7 @@ def loadCrossTalk(crossTalkEFO6, crossTalkSubs, duration):
     processes = []
     
     for i in range(cores):
-        p = Process(target = findIgnores, args = (EFO6[block*i:block*(i+1)], toSubpop, out_q, i, iterations, block*i, duration))
+        p = Process(target = findIgnores, args = (EFO6[block*i:block*(i+1)], toSubpop, out_q, i, iterations, block*i, duration, isDirect))
         processes.append(p)
         p.start() 
     merged = {}
@@ -541,7 +542,7 @@ def getRepNum(popName, subpop, isDirect, EFO6slice, out_q, iteration, duration):
     
     print "\n\tIteration", iteration, "parameters"    
     print "\tSubpop Inclusive:", isDirect
-    print "\tSubpop Size:", len(subpop), 
+    print "\tSubpop Size:", len(subpop), isDirect*'in' + 'direct'
     print "\tSubpop Infected:", len(infectedIDS)
     print "\tTransmission events:", len(infectors)
             
