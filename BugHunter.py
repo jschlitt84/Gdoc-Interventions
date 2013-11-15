@@ -700,8 +700,8 @@ def main():
                                             experiment[1],
                                             subpop[0],
                                             subpopFiles[subpop[0]+'_popSize'],
-                                            subpop[1]),
-                                            subpopFiles[subpop[1]+'_popSize'])
+                                            subpop[1],
+                                            subpopFiles[subpop[1]+'_popSize']))
             statsOut.close()
             #allCurves.append(crossTalk)
             print printList(crossTalk['crossTalkCurves'])
