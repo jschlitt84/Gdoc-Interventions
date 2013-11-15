@@ -671,7 +671,7 @@ def main():
     
     EFO6Files = getEFO6s(directories)
     print EFO6Files.keys()
-    popSize = EFO6Files[directories[0][1]+'_popSize']
+    popSize = EFO6Files[directories[0][1]+'_size']
     subpopFiles = getSubpops(script, subpopDir, popSize)
     if "error" in subpopFiles:
         print "Error termination"
