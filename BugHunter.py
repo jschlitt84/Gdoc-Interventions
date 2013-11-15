@@ -374,7 +374,7 @@ def getEFO6s(directories):
     
     return EFO6Files
     
-def loadSubpop(subpop, subPopDir, out_q, count):
+def loadSubpop(subpop, subPopDir, out_q, count, popSizeAll):
     outDict = {}
     while '  ' in subpop:
         subpop = subpop.replace('  ',' ')
@@ -452,17 +452,23 @@ def loadSubpop(subpop, subPopDir, out_q, count):
             else:
                 outDict[subpop] = temp.symmetric_difference(temp2)
                 outDict[subpop + "_type"] = direct        
-                
-    if outDict[subpop] != "ANY" and outDict[subpop] != "error": 
-        outDict[subpop + '_popSize'] = popSize = len(outDict[subpop])
+    
+    if outDict[subpop] == "error":
+        outDict[subpop + '_popSize'] = 0
+    else:
+        if outDict[subpop] == "ANY":
+            outDict[subpop + '_popSize'] = popSize = popSizeAll
+        else:
+            popSize = len(outDict[subpop])
+            if not direct:
+                popSize = popSizeAll - popSize
+            outDict[subpop + '_popSize'] = popSize
         print "\t\tSupopulation size:", popSize
         print "\t\tLoad complete, returning subpop", count
-    else:
-        outDict[subpop + '_popSize'] = 0
 
     out_q.put(outDict)
     
-def getSubpops(script, subpopDir):
+def getSubpops(script, subpopDir, popSize):
     subpopFiles = {}
     subpopList = []
     out_q = Queue()
@@ -476,7 +482,7 @@ def getSubpops(script, subpopDir):
     count = 0
     for subpop in subpopList:
         count += 1
-        p = Process(target = loadSubpop, args = (subpop, subpopDir, out_q, count))
+        p = Process(target = loadSubpop, args = (subpop, subpopDir, out_q, count, popSize))
         processes.append(p)
         p.start() 
     for subpop in subpopList:
@@ -487,30 +493,30 @@ def getSubpops(script, subpopDir):
     
     return subpopFiles  
     
-def curvesToStringCT(meanCurves, iterationCurves, isEpidemic, directory, toSubpop, fromSubpop):
+def curvesToStringCT(meanCurves, iterationCurves, isEpidemic, directory, toSubpop, toSize, fromSubpop, fromSize):
     fromSubpop = fromSubpop.replace('.txt','').replace('_',' ')
     toSubpop = toSubpop.replace('.txt','').replace('_',' ')
-    text = directory + ',' + toSubpop + ',' + fromSubpop + ',mean,-1,'
+    text = directory+','+toSubpop+','+toSize+','+fromSubpop+','+fromSize+',mean,-1,'
     for entry in meanCurves:
         text += str(entry) + ','
     text += '\n'
     if iterationCurves != 'null':
         for row in range(len(iterationCurves)):
-            text += directory + ',' + toSubpop + ',' + fromSubpop + ',' + str(row) + ',' + str(isEpidemic[row]) + ','
+            text += directory+','+toSubpop+','+toSize+','+fromSubpop+','+fromSize+','+str(row)+','+str(isEpidemic[row])+','
             for entry in iterationCurves[row]:
                 text += str(entry) + ','
             text += '\n'
     return text
 
-def curvesToStringRN(meanCurves, iterationCurves, isEpidemic, directory, fromSubpop):    
+def curvesToStringRN(meanCurves, iterationCurves, isEpidemic, directory, fromSubpop, fromSize):    
     fromSubpop = fromSubpop.replace('.txt','').replace('_',' ')
-    text = directory + ',' + fromSubpop + ',mean,-1,'
+    text = directory+','+fromSubpop+','+fromSize+',mean,-1,'
     for entry in meanCurves:
         text += str(entry) + ','
     text += '\n'
     if iterationCurves != 'null':
         for row in range(len(iterationCurves)):
-            text += directory + ',' + fromSubpop + ',' + str(row) + ',' + str(isEpidemic[row]) + ','
+            text += directory+','+fromSubpop+','+fromSize+','+str(row)+','+str(isEpidemic[row])+','
             for entry in iterationCurves[row]:
                 text += str(entry) + ','
             text += '\n'
@@ -642,10 +648,10 @@ def main():
             filesOut.append(line[0])
             text = str(range(durations[line[0]])).replace('[','').replace(']',',\n').replace(' ','')
             flush = open(outDir + 'CrossTalk_' + line[0],'w')
-            flush.write("directory,toSubpop,fromSubpop,iteration,isEpidemic," + text)
+            flush.write("directory,toSubpop,toSize,fromSubpop,fromSize,iteration,isEpidemic," + text)
             flush.close()
             flush = open(outDir + 'RepNum_' + line[0],'w')
-            flush.write("directory,fromSubpop,iteration,isEpidemic," + text)
+            flush.write("directory,fromSubpop,fromSize,iteration,isEpidemic," + text)
             flush.close()
     
     if len(outDir) == 0:
@@ -664,7 +670,8 @@ def main():
     print "Analyses:\n", printList(directories)
     
     EFO6Files = getEFO6s(directories)
-    subpopFiles = getSubpops(script, subpopDir)
+    popSize = EFO6Files[directories[0][1]+'_popSize']
+    subpopFiles = getSubpops(script, subpopDir, popSize)
     if "error" in subpopFiles:
         print "Error termination"
         quit()
@@ -691,7 +698,9 @@ def main():
                                             crossTalk['isEpidemic'],
                                             experiment[1],
                                             subpop[0],
-                                            subpop[1]))
+                                            subpopFiles[subpop[0]+'_popSize'],
+                                            subpop[1]),
+                                            subpopFiles[subpop[1]+'_popSize'])
             statsOut.close()
             #allCurves.append(crossTalk)
             print printList(crossTalk['crossTalkCurves'])
@@ -714,6 +723,7 @@ def main():
                                             repNumStats['repNumCurves'],
                                             fromPopIsEpi[pos],
                                             experiment[1],
+                                            subpopFiles[pop+'_popSize'],
                                             pop))
             statsOut.close()
     
