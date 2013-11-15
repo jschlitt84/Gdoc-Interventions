@@ -101,8 +101,6 @@ def findIgnores(trimmed, subpopLoaded, out_q, core, iterations, disjoint, durati
             print "\tCore", core, "filtering", pos+filtered, "out of", length0, "entries"
     
     print "\tCore", core, "filtering complete, beginning sort by day"
-    #for key, entry in content.iteritems():
-    #    days =  max(days, entry[2])
     
     days = duration
         
@@ -455,10 +453,13 @@ def loadSubpop(subpop, subPopDir, out_q, count, popSizeAll):
     
     if outDict[subpop] == "error":
         outDict[subpop + '_popSize'] = 0
+        print "*****HUZZAH2"
     else:
         if outDict[subpop] == "ANY":
+            print "*****HUZZAH1"
             outDict[subpop + '_popSize'] = popSize = popSizeAll
         else:
+            print "*****HUZZAH3"
             popSize = len(outDict[subpop])
             if not direct:
                 popSize = popSizeAll - popSize
