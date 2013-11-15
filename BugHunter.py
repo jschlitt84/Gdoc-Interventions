@@ -494,13 +494,14 @@ def getSubpops(script, subpopDir, popSize):
 def curvesToStringCT(meanCurves, iterationCurves, isEpidemic, directory, toSubpop, toSize, fromSubpop, fromSize):
     fromSubpop = fromSubpop.replace('.txt','').replace('_',' ')
     toSubpop = toSubpop.replace('.txt','').replace('_',' ')
-    text = directory+','+toSubpop+','+str(toSize)+','+fromSubpop+','+str(fromSize)+',mean,-1,'
+    descriptor = directory+',' + fromSubpop + ' to ' + toSubpop + ','
+    text = descriptor+toSubpop+','+str(toSize)+','+fromSubpop+','+str(fromSize)+',mean,-1,'
     for entry in meanCurves:
         text += str(entry) + ','
     text += '\n'
     if iterationCurves != 'null':
         for row in range(len(iterationCurves)):
-            text += directory+','+toSubpop+','+str(toSize)+','+fromSubpop+','+str(fromSize)+','+str(row)+','+str(isEpidemic[row])+','
+            text += descriptor+toSubpop+','+str(toSize)+','+fromSubpop+','+str(fromSize)+','+str(row)+','+str(isEpidemic[row])+','
             for entry in iterationCurves[row]:
                 text += str(entry) + ','
             text += '\n'
@@ -645,7 +646,7 @@ def main():
             filesOut.append(line[0])
             text = str(range(durations[line[0]])).replace('[','').replace(']',',\n').replace(' ','')
             flush = open(outDir + 'CrossTalk_' + line[0],'w')
-            flush.write("directory,toSubpop,toSize,fromSubpop,fromSize,iteration,isEpidemic," + text)
+            flush.write("directory,descriptor,toSubpop,toSize,fromSubpop,fromSize,iteration,isEpidemic," + text)
             flush.close()
             flush = open(outDir + 'RepNum_' + line[0],'w')
             flush.write("directory,fromSubpop,fromSize,iteration,isEpidemic," + text)
