@@ -202,7 +202,7 @@ def loadCrossTalk(crossTalkEFO6, crossTalkSubs, duration):
     days = duration
    
     print "\tSubproccesses complete, merging results" 
-    iterXDay = [[0 for pos1 in range(days + 1)] for pos2 in range(iterations)]
+    iterXDay = [[0 for pos1 in range(days+1)] for pos2 in range(iterations)]
     for i in range(days):
         for j in range(iterations):
             summed = 0
@@ -280,7 +280,7 @@ def loadCrossTalk(crossTalkEFO6, crossTalkSubs, duration):
     days = duration
        
     print "\tSubproccesses complete, merging results" 
-    crossTalk = [[0 for pos1 in range(days+1)] for pos2 in range(iterations)]
+    crossTalk = [[0 for pos1 in range(days)] for pos2 in range(iterations)]
     for i in range(days):
         for j in range(iterations):
             summed = 0
