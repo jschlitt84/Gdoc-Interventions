@@ -724,8 +724,8 @@ def main():
                                             repNumStats['repNumCurves'],
                                             fromPopIsEpi[pos],
                                             experiment[1],
-                                            subpopFiles[pop+'_popSize'],
-                                            pop))
+                                            pop,
+                                            subpopFiles[pop+'_popSize']))
             statsOut.close()
     
     print "Analysis complete, quitting now..."
