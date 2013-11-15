@@ -453,13 +453,10 @@ def loadSubpop(subpop, subPopDir, out_q, count, popSizeAll):
     
     if outDict[subpop] == "error":
         outDict[subpop + '_popSize'] = 0
-        print "*****HUZZAH2"
     else:
         if outDict[subpop] == []:
-            print "*****HUZZAH1"
             outDict[subpop + '_popSize'] = popSize = popSizeAll
         else:
-            print "*****HUZZAH3"
             popSize = len(outDict[subpop])
             if not direct:
                 popSize = popSizeAll - popSize
