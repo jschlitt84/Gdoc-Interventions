@@ -91,7 +91,7 @@ def findIgnores(trimmed, subpopLoaded, out_q, core, iterations, disjoint, durati
 		comments += 1
         else:
 	   temp = trimmed[pos][0]
-	   if temp not in subpopLoaded:
+	   if temp not in subpopLoaded and subpopLoaded != []:
 	           disjoint -=1
 	   else:
     	       content[adjusted] = map(int,trimmed[pos])	      
@@ -541,7 +541,7 @@ def getRepNum(popName, subpop, isDirect, EFO6slice, out_q, iteration, duration):
     
     print "\n\tIteration", iteration, "parameters"    
     print "\tSubpop Inclusive:", isDirect
-    print "\tSubpop Size:", len(subpop)
+    print "\tSubpop Size:", len(subpop), 
     print "\tSubpop Infected:", len(infectedIDS)
     print "\tTransmission events:", len(infectors)
             
