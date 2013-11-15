@@ -502,7 +502,7 @@ def curvesToStringCT(meanCurves, iterationCurves, isEpidemic, directory, toSubpo
     text += '\n'
     if iterationCurves != 'null':
         for row in range(len(iterationCurves)):
-            text += directory+','+toSubpop+','+toSize+','+fromSubpop+','+fromSize+','+str(row)+','+str(isEpidemic[row])+','
+            text += directory+','+toSubpop+','+str(toSize)+','+fromSubpop+','+str(fromSize)+','+str(row)+','+str(isEpidemic[row])+','
             for entry in iterationCurves[row]:
                 text += str(entry) + ','
             text += '\n'
@@ -516,7 +516,7 @@ def curvesToStringRN(meanCurves, iterationCurves, isEpidemic, directory, fromSub
     text += '\n'
     if iterationCurves != 'null':
         for row in range(len(iterationCurves)):
-            text += directory+','+fromSubpop+','+fromSize+','+str(row)+','+str(isEpidemic[row])+','
+            text += directory+','+fromSubpop+','+str(fromSize)+','+str(row)+','+str(isEpidemic[row])+','
             for entry in iterationCurves[row]:
                 text += str(entry) + ','
             text += '\n'
