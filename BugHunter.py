@@ -695,7 +695,7 @@ def main():
             statsOut.write(curvesToStringCT(crossTalk['meanCrossTalkCurve'],
                                             crossTalk['crossTalkCurves'],
                                             crossTalk['isEpidemic'],
-                                            experiment[1].replace(outDir.replace('Analysis/'),''),
+                                            experiment[1].replace(outDir.replace('Analysis/',''),''),
                                             subpop[0],
                                             subpopFiles[subpop[0]+'_popSize'],
                                             subpop[1],
@@ -721,7 +721,7 @@ def main():
             statsOut.write(curvesToStringRN(repNumStats['meanRepNumCurve'],
                                             repNumStats['repNumCurves'],
                                             fromPopIsEpi[pos],
-                                            experiment[1].replace(outDir.replace('Analysis/'),''),
+                                            experiment[1].replace(outDir.replace('Analysis/',''),''),
                                             pop,
                                             subpopFiles[pop+'_popSize']))
             statsOut.close()
