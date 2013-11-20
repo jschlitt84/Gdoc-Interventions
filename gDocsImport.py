@@ -311,9 +311,6 @@ def getScript(userName, __password, fileName, start, end, loadType, isPoly, poly
         publicData = polyScript
         
     __password = None
-    
-    for item in publicData:
-        print "DEBUG1:",item
 
     return loadNClean(isPrivate, publicData, start, end, loadType)            
     
