@@ -963,10 +963,10 @@ action number and subpopulation directory appended"
                 try:
                     day = int(items[1]) + shiftDates
                     if day <= 0:
-                        print "Error, day must be an integer greater than zero\n"
+                        print "HUZZAH! Error, day must be an integer greater than zero\n"
                         quit()
                 except:
-                    print "Error, day must be an integer greater than zero\n"
+                    print "HUZZAH? Error, day must be an integer greater than zero\n"
                     quit()
                 try:
                     length = int(items[2])
