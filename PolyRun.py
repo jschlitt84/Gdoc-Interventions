@@ -332,7 +332,7 @@ def main():
         for item in script:
             if getPoly(item)[0] == 'null' or getPoly(item)[1] in toRun:
                 if len(item.replace('"','').replace(',','').replace('\n','')) != 0:
-                    rollScript.append(filterPoly(script[pos]))
+                    rollScript.append(filterPoly(item))
                 
 # SUPPORT ADDED FOR MULTIPLE DIRECTORIES/ RUN         
                 
