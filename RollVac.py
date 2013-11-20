@@ -320,6 +320,8 @@ def writeAvScript(avScript, diagParams, outName, directory, subpopDirectory, shi
     pos = 0
     length = len(avScript)
     
+    print "HUZZAH1", avScript
+    
     for avLine in avScript:
         avFile.write("\n\n# -----------------------\n")
         avFile.write("\nInterventionId = " + str(pos+5000))
