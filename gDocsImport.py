@@ -88,6 +88,14 @@ def getPublicFile(userName, fileName):
     response = requests.get(fileName)
     assert response.status_code == 200, 'Wrong status code'
     data = response.content.split('\n')
+    toDelete = []
+    for pos in range(len(data)):
+        data[pos] =  data[pos].replace('"','')
+        if data[pos].count(',') == len(data[pos]):
+            toDelete.append[pos]
+    for pos in reversed(toDelete):
+        del data[pos]
+        
     return data
 
 
