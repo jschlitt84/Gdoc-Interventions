@@ -226,16 +226,6 @@ def prepNewAV(avScript, diagParams, outName, directory, subpopDirectory, totalsN
         
         actionNew.append(tempAction)
         intervNew.append(tempInterv)
-
-    
-    """pos = 0
-    length = len(avScript)
-    while pos < length:
-        if str(pos+9300) in mutex:
-            intervNew[pos]['conditionMutex'] = ";".join(mutex)
-        else:
-            intervNew[pos]['conditionMutex'] = str(mutStart+pos)
-        pos += 1"""
     
     print "Antiviral treatment scripting complete"
     return {'configV':str(configV),'actions':actionNew,'interventions':intervNew,'subpops':subPopNew}
@@ -575,23 +565,6 @@ def main(arg1, arg2, arg3, arg4, polyScript, filteredIDs,popSizes):
     interventionsNew = []
     
 
-# UNIX PASSED ARGUMENTS DECISION TREE  
-    
-    """if len(sys.argv) <= 1:
-        print "Missing arguments, quitting now"
-        quit()
-        outName = "Default"
-    elif sys.argv[1] == "help":
-        print "\nArguments: chopper.py {filepath/user} {intervention outfile}
-        (Filepath): loads vaccination spread commands from an external script at (filepath)
-        user: manual mode, enter each vaccination manually, enter (done) to quit\n"
-        quit()
-    elif len(sys.argv) == 2:
-        print "Missing 2nd argument, defaulting to file prefix 'Default'"
-        arg = sys.argv[1]
-        outName = "Default" """
-
-
 # LOADS PUBLIC/ PRIVATE DATA FROM GDOC IF PASSED
     if len(sys.argv) < 3:
         print "Missing arguments, quitting now"
@@ -757,30 +730,6 @@ def main(arg1, arg2, arg3, arg4, polyScript, filteredIDs,popSizes):
         if not gotPath:
             path = ""
         
-              
-# USER FILE LOADING                  
-            
-    """if arg == "user":
-        print "\nEnter desired intervention & subpopulation storage directory
-Subpops will be created in local subpops folder, though intervention file will point to said directory
-Enter 'local' to use current working directory or 'explicit' for a direct link"
-        path=str(raw_input(":"))
-        if path == "explicit":
-            path = os.getcwd()
-        if (path == "local") or (path == "home") or (len(path) == 0):
-            path = ""
-            
-        print "\nEnter desired intervention start number, default 1, useful for appending interventions to pre-existing files"
-        number=raw_input(":")
-        try:
-            trigger = int(number)
-            if trigger <= 0:
-                print "Entry must be greater than 0, defaulting to 1\n"
-                trigger = 1
-        except:
-            print "No entry/ invalid entry, defaulting to 1\n"
-            trigger = 1"""
-
 
 # FLUSH INTERVENTION FILE & COPY POLYRUN BASEFILE IF NEEDED
     
@@ -812,122 +761,6 @@ Enter 'local' to use current working directory or 'explicit' for a direct link"
         subnum += 1
         enum = False
     
-
-# USER CONTROLLED CHOPPING  
-            
-        """if arg == "user":
-            
-            while True:
-                print "\nEnter source population filename/ directory"
-                population=str(raw_input(":"))
-                if len(population) == 0:
-                    print "Nothing entered, defaulting to 'SUBPOP'\n"
-                    population = "SUBPOP"
-                if population == "done":
-                    print "Data entry complete, quitting now!\n"
-                    done = True
-                    break
-                if len(population) == 0:
-                    population = "EFO6"
-                try:
-                    with open(population): pass
-                    break
-                except:
-                    print "Error: population file", population, "not found\n"
-            
-            if done:
-                break
-            
-            while True:   
-                print "\nEnter desired intervention trigger day/ 'enum' for enumerated intervention"
-                number=raw_input(":")
-                if str(number) == 'enum' or str(number) == 'e':
-                    enum = True
-                    enumList = getEnum()
-                    break
-                else:
-                    try:
-                        day = int(number)
-                        if day <= 0:
-                            print "Error: invalid entry, please enter a positive integer or 'enum'\n"
-                        else:
-                            break
-                    except:
-                        print "Error: invalid entry, please enter a positive integer\n"
-    
-            
-            while not enum:
-                print "\nEnter desired intervention time to completion"
-                number=raw_input(":")
-                try:
-                    length = int(number)
-                    if length <= 0:
-                        print "Error: invalid entry, please enter a positive integer\n"
-                    else:
-                        break
-                except:
-                    print "Error: invalid entry, please enter a positive integer\n"
-        
-            while True:
-                print "\nEnter intervention type with numerical parameters (ex: Vaccination 10 0.5 .7)
-Text will be saved to intervention file exactly as entered with generated
-action number and subpopulation directory appended"
-                interv=str(raw_input(":"))
-                temp =  interv.split()
-                if len(temp) == 0:
-                    print "Error: please enter intervention command\n"
-                else:   
-                    method = temp[0]
-                    arguments =  len(temp)
-                    target = 0
-                    if method == "Vaccination":
-                        target = 4
-                        meth = "v"
-                        iCode = 0
-                        if arguments == 4:
-                            temp[2],temp[3] = temp[3],temp[2]
-                    elif method == "Antiviral":
-                        target = 5
-                        meth = "av"
-                        iCode = 1000
-                        if arguments == 5:
-                            temp[2],temp[3],temp[4] = temp[3],temp[4],temp[2]
-                    elif method == "SocialDistancing":
-                        target = 3
-                        meth = "sd"
-                        iCode= 2000
-                    elif method == "WorkClosure":
-                        target = 3
-                        meth = "cw"
-                        iCode = 3000
-                    elif method == "SchoolClosure":
-                        target = 3
-                        meth =  "cs"
-                        iCode = 4000
-                    elif method == "Sequestion":
-                        target = 4
-                        meth =  "sq"
-                        iCode = 6000
-                    if arguments != target:
-                        print "Error:",  len(temp), "parameters found,", target, "expected for intervention type", method, "\n"
-                    elif target == 0:
-                        print "Error:", method, "method not recognized\n"
-                    else:
-                        if not temp[1].isdigit():
-                            print "Error: second value must be an integer"
-                        else:
-                            pos2 = 1
-                            allGood = True
-                            while pos2 < target:
-                                if not chopper.isInt(temp[pos2]):
-                                    allGood = False
-                                pos2 += 1
-                            if not allGood:
-                                print temp
-                                print "Error: non-numerical parameters found\n"
-                            else:
-                                break  """
-  
                                                                               
 #  LOCAL SCRIPT/ GDOC CONTROLLED CHOPPING                                                                                                                                                                                           
                                                                                                                                                                                                 
