@@ -153,7 +153,7 @@ def addSubpop(subpops, name, directory, count):
     
 # READS AVSCRIPT, APPENDS TO ACTION IDS & INTERVENTION IDS
 
-def prepNewAV(avScript, diagParams, outName, directory, subpopDirectory, totalsNew):
+def prepNewAV(avScript, diagParams, outName, directory, subpopDirectory, totalsNew, shiftDates):
     
     tempDirectory = subpopDirectory + '/' + outName
     tempDirectory = tempDirectory.replace('//','/')
@@ -202,7 +202,7 @@ def prepNewAV(avScript, diagParams, outName, directory, subpopDirectory, totalsN
         tempInterv['conditionTotal'] = '9101'
         
         if len(avScript[pos][1]) != 0:
-            tempInterv['conditionDate'] = avScript[pos][1]
+            tempInterv['conditionDate'] = avScript[pos][1] + shiftDates
         if len(avScript[pos][2]) != 0:
             if percentFix(avScript[pos][2]) >= 1:
                 tempInterv['conditionThresholdValue'] = + avScript[pos][2]
@@ -300,7 +300,7 @@ def filterIDs(directory):
 
 # WRITES ANTIVIRAL AND DIAGNOSIS SCRIPTS TO DIRECTORY 
   
-def writeAvScript(avScript, diagParams, outName, directory, subpopDirectory):
+def writeAvScript(avScript, diagParams, outName, directory, subpopDirectory, shiftDates):
     
 #    if len(explicitDirectory) > 1:
 #        tempDirectory = explicitDirectory + '/' + directory + outName
@@ -334,7 +334,7 @@ def writeAvScript(avScript, diagParams, outName, directory, subpopDirectory):
         avFile.write("\n\n# -----------------------\n")
         avFile.write("\nInterventionId = " + str(pos+5000))
         if len(avLine[1]) != 0:
-            avFile.write("\nConditionDate = " + avLine[1])
+            avFile.write("\nConditionDate = " + avLine[1] + shiftDates)
         if len(avLine[2]) != 0:
             if percentFix(avLine[2]) >= 1:
                 avFile.write("\nConditionThresholdValue = " + avLine[2])
@@ -367,11 +367,11 @@ def writeAvScript(avScript, diagParams, outName, directory, subpopDirectory):
 
 # USER INTERACTIVE ENUMERATION MODE
 
-def getEnum():
+"""def getEnum():
     while True:
-        print """\nEnter enumeration day and number list, format: 0 1; 1 5; 2 10; 3 14
+        print "\nEnter enumeration day and number list, format: 0 1; 1 5; 2 10; 3 14
 per a given intervention, all enumeration must be taken care of in one call
-further enumeration may lead to overlap with undesirable results for certain interventions"""
+further enumeration may lead to overlap with undesirable results for certain interventions"
         enumerator =str(raw_input(":"))
         if len(enumerator) == 0:
             print "Nothing entered, defaulting to '0 1; 1 2; 3 5; 4 8'\n"
@@ -379,7 +379,7 @@ further enumeration may lead to overlap with undesirable results for certain int
         enumerator = enumerator.replace(";"," ; ")
         if checkEnum(enumerator):
             break
-    return parseEnum(enumerator)
+    return parseEnum(enumerator)"""
          
          
 # RETURNS TRUE IF GIVEN PROPERLY FORMATTED ENUMERATION
@@ -577,23 +577,28 @@ def main(arg1, arg2, arg3, arg4, polyScript, filteredIDs,popSizes):
 
 # UNIX PASSED ARGUMENTS DECISION TREE  
     
-    if len(sys.argv) <= 1:
-        print "Missing arguments, defaulting to user mode with file prefix 'Default'\n"
-        arg =  "user"
+    """if len(sys.argv) <= 1:
+        print "Missing arguments, quitting now"
+        quit()
         outName = "Default"
     elif sys.argv[1] == "help":
-        print """\nArguments: chopper.py {filepath/user} {intervention outfile}
+        print "\nArguments: chopper.py {filepath/user} {intervention outfile}
         (Filepath): loads vaccination spread commands from an external script at (filepath)
-        user: manual mode, enter each vaccination manually, enter (done) to quit\n"""
+        user: manual mode, enter each vaccination manually, enter (done) to quit\n"
         quit()
     elif len(sys.argv) == 2:
         print "Missing 2nd argument, defaulting to file prefix 'Default'"
         arg = sys.argv[1]
-        outName = "Default"
-    elif len(sys.argv) > 3:
+        outName = "Default" """
 
 
 # LOADS PUBLIC/ PRIVATE DATA FROM GDOC IF PASSED
+    if len(sys.argv) < 3:
+        print "Missing arguments, quitting now"
+        quit()
+        outName = "Default"
+    
+    elif len(sys.argv) > 3:
    
         if sys.argv[1] == "gdoc" or sys.argv[1] == "poly":
             arg = "gDoc"
@@ -636,6 +641,8 @@ def main(arg1, arg2, arg3, arg4, polyScript, filteredIDs,popSizes):
         explicitDirectory= params[2]
         if len(explicitDirectory) > 0:
             useExplicit  = True
+            
+        shiftDates =  params[8]
         
         if isPoly:
             outName = ""
@@ -691,7 +698,7 @@ def main(arg1, arg2, arg3, arg4, polyScript, filteredIDs,popSizes):
                     temp.close()
                     avTreatments = 0
                 else:
-                    avTreatments = writeAvScript(avScript, diagParams, outName, path, subpopDirectory)
+                    avTreatments = writeAvScript(avScript, diagParams, outName, path, subpopDirectory, shiftDates)
                 
                 
 # PREP NEW FORMAT DICTS
@@ -701,7 +708,7 @@ def main(arg1, arg2, arg3, arg4, polyScript, filteredIDs,popSizes):
                     print "No AV-Script found"
                     avTreatments = 0
                 else:
-                    temp = prepNewAV(avScript, diagParams, outName, path, subpopDirectory, totalsNew)
+                    temp = prepNewAV(avScript, diagParams, outName, path, subpopDirectory, totalsNew, shiftDates)
                     subpopsNew += temp['subpops']
                     actionsNew += temp['actions']
                     interventionsNew += temp['interventions']
@@ -748,10 +755,10 @@ def main(arg1, arg2, arg3, arg4, polyScript, filteredIDs,popSizes):
               
 # USER FILE LOADING                  
             
-    if arg == "user":
-        print """\nEnter desired intervention & subpopulation storage directory
+    """if arg == "user":
+        print "\nEnter desired intervention & subpopulation storage directory
 Subpops will be created in local subpops folder, though intervention file will point to said directory
-Enter 'local' to use current working directory or 'explicit' for a direct link"""
+Enter 'local' to use current working directory or 'explicit' for a direct link"
         path=str(raw_input(":"))
         if path == "explicit":
             path = os.getcwd()
@@ -767,7 +774,7 @@ Enter 'local' to use current working directory or 'explicit' for a direct link""
                 trigger = 1
         except:
             print "No entry/ invalid entry, defaulting to 1\n"
-            trigger = 1
+            trigger = 1"""
 
 
 # FLUSH INTERVENTION FILE & COPY POLYRUN BASEFILE IF NEEDED
@@ -803,7 +810,7 @@ Enter 'local' to use current working directory or 'explicit' for a direct link""
 
 # USER CONTROLLED CHOPPING  
             
-        if arg == "user":
+        """if arg == "user":
             
             while True:
                 print "\nEnter source population filename/ directory"
@@ -857,9 +864,9 @@ Enter 'local' to use current working directory or 'explicit' for a direct link""
                     print "Error: invalid entry, please enter a positive integer\n"
         
             while True:
-                print """\nEnter intervention type with numerical parameters (ex: Vaccination 10 0.5 .7)
+                print "\nEnter intervention type with numerical parameters (ex: Vaccination 10 0.5 .7)
 Text will be saved to intervention file exactly as entered with generated
-action number and subpopulation directory appended"""
+action number and subpopulation directory appended"
                 interv=str(raw_input(":"))
                 temp =  interv.split()
                 if len(temp) == 0:
@@ -914,12 +921,12 @@ action number and subpopulation directory appended"""
                                 print temp
                                 print "Error: non-numerical parameters found\n"
                             else:
-                                break  
+                                break  """
   
                                                                               
 #  LOCAL SCRIPT/ GDOC CONTROLLED CHOPPING                                                                                                                                                                                           
                                                                                                                                                                                                 
-        else:
+        if True:
             if pos == len(script):
                 done = True
                 break
@@ -947,7 +954,7 @@ action number and subpopulation directory appended"""
             
             if not enum:
                 try:
-                    day = int(items[1])
+                    day = int(items[1]) + shiftDates
                     if day <= 0:
                         print "Error, day must be an integer greater than zero\n"
                         quit()
@@ -1083,7 +1090,7 @@ action number and subpopulation directory appended"""
                     subPopName = popName + 'd' + str(pos2/2) + 'i' + suffix
                     if ".txt" in subPopName:
                         subPopName = subPopName.replace('.txt','') + '.txt'
-                    triggerOut = "* Trigger " + str(trigger+iCode) + " Date " + str(enumList[pos2]) + "\n" 
+                    triggerOut = "* Trigger " + str(trigger+iCode) + " Date " + str(enumList[pos2] + shiftDates) + "\n" 
                     if useExplicit:
                         tempPath = path + "/subpops/" + subPopName
                     else:
@@ -1145,7 +1152,7 @@ action number and subpopulation directory appended"""
                     tempInterv[pos2/2]['interventionType'] = "Offline"
                     if conditionTotal != -1:
                         tempInterv[pos2/2]['conditionTotal'] = conditionTotal
-                    tempInterv[pos2/2]['conditionDate'] = str(enumList[pos2]) + '~' + str(enumList[pos2])
+                    tempInterv[pos2/2]['conditionDate'] = str(enumList[pos2] + shiftDates) + '~' + str(enumList[pos2] + shiftDates)
                     tempInterv[pos2/2]['conditionMembership'] = getSubpopID(subpopsNew,popName)
                     tempInterv[pos2/2]['conditionCompliance'] = str(float(intervNew[2]) * enumList[pos2+1])
                     tempInterv[pos2/2]['action'] = actionID
@@ -1158,7 +1165,7 @@ action number and subpopulation directory appended"""
                     tempInterv[pos2]['interventionType'] = "Offline"
                     if conditionTotal != -1:
                         tempInterv[pos2]['conditionTotal'] = conditionTotal
-                    tempInterv[pos2]['conditionDate'] = str(day+pos2) + '~' + str(day+pos2)
+                    tempInterv[pos2]['conditionDate'] = str(day+pos2+shiftDates) + '~' + str(day+pos2+shiftDates)
                     tempInterv[pos2]['conditionMembership'] = getSubpopID(subpopsNew,popName)
                     tempInterv[pos2]['conditionCompliance'] = str(float(intervNew[2]) / length)
                     tempInterv[pos2]['action'] = actionID
