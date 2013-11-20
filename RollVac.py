@@ -958,6 +958,8 @@ action number and subpopulation directory appended"
                     quit()
             
             if not enum:
+                print int(items[1])
+                print shiftDates
                 try:
                     day = int(items[1]) + shiftDates
                     if day <= 0:
