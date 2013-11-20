@@ -334,7 +334,7 @@ def writeAvScript(avScript, diagParams, outName, directory, subpopDirectory, shi
         avFile.write("\n\n# -----------------------\n")
         avFile.write("\nInterventionId = " + str(pos+5000))
         if len(avLine[1]) != 0:
-            avFile.write("\nConditionDate = " + avLine[1] + shiftDates)
+            avFile.write("\nConditionDate = " + str(int(avLine[1]) + shiftDates))
         if len(avLine[2]) != 0:
             if percentFix(avLine[2]) >= 1:
                 avFile.write("\nConditionThresholdValue = " + avLine[2])
@@ -958,15 +958,13 @@ action number and subpopulation directory appended"
                     quit()
             
             if not enum:
-                print int(items[1])
-                print shiftDates
                 try:
                     day = int(items[1]) + shiftDates
                     if day <= 0:
-                        print "HUZZAH! Error, day must be an integer greater than zero\n"
+                        print "Error, day must be an integer value\n"
                         quit()
                 except:
-                    print "HUZZAH? Error, day must be an integer greater than zero\n"
+                    print "Error, day must be an integer greater than zero\n"
                     quit()
                 try:
                     length = int(items[2])
