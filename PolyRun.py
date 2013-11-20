@@ -259,6 +259,8 @@ def main():
             sys.argv.insert(1,'null')
 
     script = gDocsImport.getScript(sys.argv[1], sys.argv[2], sys.argv[3], 0, -1, "default", False, [])
+    for item in script:
+        print "DEBUG:", item
     directoryLines = gDocsImport.getScript(sys.argv[1], sys.argv[2], sys.argv[3], paramsStart, startWord, "default", False,[])
     sys.argv = None
     
