@@ -153,8 +153,7 @@ def loadNClean(isPrivate,publicData, start, end, cleanType):
     length = len(script)
     while pos < length:
         if "#" in script[pos] and "#IGNORE" not in script[pos] or len(script[pos].replace(",",''))<1:
-            #del script[pos]
-            script[pos] = "HUZZAH!"
+            del script[pos]
             length -= 1
         else:
             pos +=1
