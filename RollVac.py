@@ -202,7 +202,7 @@ def prepNewAV(avScript, diagParams, outName, directory, subpopDirectory, totalsN
         tempInterv['conditionTotal'] = '9101'
         
         if len(avScript[pos][1]) != 0:
-            tempInterv['conditionDate'] = avScript[pos][1] + shiftDates
+            tempInterv['conditionDate'] = str(int(avScript[pos][1]) + shiftDates)
         if len(avScript[pos][2]) != 0:
             if percentFix(avScript[pos][2]) >= 1:
                 tempInterv['conditionThresholdValue'] = + avScript[pos][2]
