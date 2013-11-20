@@ -354,7 +354,8 @@ def main():
         noAVDiag = not RollVac.isYes(params[1],'null')
         fileString =  params[3]
         filesToCopy = len(fileString) > 0
-               
+        
+        print rollScript       
         filteredIDs = RollVac.main('poly', directory, 'null', 'null', rollScript, filteredIDs, popSizes)
         sleep(0.05)
         

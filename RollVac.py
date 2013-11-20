@@ -526,8 +526,7 @@ def checkSize(reference,popSizes):
 # MAIN
 
 def main(arg1, arg2, arg3, arg4, polyScript, filteredIDs,popSizes):
-        
-
+    
     print arg1, arg2, arg3, arg4
     
     if __name__ != '__main__':
