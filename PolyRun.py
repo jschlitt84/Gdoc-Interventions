@@ -331,8 +331,9 @@ def main():
         print "Loading Script for line:", runTracker
         for item in script:
             if getPoly(item)[0] == 'null' or getPoly(item)[1] in toRun:
-                if len(item.replace('"','').replace(',','').replace('\n','')) != 0:
-                    rollScript.append(filterPoly(item))
+                rollScript.append(filterPoly(item))
+                #if len(item.replace('"','').replace(',','').replace('\n','')) != 0:
+                    
                 
 # SUPPORT ADDED FOR MULTIPLE DIRECTORIES/ RUN         
                 
