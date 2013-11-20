@@ -259,8 +259,6 @@ def main():
             sys.argv.insert(1,'null')
 
     script = gDocsImport.getScript(sys.argv[1], sys.argv[2], sys.argv[3], 0, -1, "default", False, [])
-    for item in script:
-        print "DEBUG:", item
     directoryLines = gDocsImport.getScript(sys.argv[1], sys.argv[2], sys.argv[3], paramsStart, startWord, "default", False,[])
     sys.argv = None
     
@@ -358,9 +356,7 @@ def main():
         noAVDiag = not RollVac.isYes(params[1],'null')
         fileString =  params[3]
         filesToCopy = len(fileString) > 0
-        
-        for item in rollScript :
-            print "DEBUG:", item      
+            
         filteredIDs = RollVac.main('poly', directory, 'null', 'null', rollScript, filteredIDs, popSizes)
         sleep(0.05)
         
