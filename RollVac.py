@@ -643,7 +643,7 @@ def main(arg1, arg2, arg3, arg4, polyScript, filteredIDs,popSizes):
             useExplicit  = True
             
         try:
-            shiftDates =  params[8]
+            shiftDates =  int(params[8])
             print "Date shift set to", shiftDates
         except:
             shiftDates = 0
