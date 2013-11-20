@@ -329,9 +329,10 @@ def main():
         length = len(script)
         rollScript = []
         print "Loading Script for line:", runTracker
-        for pos in range(len(script)):
-            if getPoly(script[pos])[0] == 'null' or getPoly(script[pos])[1] in toRun:
-                rollScript.append(filterPoly(script[pos]))
+        for item in script:
+            if getPoly(item)[0] == 'null' or getPoly(item)[1] in toRun:
+                if len(item.replace('"','').replace(',','').replace('\n','')) != 0:
+                    rollScript.append(filterPoly(script[pos]))
                 
 # SUPPORT ADDED FOR MULTIPLE DIRECTORIES/ RUN         
                 
@@ -356,7 +357,7 @@ def main():
         filesToCopy = len(fileString) > 0
         
         for item in rollScript :
-            print item      
+            print "DEBUG:", item      
         filteredIDs = RollVac.main('poly', directory, 'null', 'null', rollScript, filteredIDs, popSizes)
         sleep(0.05)
         
