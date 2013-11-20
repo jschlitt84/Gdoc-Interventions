@@ -642,7 +642,12 @@ def main(arg1, arg2, arg3, arg4, polyScript, filteredIDs,popSizes):
         if len(explicitDirectory) > 0:
             useExplicit  = True
             
-        shiftDates =  params[8]
+        try:
+            shiftDates =  params[8]
+            print "Date shift set to", shiftDates
+        except:
+            shiftDates = 0
+            print "Using default '0' date shift"
         
         if isPoly:
             outName = ""
