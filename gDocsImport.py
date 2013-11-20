@@ -92,7 +92,7 @@ def getPublicFile(userName, fileName):
     for pos in range(len(data)):
         data[pos] =  data[pos].replace('"','')
         if data[pos].count(',') == len(data[pos]):
-            toDelete.append[pos]
+            toDelete.append(pos)
     for pos in reversed(toDelete):
         del data[pos]
         
