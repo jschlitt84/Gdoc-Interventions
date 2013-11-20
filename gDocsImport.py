@@ -153,7 +153,8 @@ def loadNClean(isPrivate,publicData, start, end, cleanType):
     length = len(script)
     while pos < length:
         if "#" in script[pos] and "#IGNORE" not in script[pos] or len(script[pos].replace(",",''))<1:
-            del script[pos]
+            #del script[pos]
+            script[pos] = "HUZZAH!"
             length -= 1
         else:
             pos +=1
@@ -291,7 +292,6 @@ def getLine(userName, __password, fileName, line, isPoly, polyScript):
 def getScript(userName, __password, fileName, start, end, loadType, isPoly, polyScript):
     if __password == "null" and "https://docs.google.com" in fileName:
         
-        #print "****DEBUG", userName, fileName
         publicData = getPublicFile(userName, fileName)
         isPrivate = False
         
