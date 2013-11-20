@@ -355,7 +355,8 @@ def main():
         fileString =  params[3]
         filesToCopy = len(fileString) > 0
         
-        print rollScript       
+        for item in rollScript :
+            print item      
         filteredIDs = RollVac.main('poly', directory, 'null', 'null', rollScript, filteredIDs, popSizes)
         sleep(0.05)
         
