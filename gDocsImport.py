@@ -70,6 +70,9 @@ def getFile(userName, __password, fileName):
     entry = gd_client.GetDocumentListEntry(uri)
     docs_auth_token = gd_client.GetClientLoginToken()
     gd_client.SetClientLoginToken(spreadsheets_client.GetClientLoginToken())
+    while os.path.isfile(tempFile):
+        print "Waiting until temp file is clear"
+        time.sleep(15)
     gd_client.Export(entry, tempFile)
     gd_client.SetClientLoginToken(docs_auth_token)
 
