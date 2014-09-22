@@ -1,16 +1,4 @@
-
 *.pyc
-
-*.pyc
-
-chopper.pyc
-
-RollVac.pyc
-
-RollVac.pyc
-
 .DS_Store
-
-GetSlicetest.py
-
+*test.py
 bugHunter
