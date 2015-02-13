@@ -28,6 +28,11 @@ def runFix(qsublist, commands, words, fix):
 
 # Loop 1 Intervention Tweaks
 commands = [
+	"mv config* config"]
+words= ['ve']
+runFix(qsublist, commands, words, "Renaming Config Files")
+
+"""commands = [
     "sed -e 's/#.*$//' -e '/^$/d' -e 's/  //' Intervention > temp",
     "mv temp Intervention",
     "sed -e 's/#.*$//' -e '/^$/d' -e 's/  //' Antiviral > temp",
@@ -40,7 +45,7 @@ words = [
     "nowhite"]
 runFix(qsublist, commands, words, "No WhiteSpace Interventions")
 
-"""# Loop 2 AV/Diag Tweaks
+# Loop 2 AV/Diag Tweaks
 commands = [
     "sed -e 's/#.*$//' -e '/^$/d' -e 's/  //' Antiviral > temp",
     "mv temp Antiviral",
@@ -57,7 +62,7 @@ commands = [
 words = [
     "nowhiteCFG"]
 runFix(qsublist, commands, words, "No WhiteSpace Congig")
-    
+"""    
 # Loop 4.1 Config Tweaks
 commands = [
     "sed -e '/^DiagnosisFile =/ d' -e '/^AntiviralFile =/ d' config > temp",
@@ -65,9 +70,9 @@ commands = [
     "rm Diagnosis",
     "rm Antiviral"]
 words = [
-    "noAV"]
+    "ve"]
 runFix(qsublist, commands, words, "No AV/Diag File or References")
-
+"""
 # Loop 4.2 Config Tweaks
 commands = [
     "echo > Antiviral",

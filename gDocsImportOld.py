@@ -23,7 +23,7 @@ def spreadConnect(userName, __password, fileName):
         client.ProgrammaticLogin()
         print "Connected to Google Spreadsheet via username %s & password %s" % (userName,__password)
     except:
-        print "Error, Google Spreadsheet Login Failed, username %s & password %s" % (userName,__password)
+        print "Error, Google Spreadhseet Login Failed, username %s & password %s" % (userName,__password)
         client.password = None
         quit()
     return client
@@ -65,49 +65,32 @@ def getFile(userName, __password, fileName):
     feed = spreadsheets_client.GetWorksheetsFeed(spreadsheet_id)
     
     tempFile = "googtemp.csv"
-    #https://docs.google.com/feeds/default/private/changes?v=3
-    uri = 'https://docs.google.com/feeds/documents/private/full/%s' % spreadsheet_id
+    uri = 'http://docs.google.com/feeds/documents/private/full/%s' % spreadsheet_id
 
     entry = gd_client.GetDocumentListEntry(uri)
     docs_auth_token = gd_client.GetClientLoginToken()
     gd_client.SetClientLoginToken(spreadsheets_client.GetClientLoginToken())
+    while os.path.isfile(tempFile):
+        print "Waiting until temp file is clear"
+        time.sleep(15)
     gd_client.Export(entry, tempFile)
     gd_client.SetClientLoginToken(docs_auth_token)
 
 
 # RETURNS PUBLIC SPREADSHEET AS LIST OF STRINGS   
                        
-def getPublicFile(userName, fileName, localFile):
+def getPublicFile(userName, fileName):
     
-    if '/d/' in fileName:
-        print 'Using 4th gen URL format'
-        format = 'https://docs.google.com/spreadsheets/d/$KEY/export?format=csv&id=$KEY'
-        key = fileName.split('/')[-2]
-        fileName = format.replace('$KEY',key)
-    else:
-        print 'Using 1-3rd gen URL format'
-        try:
-            fileName = fileName[:fileName.index('#gid')]
-        finally:
-            fileName += '&output=csv'
-
+    try:
+        fileName = fileName[:fileName.index('#gid')]
+    finally:
+        fileName += '&output=csv'
 
     print "\nLoading public file", fileName
     
     response = requests.get(fileName)
-    print "gData Response status code:",response.status_code
-    try:
-        assert response.status_code == 200, 'Wrong status code'
-        data = response.content.split('\n')
-    except:
-        if localFile != 'null':
-            fileIn = open(localFile)
-            data = fileIn.readlines()
-            fileIn.close()
-        else:
-            print "Error, cannot contact google and no local file found"
-            quit()
-
+    assert response.status_code == 200, 'Wrong status code'
+    data = response.content.split('\n')
     toDelete = []
     for pos in range(len(data)):
         data[pos] =  data[pos].replace('"','')
@@ -180,7 +163,7 @@ def loadNClean(isPrivate,publicData, start, end, cleanType):
     pos = 0
     length = len(script)
     while pos < length:
-        if "#" in script[pos] and "#KEEP" not in script[pos] and "#IGNORE" not in script[pos] or len(script[pos].replace(",",''))<1:
+        if "#" in script[pos] and "#IGNORE" not in script[pos] or len(script[pos].replace(",",''))<1:
             del script[pos]
             length -= 1
         else:
@@ -243,7 +226,7 @@ def loadNClean(isPrivate,publicData, start, end, cleanType):
                 script[pos] = script[pos].replace('enum enum','enum')
                 script[pos] = script[pos].replace('enum 0','enum')
                 pos += 1
-                while "#" in script[pos] and "#KEEP" not in script[pos] or len(script[pos].replace(",",''))<1:
+                while "#" in script[pos] or len(script[pos].replace(",",''))<1:
                     del script[pos]
                     pos -= 1
                     length -= 1
@@ -295,10 +278,10 @@ def loadNClean(isPrivate,publicData, start, end, cleanType):
 
 # RETURNS SINGLE LINE FOLLOWING WORDS/ LINE NUMBER
     
-def getLine(userName, __password, fileName, line, localFile = 'null', isPoly = False, polyScript = []):
+def getLine(userName, __password, fileName, line, isPoly, polyScript):
     if __password == "null" and "https://docs.google.com" in fileName:
         
-        publicData = getPublicFile(userName, fileName, localFile)
+        publicData = getPublicFile(userName, fileName)
         isPrivate = False
         
     elif not isPoly:
@@ -316,10 +299,10 @@ def getLine(userName, __password, fileName, line, localFile = 'null', isPoly = F
 
 # RETURNS SCRIPT/ VALUES BASED UPON PASSED LOADTYPE                  
             
-def getScript(userName, __password, fileName, start, end, loadType, localFile = 'null', isPoly = False, polyScript = []):
+def getScript(userName, __password, fileName, start, end, loadType, isPoly, polyScript):
     if __password == "null" and "https://docs.google.com" in fileName:
         
-        publicData = getPublicFile(userName, fileName, localFile)
+        publicData = getPublicFile(userName, fileName)
         isPrivate = False
         
     elif not isPoly:
