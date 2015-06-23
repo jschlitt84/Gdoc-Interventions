@@ -65,19 +65,21 @@ def getFile(userName, __password, fileName):
     feed = spreadsheets_client.GetWorksheetsFeed(spreadsheet_id)
     
     tempFile = "googtemp.csv"
-    #https://docs.google.com/feeds/default/private/changes?v=3
     uri = 'https://docs.google.com/feeds/documents/private/full/%s' % spreadsheet_id
 
     entry = gd_client.GetDocumentListEntry(uri)
     docs_auth_token = gd_client.GetClientLoginToken()
     gd_client.SetClientLoginToken(spreadsheets_client.GetClientLoginToken())
+    #while os.path.isfile(tempFile):
+    #    print "Waiting until temp file is clear"
+    #    time.sleep(15)
     gd_client.Export(entry, tempFile)
     gd_client.SetClientLoginToken(docs_auth_token)
 
 
 # RETURNS PUBLIC SPREADSHEET AS LIST OF STRINGS   
                        
-def getPublicFile(userName, fileName, localFile):
+def getPublicFile(userName, fileName):
     
     if '/d/' in fileName:
         print 'Using 4th gen URL format'
@@ -90,7 +92,6 @@ def getPublicFile(userName, fileName, localFile):
             fileName = fileName[:fileName.index('#gid')]
         finally:
             fileName += '&output=csv'
-
 
     print "\nLoading public file", fileName
     
@@ -180,7 +181,7 @@ def loadNClean(isPrivate,publicData, start, end, cleanType):
     pos = 0
     length = len(script)
     while pos < length:
-        if "#" in script[pos] and "#KEEP" not in script[pos] and "#IGNORE" not in script[pos] or len(script[pos].replace(",",''))<1:
+        if "#" in script[pos] and "#IGNORE" not in script[pos] or len(script[pos].replace(",",''))<1:
             del script[pos]
             length -= 1
         else:
@@ -223,7 +224,8 @@ def loadNClean(isPrivate,publicData, start, end, cleanType):
         if end < length:
             del script[end:length+1]
             length = end  
-      
+    
+    script = [entry for entry in script if '#' not in entry or '#IGNORE' in entry]  
     while pos < length:
         script[pos]= script[pos].replace('\n','')
         if "#IGNORE" in script[pos]:
@@ -243,7 +245,7 @@ def loadNClean(isPrivate,publicData, start, end, cleanType):
                 script[pos] = script[pos].replace('enum enum','enum')
                 script[pos] = script[pos].replace('enum 0','enum')
                 pos += 1
-                while "#" in script[pos] and "#KEEP" not in script[pos] or len(script[pos].replace(",",''))<1:
+                while "#" in script[pos] or len(script[pos].replace(",",''))<1:
                     del script[pos]
                     pos -= 1
                     length -= 1
@@ -295,10 +297,10 @@ def loadNClean(isPrivate,publicData, start, end, cleanType):
 
 # RETURNS SINGLE LINE FOLLOWING WORDS/ LINE NUMBER
     
-def getLine(userName, __password, fileName, line, localFile = 'null', isPoly = False, polyScript = []):
+def getLine(userName, __password, fileName, line, isPoly, polyScript):
     if __password == "null" and "https://docs.google.com" in fileName:
         
-        publicData = getPublicFile(userName, fileName, localFile)
+        publicData = getPublicFile(userName, fileName)
         isPrivate = False
         
     elif not isPoly:
@@ -316,10 +318,10 @@ def getLine(userName, __password, fileName, line, localFile = 'null', isPoly = F
 
 # RETURNS SCRIPT/ VALUES BASED UPON PASSED LOADTYPE                  
             
-def getScript(userName, __password, fileName, start, end, loadType, localFile = 'null', isPoly = False, polyScript = []):
+def getScript(userName, __password, fileName, start, end, loadType, isPoly, polyScript):
     if __password == "null" and "https://docs.google.com" in fileName:
         
-        publicData = getPublicFile(userName, fileName, localFile)
+        publicData = getPublicFile(userName, fileName)
         isPrivate = False
         
     elif not isPoly:

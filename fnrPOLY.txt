@@ -1,0 +1,33 @@
+File = qsub
+Find = #PBS -W
+Replace = #PBS -W group_list=pecos
+Find = #PBS -N
+Replace = #PBS -N FTLewis-$ITER
+Find = #PBS -o
+Replace = #PBS -o $DIR/ef_$ITER.qlog
+Find = $MPIRUN
+Replace = $MPIRUN /vbi/projects/epifast/bin/EpiFast $DIR/config > $DIR/cout
+File = configPOLY
+Find = SimulationDuration =
+Replace = SimulationDuration = 30
+Find = EpidemicSeedNumber =
+Replace = EpidemicSeedNumber = 15
+Find = ContactGraphFile =
+Replace = ContactGraphFile = /vbi/protopop/USPopv2/regions/seattle_military_corrected/socialnet/EFIG6Bb
+Find = IncubationPeriodFile =
+Replace = IncubationPeriodFile = /home/NDSSL/study/DTRA_AVstudy/input/Incubation.Period.Distribution
+Find = InfectiousPeriodFile =
+Replace = InfectiousPeriodFile = /home/NDSSL/study/DTRA_AVstudy/input/Infectious.Period.Distribution
+Find = OutputFile
+Replace = OutputFile = $DIR/EFO6
+Find = LogFile =
+Replace = LogFile = $DIR/Log
+Find = InterventionFile =
+Replace = InterventionFile = $DIR/Intervention
+Find = DiagnosisFile =
+Replace = DiagnosisFile = $DIR/Diagnosis
+Find =  AntiviralFile =
+Replace = AntiviralFile = $DIR/Antiviral
+Find = ConfigVersion =
+Replace = ConfigVersion = 2009
+

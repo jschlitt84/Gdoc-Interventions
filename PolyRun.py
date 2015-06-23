@@ -278,7 +278,7 @@ def main():
     length = len(script)
     
     print "Searching list for experimentally iterated variables"
-    
+    print 'DEBOOO',script    
     for item in script:
         temp = getPoly(item)
         if temp[0] != 'null':
