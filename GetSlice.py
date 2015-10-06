@@ -789,7 +789,7 @@ def main():
             sys.argv.insert(1,'null')
 
     script = gDocsImport.getScript(sys.argv[1], sys.argv[2], sys.argv[3], 0, -1, "default", False, [])
-    script = [entry.replace('\r','') for entry in script]
+    #script = [entry.replace('\r','') for entry in script]
     sys.argv = None
     print script
     
@@ -807,6 +807,7 @@ def main():
         if column == len(script[0]) and not hasContent:
             break
         
+        params = [entry.replace('\r','') for entry in params]
         print params
         directoryIn = prepDir(params[0])
         directoryOut = prepDir(params[1])
