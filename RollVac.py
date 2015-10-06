@@ -613,7 +613,7 @@ def main(arg1, arg2, arg3, arg4, polyScript, filteredIDs,popSizes):
         
         print "debooo script", script
         
-        emptyblock = script == 'null'
+        emptyblock = (script == 'null') or len(''.join(script.split())) < 2
         
         explicitDirectory= params[2]
         if len(explicitDirectory) > 0:
