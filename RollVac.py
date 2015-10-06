@@ -611,6 +611,8 @@ def main(arg1, arg2, arg3, arg4, polyScript, filteredIDs,popSizes):
         script = gDocsImport.getScript(sys.argv[2], sys.argv[3], sys.argv[4], startWord, stopWord, loadType, isPoly, polyScript)
         params = gDocsImport.getLine(sys.argv[2], sys.argv[3], sys.argv[4],paramsStart, isPoly, polyScript)
         
+        print "debooo script", script
+        
         emptyblock = script == 'null'
         
         explicitDirectory= params[2]
